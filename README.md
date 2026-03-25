@@ -1,10 +1,10 @@
-# 🤖 Smart Recruit Assistant — Backend (SRA)
+# Smart Recruit Assistant — Backend (SRA)
 
 > Backend API cho hệ thống tuyển dụng thông minh tích hợp AI, hỗ trợ ứng viên và nhà tuyển dụng trong quá trình tuyển dụng.
 
 ---
 
-## 📌 Tổng quan
+## Tổng quan
 
 **Smart Recruit Assistant (SRA)** là một nền tảng tuyển dụng thông minh kết hợp AI chatbot để hỗ trợ:
 - **Ứng viên (Candidate):** tư vấn CV, gợi ý vị trí phù hợp, luyện tập phỏng vấn.
