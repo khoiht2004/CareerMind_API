@@ -1,0 +1,65 @@
+const model = require("@/models/job.model");
+
+function safeParseArray(str) {
+  if (!str) return [];
+  try {
+    const parsed = JSON.parse(str);
+    if (Array.isArray(parsed)) return parsed;
+    return String(parsed).split(",").map((t) => t.trim()).filter(Boolean);
+  } catch {
+    return str.split(",").map((t) => t.trim()).filter(Boolean);
+  }
+}
+
+async function getJobs(req, res) {
+  const { page = 1, limit = 12, search, type, location } = req.query;
+  const result = await model.getJobs({ page: +page, limit: +limit, search, type, location });
+  return res.success(200, result);
+}
+
+async function getJobById(req, res) {
+  const job = await model.getJobById(req.params.id);
+  if (!job) return res.error(404, "Không tìm thấy công việc");
+  job.tags = safeParseArray(job.tags);
+  job.benefits = safeParseArray(job.benefits);
+  return res.success(200, job);
+}
+
+async function createJob(req, res) {
+  const { title, company, location, description } = req.body;
+  if (!title || !company || !location || !description) {
+    return res.error(400, "Tiêu đề, công ty, địa điểm và mô tả là bắt buộc");
+  }
+  const job = await model.createJob(req.body, req.auth.user.id);
+  return res.success(201, job);
+}
+
+async function updateJob(req, res) {
+  const { id } = req.params;
+  const { user } = req.auth;
+
+  const existing = await model.getJobById(id);
+  if (!existing) return res.error(404, "Không tìm thấy công việc");
+  if (user.role !== "ADMIN" && existing.postedBy.id !== user.id) {
+    return res.error(403, "Bạn không có quyền chỉnh sửa công việc này");
+  }
+
+  const job = await model.updateJob(id, req.body);
+  return res.success(200, job);
+}
+
+async function deleteJob(req, res) {
+  const { id } = req.params;
+  const { user } = req.auth;
+
+  const existing = await model.getJobById(id);
+  if (!existing) return res.error(404, "Không tìm thấy công việc");
+  if (user.role !== "ADMIN" && existing.postedBy.id !== user.id) {
+    return res.error(403, "Bạn không có quyền xóa công việc này");
+  }
+
+  await model.deleteJob(id);
+  return res.success(200, "Xóa công việc thành công");
+}
+
+module.exports = { getJobs, getJobById, createJob, updateJob, deleteJob };

@@ -1,142 +1,108 @@
 const bcrypt = require("bcrypt");
 const model = require("@/models/auth.model");
 const AuthService = require("@/services/auth.service");
-const QueueService = require("@/services/queue.service");
 
 async function register(req, res) {
-  const { email, password } = req.body;
-  const saltRounds = 10;
+  const { name, email, password } = req.body;
 
-  // Kiểm tra email và password không rỗng
-  if (!email || !password) {
-    return res.error(400, "Email and password are required");
-  }
+  if (!email || !password) return res.error(400, "Email và mật khẩu là bắt buộc");
+  if (!/^[^@]+@[^@]+\.[^@]+$/.test(email)) return res.error(400, "Email không hợp lệ");
+  if (password.length < 6) return res.error(400, "Mật khẩu phải ít nhất 6 ký tự");
 
-  // Kiểm tra định dạng email đơn giản (kiểm tra có @ và .)
-  const emailRegex = /^[^@]+@[^@]+\.[^@]+$/;
-  if (!emailRegex.test(email)) {
-    return res.error(400, "Invalid email format");
-  }
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const user = await model.createUser(email, hashedPassword, name?.trim() || null);
+  if (!user) return res.error(409, "Email đã tồn tại");
 
-  // Kiểm tra password không quá ngắn
-  if (password.length < 6) {
-    return res.error(400, "Password must be at least 6 characters");
-  }
+  await AuthService.sendVerificationOtp(user.id, user.email);
 
-  const hashedPassword = await bcrypt.hash(password, saltRounds);
-  const user = await model.register(email, hashedPassword);
-
-  if (!user) return res.error(409, "Email already exists");
-
-  // Send verification email
-  await QueueService.push("sendVerificationEmail", {
-    id: user.id,
-    email: user.email,
-  });
-
-  await AuthService.signAccessToken(user);
-
-  return res.success(201, {
-    message: "Register successfully",
-    id: user.id,
-    email: user.email,
-  });
+  return res.success(201, { message: "Đăng ký thành công, vui lòng xác thực email", id: user.id, email: user.email });
 }
 
 async function login(req, res) {
   const { email, password } = req.body;
-  if (!email || !password)
-    return res.error(400, "Email and password are required");
+  if (!email || !password) return res.error(400, "Email và mật khẩu là bắt buộc");
 
-  const user = await model.login(email);
-  if (!user) return res.error(401, "Email or password is invalid");
+  const user = await model.findByEmail(email);
+  if (!user) return res.error(401, "Email hoặc mật khẩu không đúng");
 
   const isMatch = await bcrypt.compare(password, user.password);
-  if (isMatch) {
-    if (!user.email_verified_at) {
-      return res.error(403, "Account not verified");
-    }
+  if (!isMatch) return res.error(401, "Email hoặc mật khẩu không đúng");
 
-    const { accessToken, timeExp } = await AuthService.signAccessToken(user);
-    const refreshToken = await AuthService.createRefreshToken(user);
+  if (!user.isVerified) return res.error(403, "Tài khoản chưa được xác thực");
 
-    return res.success(200, {
-      id: user.id,
-      email: user.email,
-      access_token: accessToken,
-      expired_at: timeExp,
-      refresh_token: refreshToken,
-    });
-  }
+  const { accessToken, timeExp } = await AuthService.signAccessToken(user);
+  const refreshToken = await AuthService.createRefreshToken(user);
 
-  return res.error(401, "Invalid email or password");
+  return res.success(200, {
+    id: user.id,
+    email: user.email,
+    role: user.role,
+    accessToken,
+    refreshToken,
+    expiredAt: timeExp,
+  });
+}
+
+async function verifyEmail(req, res) {
+  const { email, code } = req.body;
+  if (!email || !code) return res.error(400, "Email và mã xác thực là bắt buộc");
+
+  const error = await model.verifyOtp(email, code);
+  if (error) return res.error(400, error);
+
+  return res.success(200, "Xác thực email thành công");
+}
+
+async function resendVerification(req, res) {
+  const { email } = req.body;
+  if (!email) return res.error(400, "Email là bắt buộc");
+
+  const user = await model.findByEmail(email);
+  if (!user) return res.error(404, "Không tìm thấy tài khoản");
+  if (user.isVerified) return res.error(400, "Email đã được xác thực");
+
+  await AuthService.sendVerificationOtp(user.id, user.email);
+  return res.success(200, "Đã gửi lại mã xác thực");
 }
 
 async function getMe(req, res) {
   const { user } = req.auth;
-
   return res.success(200, user);
 }
 
 async function logout(req, res) {
   const { accessToken, payload } = req.auth;
   const expiresAt = new Date(payload.exp * 1000);
-
-  await model.logout(accessToken, expiresAt);
-  res.success(204, null);
+  await model.revokeToken(accessToken, expiresAt, req.auth.user.id);
+  return res.success(200, null);
 }
 
 async function refreshToken(req, res) {
-  const { refresh_token } = req.body;
-  if (!refresh_token) res.error(400, "Refresh token is required");
+  const { refreshToken: token } = req.body;
+  if (!token) return res.error(400, "Refresh token là bắt buộc");
 
-  const refreshTokenDB = await model.getRefreshToken(refresh_token);
-  if (!refreshTokenDB) res.error(401, "Refresh token is invalid");
+  const stored = await model.getRefreshToken(token);
+  if (!stored || stored.expiresAt < new Date()) return res.error(401, "Refresh token không hợp lệ hoặc đã hết hạn");
 
-  const user = await model.getUserById(refreshTokenDB[0].user_id);
+  await model.deleteRefreshToken(token);
 
-  const { accessToken } = await AuthService.signAccessToken(user);
-  const refreshToken = await AuthService.createRefreshToken(user);
+  const user = await model.getUserById(stored.userId);
+  if (!user) return res.error(401, "Không tìm thấy người dùng");
 
-  return res.success(200, {
-    access_token: accessToken,
-    refresh_token: refreshToken,
-  });
-}
+  const { accessToken, timeExp } = await AuthService.signAccessToken(user);
+  const newRefreshToken = await AuthService.createRefreshToken(user);
 
-async function verifyEmail(req, res) {
-  const { token } = req.body;
-  if (!token) res.error(400, "Token is required");
-
-  const [error, data] = await AuthService.verifyEmail(token);
-
-  if (error) return res.error(403, "Invalid token");
-
-  res.success(200, "Email verified successfully");
+  return res.success(200, { accessToken, refreshToken: newRefreshToken, expiredAt: timeExp });
 }
 
 async function changePassword(req, res) {
-  const { old_password, new_password, confirm_password } = req.body;
+  const { oldPassword, newPassword, confirmPassword } = req.body;
   const { user } = req.auth;
 
-  const [error, data] = await AuthService.changePassword(
-    user,
-    old_password,
-    new_password,
-    confirm_password,
-  );
-
+  const [error, data] = await AuthService.changePassword(user, oldPassword, newPassword, confirmPassword);
   if (error) return res.error(400, error);
 
   return res.success(200, data);
 }
 
-module.exports = {
-  register,
-  login,
-  getMe,
-  logout,
-  refreshToken,
-  verifyEmail,
-  changePassword,
-};
+module.exports = { register, login, verifyEmail, resendVerification, getMe, logout, refreshToken, changePassword };

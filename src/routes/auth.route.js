@@ -7,6 +7,7 @@ router.post("/register", controller.register);
 router.post("/login", controller.login);
 router.post("/refresh-token", controller.refreshToken);
 router.post("/verify-email", controller.verifyEmail);
+router.post("/resend-verification", controller.resendVerification);
 
 // PROTECTED ROUTES
 router.get("/me", authRequired, controller.getMe);

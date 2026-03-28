@@ -38,6 +38,6 @@
   "devDependencies": {
     "@types/node": "^25.3.3",
     "concurrently": "^9.2.1",
-    "prisma": "^7.4.2"
+    "prisma": "^7.5.0"
   }
 }
