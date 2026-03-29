@@ -4,6 +4,7 @@ const APP_SELECT = {
   id: true,
   coverLetter: true,
   cvUrl: true,
+  phone: true,
   status: true,
   note: true,
   createdAt: true,
@@ -11,7 +12,8 @@ const APP_SELECT = {
   job: {
     select: {
       id: true, title: true, company: true, location: true,
-      salary: true, type: true, deadline: true,
+      salary: true, type: true, deadline: true, status: true,
+      postedBy: { select: { id: true } },
     },
   },
   user: { select: { id: true, email: true, profile: { select: { fullName: true, avatarUrl: true, phone: true } } } },
@@ -20,7 +22,10 @@ const APP_SELECT = {
 const apply = async (userId, jobId, data) => {
   const exists = await prisma.application.count({ where: { userId, jobId } });
   if (exists) return null;
-  return prisma.application.create({ data: { userId, jobId, ...data }, select: APP_SELECT });
+  return prisma.application.create({
+    data: { userId, jobId, ...data },
+    select: APP_SELECT,
+  });
 };
 
 const getMyApplications = async (userId, { page = 1, limit = 10, status }) => {
@@ -40,10 +45,11 @@ const getApplicationById = async (id) => {
   return prisma.application.findUnique({ where: { id }, select: APP_SELECT });
 };
 
-const getAllApplications = async ({ page = 1, limit = 10, status, jobId }) => {
+const getAllApplications = async ({ page = 1, limit = 10, status, jobId, postedById }) => {
   const where = {
     ...(status && { status }),
     ...(jobId && { jobId }),
+    ...(postedById && { job: { postedById } }),
   };
   const [applications, total] = await Promise.all([
     prisma.application.findMany({

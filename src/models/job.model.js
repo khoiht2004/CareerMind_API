@@ -87,4 +87,55 @@ const isOwner = async (id, userId) => {
   return count > 0;
 };
 
-module.exports = { getJobs, getJobById, createJob, updateJob, deleteJob, isOwner };
+const getMyJobs = async (userId, { page = 1, limit = 10, status, search }) => {
+  const where = {
+    postedById: userId,
+    ...(status && status !== "ALL" && { status }),
+    ...(search && {
+      OR: [
+        { title: { contains: search } },
+        { company: { contains: search } },
+      ],
+    }),
+  };
+  const [jobs, total] = await Promise.all([
+    prisma.job.findMany({
+      where,
+      select: JOB_SELECT,
+      orderBy: { createdAt: "desc" },
+      skip: (page - 1) * limit,
+      take: limit,
+    }),
+    prisma.job.count({ where }),
+  ]);
+  return { jobs, total, page, limit, totalPages: Math.ceil(total / limit) };
+};
+
+const getMyStats = async (userId) => {
+  const [totalJobs, jobsByStatus, totalApplications, appsByStatus] = await Promise.all([
+    prisma.job.count({ where: { postedById: userId } }),
+    prisma.job.groupBy({
+      by: ["status"],
+      where: { postedById: userId },
+      _count: { _all: true },
+    }),
+    prisma.application.count({ where: { job: { postedById: userId } } }),
+    prisma.application.groupBy({
+      by: ["status"],
+      where: { job: { postedById: userId } },
+      _count: { _all: true },
+    }),
+  ]);
+
+  const toMap = (arr) =>
+    arr.reduce((acc, item) => ({ ...acc, [item.status]: item._count._all }), {});
+
+  return {
+    totalJobs,
+    totalApplications,
+    jobsByStatus: toMap(jobsByStatus),
+    appsByStatus: toMap(appsByStatus),
+  };
+};
+
+module.exports = { getJobs, getJobById, createJob, updateJob, deleteJob, isOwner, getMyJobs, getMyStats };

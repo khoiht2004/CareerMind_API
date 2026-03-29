@@ -3,7 +3,7 @@ const jobModel = require("@/models/job.model");
 const mailService = require("../services/mail.service");
 
 async function apply(req, res) {
-  const { jobId, coverLetter, cvUrl, email, name } = req.body;
+  const { jobId, coverLetter, cvUrl, phone, email, name } = req.body;
   if (!jobId) return res.error(400, "jobId là bắt buộc");
 
   const job = await jobModel.getJobById(jobId);
@@ -13,6 +13,7 @@ async function apply(req, res) {
   const application = await model.apply(req.auth.user.id, jobId, {
     coverLetter,
     cvUrl,
+    phone,
   });
 
   // Gửi email thông báo
@@ -49,11 +50,13 @@ async function getApplicationById(req, res) {
 
 async function getAllApplications(req, res) {
   const { page = 1, limit = 10, status, jobId } = req.query;
+  const { user } = req.auth;
   const result = await model.getAllApplications({
     page: +page,
     limit: +limit,
     status,
     jobId,
+    postedById: user.role === "RECRUITER" ? user.id : undefined,
   });
   return res.success(200, result);
 }

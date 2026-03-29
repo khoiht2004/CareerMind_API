@@ -62,4 +62,20 @@ async function deleteJob(req, res) {
   return res.success(200, "Xóa công việc thành công");
 }
 
-module.exports = { getJobs, getJobById, createJob, updateJob, deleteJob };
+async function getMyJobs(req, res) {
+  const { page = 1, limit = 10, status, search } = req.query;
+  const result = await model.getMyJobs(req.auth.user.id, {
+    page: +page,
+    limit: +limit,
+    status,
+    search,
+  });
+  return res.success(200, result);
+}
+
+async function getMyStats(req, res) {
+  const stats = await model.getMyStats(req.auth.user.id);
+  return res.success(200, stats);
+}
+
+module.exports = { getJobs, getJobById, createJob, updateJob, deleteJob, getMyJobs, getMyStats };

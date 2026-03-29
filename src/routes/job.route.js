@@ -5,6 +5,11 @@ const roleRequired = require("@/middlewares/roleRequired");
 
 // Public
 router.get("/", controller.getJobs);
+
+// Recruiter + Admin - must be before /:id
+router.get("/my/jobs", authRequired, roleRequired("RECRUITER", "ADMIN"), controller.getMyJobs);
+router.get("/my/stats", authRequired, roleRequired("RECRUITER", "ADMIN"), controller.getMyStats);
+
 router.get("/:id", controller.getJobById);
 
 // Recruiter + Admin
