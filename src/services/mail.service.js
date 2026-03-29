@@ -2,7 +2,6 @@ const { transporter } = require("@/libs/nodemailer");
 const mailConfig = require("@/config/mail.config");
 const ejs = require("ejs");
 const path = require("path");
-const { formatTime } = require("@/utils/helper");
 
 class MailService {
   getTemplatePath(template) {
