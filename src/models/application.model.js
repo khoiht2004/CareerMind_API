@@ -14,7 +14,7 @@ const APP_SELECT = {
       salary: true, type: true, deadline: true,
     },
   },
-  user: { select: { id: true, email: true, profile: { select: { fullName: true, avatarUrl: true } } } },
+  user: { select: { id: true, email: true, profile: { select: { fullName: true, avatarUrl: true, phone: true } } } },
 };
 
 const apply = async (userId, jobId, data) => {
@@ -64,4 +64,10 @@ const updateStatus = async (id, status, note) => {
   });
 };
 
-module.exports = { apply, getMyApplications, getApplicationById, getAllApplications, updateStatus };
+const deleteApplication = async (id, userId) => {
+  const app = await prisma.application.findUnique({ where: { id }, select: { userId: true } });
+  if (!app || app.userId !== userId) return null;
+  return prisma.application.delete({ where: { id } });
+};
+
+module.exports = { apply, getMyApplications, getApplicationById, getAllApplications, updateStatus, deleteApplication };

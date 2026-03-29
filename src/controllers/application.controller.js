@@ -47,4 +47,10 @@ async function updateStatus(req, res) {
   return res.success(200, updated);
 }
 
-module.exports = { apply, getMyApplications, getApplicationById, getAllApplications, updateStatus };
+async function deleteApplication(req, res) {
+  const result = await model.deleteApplication(req.params.id, req.auth.user.id);
+  if (!result) return res.error(404, "Không tìm thấy đơn ứng tuyển hoặc không có quyền xóa");
+  return res.success(200, { message: "Đã xóa đơn ứng tuyển" });
+}
+
+module.exports = { apply, getMyApplications, getApplicationById, getAllApplications, updateStatus, deleteApplication };

@@ -65,6 +65,7 @@ model User {
   cvs           Cv[]
   coverLetters  CoverLetter[]
   postedJobs    Job[]
+  savedJobs     SavedJob[]
 
   @@map("users")
 }
@@ -110,6 +111,7 @@ model Job {
   postedById   String       @map("posted_by_id")
   postedBy     User         @relation(fields: [postedById], references: [id], onDelete: Cascade)
   applications Application[]
+  savedBy      SavedJob[]
 
   @@index([postedById])
   @@map("jobs")
@@ -136,6 +138,24 @@ model Application {
   @@index([userId])
   @@index([jobId])
   @@map("applications")
+}
+
+// ─── SavedJob ─────────────────────────────────────────────────────────────────
+
+model SavedJob {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  jobId String @map("job_id")
+  job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, jobId])
+  @@index([userId])
+  @@index([jobId])
+  @@map("saved_jobs")
 }
 
 // ─── Cv ───────────────────────────────────────────────────────────────────────
