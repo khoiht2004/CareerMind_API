@@ -1,6 +1,11 @@
 {
   "version": 1,
   "skills": {
+    "nodejs-best-practices": {
+      "source": "sickn33/antigravity-awesome-skills",
+      "sourceType": "github",
+      "computedHash": "9f8d3f268624c4757f4039617942d3e8ddcf420b9295cb943bea3bf9feb37e9d"
+    },
     "prisma-database-setup": {
       "source": "prisma/skills",
       "sourceType": "github",
