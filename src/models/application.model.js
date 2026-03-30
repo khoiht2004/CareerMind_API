@@ -71,8 +71,9 @@ const updateStatus = async (id, status, note) => {
 };
 
 const deleteApplication = async (id, userId) => {
-  const app = await prisma.application.findUnique({ where: { id }, select: { userId: true } });
+  const app = await prisma.application.findUnique({ where: { id }, select: { userId: true, status: true } });
   if (!app || app.userId !== userId) return null;
+  if (app.status !== "PENDING") return "NOT_PENDING";
   return prisma.application.delete({ where: { id } });
 };
 

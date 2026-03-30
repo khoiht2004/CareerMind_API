@@ -1,16 +1,5 @@
 const model = require("@/models/job.model");
 
-function safeParseArray(str) {
-  if (!str) return [];
-  try {
-    const parsed = JSON.parse(str);
-    if (Array.isArray(parsed)) return parsed;
-    return String(parsed).split(",").map((t) => t.trim()).filter(Boolean);
-  } catch {
-    return str.split(",").map((t) => t.trim()).filter(Boolean);
-  }
-}
-
 async function getJobs(req, res) {
   const { page = 1, limit = 12, search, type, location } = req.query;
   const result = await model.getJobs({ page: +page, limit: +limit, search, type, location });
@@ -19,9 +8,8 @@ async function getJobs(req, res) {
 
 async function getJobById(req, res) {
   const job = await model.getJobById(req.params.id);
-  if (!job) return res.error(404, "Không tìm thấy công việc");
-  job.tags = safeParseArray(job.tags);
-  job.benefits = safeParseArray(job.benefits);
+  if (!job || job.status === "CLOSED")
+    return res.error(404, "Không tìm thấy công việc");
   return res.success(200, job);
 }
 

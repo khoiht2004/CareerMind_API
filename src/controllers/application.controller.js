@@ -77,10 +77,9 @@ async function updateStatus(req, res) {
 async function deleteApplication(req, res) {
   const result = await model.deleteApplication(req.params.id, req.auth.user.id);
   if (!result)
-    return res.error(
-      404,
-      "Không tìm thấy đơn ứng tuyển hoặc không có quyền xóa",
-    );
+    return res.error(404, "Không tìm thấy đơn ứng tuyển hoặc không có quyền xóa");
+  if (result === "NOT_PENDING")
+    return res.error(400, "Chỉ có thể rút đơn khi đang ở trạng thái chờ duyệt");
   return res.success(200, { message: "Đã xóa đơn ứng tuyển" });
 }
 

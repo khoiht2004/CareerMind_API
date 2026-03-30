@@ -16,19 +16,24 @@ const JOB_SELECT = {
   status: true,
   isHot: true,
   createdAt: true,
-  postedBy: { select: { id: true, email: true, profile: { select: { fullName: true } } } },
+  postedBy: {
+    select: { id: true, email: true, profile: { select: { fullName: true } } },
+  },
   _count: { select: { applications: true } },
 };
 
-const getJobs = async ({ page = 1, limit = 12, search, type, location, status = "PUBLISHED" }) => {
+const getJobs = async ({
+  page = 1,
+  limit = 12,
+  search,
+  type,
+  location,
+  status = "PUBLISHED",
+}) => {
   const where = {
     status,
     ...(search && {
-      OR: [
-        { title: { contains: search } },
-        { company: { contains: search } },
-        { tags: { contains: search } },
-      ],
+      OR: [{ title: { contains: search } }, { company: { contains: search } }],
     }),
     ...(type && type !== "ALL" && { type }),
     ...(location && location !== "ALL" && { location: { contains: location } }),
@@ -53,12 +58,11 @@ const getJobById = async (id) => {
 };
 
 const createJob = async (data, postedById) => {
-  const { tags, benefits, ...rest } = data;
+  const { deadline, ...rest } = data;
   return prisma.job.create({
     data: {
       ...rest,
-      tags: tags ? JSON.stringify(tags) : null,
-      benefits: benefits ? JSON.stringify(benefits) : null,
+      ...(deadline && { deadline: new Date(deadline) }),
       postedById,
     },
     select: JOB_SELECT,
@@ -66,13 +70,14 @@ const createJob = async (data, postedById) => {
 };
 
 const updateJob = async (id, data) => {
-  const { tags, benefits, ...rest } = data;
+  const { deadline, ...rest } = data;
   return prisma.job.update({
     where: { id },
     data: {
       ...rest,
-      ...(tags !== undefined && { tags: JSON.stringify(tags) }),
-      ...(benefits !== undefined && { benefits: JSON.stringify(benefits) }),
+      ...(deadline !== undefined && {
+        deadline: deadline ? new Date(deadline) : null,
+      }),
     },
     select: JOB_SELECT,
   });
@@ -92,10 +97,7 @@ const getMyJobs = async (userId, { page = 1, limit = 10, status, search }) => {
     postedById: userId,
     ...(status && status !== "ALL" && { status }),
     ...(search && {
-      OR: [
-        { title: { contains: search } },
-        { company: { contains: search } },
-      ],
+      OR: [{ title: { contains: search } }, { company: { contains: search } }],
     }),
   };
   const [jobs, total] = await Promise.all([
@@ -112,23 +114,27 @@ const getMyJobs = async (userId, { page = 1, limit = 10, status, search }) => {
 };
 
 const getMyStats = async (userId) => {
-  const [totalJobs, jobsByStatus, totalApplications, appsByStatus] = await Promise.all([
-    prisma.job.count({ where: { postedById: userId } }),
-    prisma.job.groupBy({
-      by: ["status"],
-      where: { postedById: userId },
-      _count: { _all: true },
-    }),
-    prisma.application.count({ where: { job: { postedById: userId } } }),
-    prisma.application.groupBy({
-      by: ["status"],
-      where: { job: { postedById: userId } },
-      _count: { _all: true },
-    }),
-  ]);
+  const [totalJobs, jobsByStatus, totalApplications, appsByStatus] =
+    await Promise.all([
+      prisma.job.count({ where: { postedById: userId } }),
+      prisma.job.groupBy({
+        by: ["status"],
+        where: { postedById: userId },
+        _count: { _all: true },
+      }),
+      prisma.application.count({ where: { job: { postedById: userId } } }),
+      prisma.application.groupBy({
+        by: ["status"],
+        where: { job: { postedById: userId } },
+        _count: { _all: true },
+      }),
+    ]);
 
   const toMap = (arr) =>
-    arr.reduce((acc, item) => ({ ...acc, [item.status]: item._count._all }), {});
+    arr.reduce(
+      (acc, item) => ({ ...acc, [item.status]: item._count._all }),
+      {},
+    );
 
   return {
     totalJobs,
@@ -138,4 +144,13 @@ const getMyStats = async (userId) => {
   };
 };
 
-module.exports = { getJobs, getJobById, createJob, updateJob, deleteJob, isOwner, getMyJobs, getMyStats };
+module.exports = {
+  getJobs,
+  getJobById,
+  createJob,
+  updateJob,
+  deleteJob,
+  isOwner,
+  getMyJobs,
+  getMyStats,
+};
