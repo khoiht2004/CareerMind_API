@@ -1,4 +1,4 @@
-const prisma = require("@/utils/prisma");
+const prisma = require("@/libs/prisma");
 
 const APP_SELECT = {
   id: true,
@@ -11,12 +11,24 @@ const APP_SELECT = {
   updatedAt: true,
   job: {
     select: {
-      id: true, title: true, company: true, location: true,
-      salary: true, type: true, deadline: true, status: true,
+      id: true,
+      title: true,
+      company: true,
+      location: true,
+      salary: true,
+      type: true,
+      deadline: true,
+      status: true,
       postedBy: { select: { id: true } },
     },
   },
-  user: { select: { id: true, email: true, profile: { select: { fullName: true, avatarUrl: true, phone: true } } } },
+  user: {
+    select: {
+      id: true,
+      email: true,
+      profile: { select: { fullName: true, avatarUrl: true, phone: true } },
+    },
+  },
 };
 
 const apply = async (userId, jobId, data) => {
@@ -32,20 +44,34 @@ const getMyApplications = async (userId, { page = 1, limit = 10, status }) => {
   const where = { userId, ...(status && { status }) };
   const [applications, total] = await Promise.all([
     prisma.application.findMany({
-      where, select: APP_SELECT,
+      where,
+      select: APP_SELECT,
       orderBy: { createdAt: "desc" },
-      skip: (page - 1) * limit, take: limit,
+      skip: (page - 1) * limit,
+      take: limit,
     }),
     prisma.application.count({ where }),
   ]);
-  return { applications, total, page, limit, totalPages: Math.ceil(total / limit) };
+  return {
+    applications,
+    total,
+    page,
+    limit,
+    totalPages: Math.ceil(total / limit),
+  };
 };
 
 const getApplicationById = async (id) => {
   return prisma.application.findUnique({ where: { id }, select: APP_SELECT });
 };
 
-const getAllApplications = async ({ page = 1, limit = 10, status, jobId, postedById }) => {
+const getAllApplications = async ({
+  page = 1,
+  limit = 10,
+  status,
+  jobId,
+  postedById,
+}) => {
   const where = {
     ...(status && { status }),
     ...(jobId && { jobId }),
@@ -53,13 +79,21 @@ const getAllApplications = async ({ page = 1, limit = 10, status, jobId, postedB
   };
   const [applications, total] = await Promise.all([
     prisma.application.findMany({
-      where, select: APP_SELECT,
+      where,
+      select: APP_SELECT,
       orderBy: { createdAt: "desc" },
-      skip: (page - 1) * limit, take: limit,
+      skip: (page - 1) * limit,
+      take: limit,
     }),
     prisma.application.count({ where }),
   ]);
-  return { applications, total, page, limit, totalPages: Math.ceil(total / limit) };
+  return {
+    applications,
+    total,
+    page,
+    limit,
+    totalPages: Math.ceil(total / limit),
+  };
 };
 
 const updateStatus = async (id, status, note) => {
@@ -71,10 +105,20 @@ const updateStatus = async (id, status, note) => {
 };
 
 const deleteApplication = async (id, userId) => {
-  const app = await prisma.application.findUnique({ where: { id }, select: { userId: true, status: true } });
+  const app = await prisma.application.findUnique({
+    where: { id },
+    select: { userId: true, status: true },
+  });
   if (!app || app.userId !== userId) return null;
   if (app.status !== "PENDING") return "NOT_PENDING";
   return prisma.application.delete({ where: { id } });
 };
 
-module.exports = { apply, getMyApplications, getApplicationById, getAllApplications, updateStatus, deleteApplication };
+module.exports = {
+  apply,
+  getMyApplications,
+  getApplicationById,
+  getAllApplications,
+  updateStatus,
+  deleteApplication,
+};

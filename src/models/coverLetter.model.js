@@ -1,4 +1,4 @@
-const prisma = require("@/utils/prisma");
+const prisma = require("@/libs/prisma");
 
 class CoverLetterModel {
   async getAllByUserId(userId) {

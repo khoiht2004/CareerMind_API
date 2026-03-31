@@ -1,10 +1,13 @@
-const prisma = require("@/utils/prisma");
+const prisma = require("@/libs/prisma");
 
 const getSessions = async (userId) => {
   return prisma.chatSession.findMany({
     where: { userId },
     select: {
-      id: true, title: true, createdAt: true, updatedAt: true,
+      id: true,
+      title: true,
+      createdAt: true,
+      updatedAt: true,
       _count: { select: { messages: true } },
     },
     orderBy: { updatedAt: "desc" },
@@ -38,7 +41,10 @@ const addMessage = async (sessionId, role, content) => {
     data: { sessionId, role, content },
     select: { id: true, role: true, content: true, createdAt: true },
   });
-  await prisma.chatSession.update({ where: { id: sessionId }, data: { updatedAt: new Date() } });
+  await prisma.chatSession.update({
+    where: { id: sessionId },
+    data: { updatedAt: new Date() },
+  });
   return msg;
 };
 
@@ -50,4 +56,12 @@ const deleteSession = async (id) => {
   return prisma.chatSession.delete({ where: { id } });
 };
 
-module.exports = { getSessions, createSession, getSession, getMessages, addMessage, updateTitle, deleteSession };
+module.exports = {
+  getSessions,
+  createSession,
+  getSession,
+  getMessages,
+  addMessage,
+  updateTitle,
+  deleteSession,
+};
