@@ -43,6 +43,12 @@ enum MessageRole {
   SYSTEM
 }
 
+enum MessageType {
+  TEXT // chat thường
+  CV_ANALYSIS // message chứa kết quả phân tích CV
+  SYSTEM_NOTE // thông báo hệ thống trong session
+}
+
 // ─── User ─────────────────────────────────────────────────────────────────────
 
 model User {
@@ -77,9 +83,9 @@ model Profile {
   fullName  String?  @map("full_name")
   phone     String?  @map("phone")
   avatarUrl String?  @map("avatar_url")
-  bio       String?  @db.Text @map("bio")
+  bio       String?  @map("bio") @db.Text
   address   String?  @map("address")
-  skills    String?  @db.Text @map("skills")
+  skills    String?  @map("skills") @db.Text
   updatedAt DateTime @updatedAt @map("updated_at")
 
   userId String @unique @map("user_id")
@@ -99,7 +105,7 @@ model Job {
   type        JobType   @default(FULL_TIME) @map("type")
   level       String?   @map("level")
   tags        Json?     @map("tags")
-  description String    @db.LongText @map("description")
+  description String    @map("description") @db.LongText
   benefits    Json?     @map("benefits")
   slots       Int       @default(1) @map("slots")
   deadline    DateTime? @map("deadline")
@@ -108,10 +114,11 @@ model Job {
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
 
-  postedById   String       @map("posted_by_id")
-  postedBy     User         @relation(fields: [postedById], references: [id], onDelete: Cascade)
+  postedById   String        @map("posted_by_id")
+  postedBy     User          @relation(fields: [postedById], references: [id], onDelete: Cascade)
   applications Application[]
   savedBy      SavedJob[]
+  cvAnalyses   CvAnalysis[]
 
   @@index([postedById])
   @@map("jobs")
@@ -121,11 +128,11 @@ model Job {
 
 model Application {
   id          String            @id @default(uuid())
-  coverLetter String?           @db.Text @map("cover_letter")
+  coverLetter String?           @map("cover_letter") @db.Text
   cvUrl       String?           @map("cv_url")
   phone       String?           @map("phone")
   status      ApplicationStatus @default(PENDING) @map("status")
-  note        String?           @db.Text @map("note")
+  note        String?           @map("note") @db.Text
   createdAt   DateTime          @default(now()) @map("created_at")
   updatedAt   DateTime          @updatedAt @map("updated_at")
 
@@ -169,8 +176,9 @@ model Cv {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  userId String @map("user_id")
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String       @map("user_id")
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cvAnalyses CvAnalysis[]
 
   @@index([userId])
   @@map("cvs")
@@ -181,7 +189,7 @@ model Cv {
 model CoverLetter {
   id        String   @id @default(uuid())
   title     String   @map("title")
-  content   String   @db.LongText @map("content")
+  content   String   @map("content") @db.LongText
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -209,16 +217,44 @@ model ChatSession {
 }
 
 model ChatMessage {
-  id        String      @id @default(uuid())
-  role      MessageRole @map("role")
-  content   String      @db.Text @map("content")
-  createdAt DateTime    @default(now()) @map("created_at")
+  id          String      @id @default(uuid())
+  role        MessageRole @map("role")
+  content     String      @map("content") @db.Text
+  messageType MessageType @default(TEXT) @map("message_type")
+  createdAt   DateTime    @default(now()) @map("created_at")
 
-  sessionId String      @map("session_id")
-  session   ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId  String      @map("session_id")
+  session    ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  cvAnalysis CvAnalysis?
 
   @@index([sessionId])
   @@map("chat_messages")
+}
+
+model CvAnalysis {
+  id           String   @id @default(uuid())
+  score        Int      @map("score") // 0–100
+  strengths    Json     @map("strengths") // string[]
+  weaknesses   Json     @map("weaknesses") // string[]
+  improvements Json     @map("improvements") // string[]
+  summary      String   @map("summary") @db.Text // nhận xét tổng quan
+  rawCvText    String?  @map("raw_cv_text") @db.LongText // parsed PDF text (optional, debug)
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  messageId String      @unique @map("message_id")
+  message   ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  // Optional: link tới job nếu phân tích theo JD cụ thể
+  jobId String? @map("job_id")
+  job   Job?    @relation(fields: [jobId], references: [id], onDelete: SetNull)
+
+  // Optional: link tới CV file nếu user chọn từ CV đã upload
+  cvId String? @map("cv_id")
+  cv   Cv?     @relation(fields: [cvId], references: [id], onDelete: SetNull)
+
+  @@index([jobId])
+  @@index([cvId])
+  @@map("cv_analyses")
 }
 
 // ─── Auth tokens ──────────────────────────────────────────────────────────────
@@ -238,7 +274,7 @@ model RefreshToken {
 
 model RevokedToken {
   id        String   @id @default(uuid())
-  token     String   @db.Text @map("token")
+  token     String   @map("token") @db.Text
   expiresAt DateTime @map("expires_at")
   createdAt DateTime @default(now()) @map("created_at")
 
@@ -254,10 +290,10 @@ model RevokedToken {
 model Queue {
   id         Int      @id @default(autoincrement())
   type       String?  @map("type") @db.VarChar(255)
-  payload    String?  @db.Text @map("payload")
+  payload    String?  @map("payload") @db.Text
   status     String   @default("pending") @map("status") @db.VarChar(255)
   isPriority Int      @default(0) @map("is_priority") @db.SmallInt
-  info       String?  @db.Text @map("info")
+  info       String?  @map("info") @db.Text
   createdAt  DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt  DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
 
