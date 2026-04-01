@@ -21,6 +21,7 @@
     "@prisma/adapter-mariadb": "^7.5.0",
     "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "^7.4.2",
+    "ai": "^6.0.142",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
     "cron": "^4.4.0",

@@ -114,6 +114,11 @@ const deleteApplication = async (id, userId) => {
   return prisma.application.delete({ where: { id } });
 };
 
+const checkApplied = async (userId, jobId) => {
+  const count = await prisma.application.count({ where: { userId, jobId } });
+  return count > 0;
+};
+
 module.exports = {
   apply,
   getMyApplications,
@@ -121,4 +126,5 @@ module.exports = {
   getAllApplications,
   updateStatus,
   deleteApplication,
+  checkApplied,
 };
