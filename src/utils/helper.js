@@ -27,7 +27,19 @@ const getDateStringYmdHis = () => {
   return `${year}${month}${day}_${hours}${minutes}${seconds}`;
 };
 
+const toJsonString = (val) => {
+  if (!val) return "[]";
+  if (Array.isArray(val)) return JSON.stringify(val);
+  try {
+    JSON.parse(val);
+    return val;
+  } catch {
+    return "[]";
+  }
+};
+
 module.exports = {
   formatTime,
   getDateStringYmdHis,
+  toJsonString,
 };

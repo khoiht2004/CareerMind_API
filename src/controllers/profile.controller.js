@@ -9,7 +9,7 @@ async function getProfile(req, res) {
 
 async function updateProfile(req, res) {
   const profile = await model.upsertProfile(req.auth.user.id, req.body);
-  if (profile.skills) profile.skills = JSON.parse(profile.skills);
+  if (profile.skills) profile.skills = JSON.stringify(profile.skills);
   return res.success(200, profile);
 }
 

@@ -1,8 +1,15 @@
 const model = require("@/models/job.model");
+const { toJsonString } = require("../utils/helper");
 
 async function getJobs(req, res) {
   const { page = 1, limit = 12, search, type, location } = req.query;
-  const result = await model.getJobs({ page: +page, limit: +limit, search, type, location });
+  const result = await model.getJobs({
+    page: +page,
+    limit: +limit,
+    search,
+    type,
+    location,
+  });
   return res.success(200, result);
 }
 
@@ -18,7 +25,14 @@ async function createJob(req, res) {
   if (!title || !company || !location || !description) {
     return res.error(400, "Tiêu đề, công ty, địa điểm và mô tả là bắt buộc");
   }
-  const job = await model.createJob(req.body, req.auth.user.id);
+
+  const payload = {
+    ...req.body,
+    tags: toJsonString(req.body.tags),
+    benefits: toJsonString(req.body.benefits),
+  };
+
+  const job = await model.createJob(payload, req.auth.user.id);
   return res.success(201, job);
 }
 
@@ -32,7 +46,13 @@ async function updateJob(req, res) {
     return res.error(403, "Bạn không có quyền chỉnh sửa công việc này");
   }
 
-  const job = await model.updateJob(id, req.body);
+  const payload = {
+    ...req.body,
+    tags: toJsonString(req.body.tags),
+    benefits: toJsonString(req.body.benefits),
+  };
+
+  const job = await model.updateJob(id, payload);
   return res.success(200, job);
 }
 
@@ -66,4 +86,12 @@ async function getMyStats(req, res) {
   return res.success(200, stats);
 }
 
-module.exports = { getJobs, getJobById, createJob, updateJob, deleteJob, getMyJobs, getMyStats };
+module.exports = {
+  getJobs,
+  getJobById,
+  createJob,
+  updateJob,
+  deleteJob,
+  getMyJobs,
+  getMyStats,
+};

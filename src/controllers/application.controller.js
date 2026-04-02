@@ -1,6 +1,6 @@
 const model = require("@/models/application.model");
 const jobModel = require("@/models/job.model");
-const mailService = require("../services/mail.service");
+const queueService = require("@/services/queue.service");
 
 async function apply(req, res) {
   const { jobId, coverLetter, cvUrl, phone, email, name } = req.body;
@@ -16,15 +16,19 @@ async function apply(req, res) {
     phone,
   });
 
-  // Gửi email thông báo
-  await mailService.sendApplyEmail({
-    email,
-    applicantName: name,
-    jobTitle: job.title,
-    company: job.companyName,
-  });
-
   if (!application) return res.error(409, "Bạn đã ứng tuyển vị trí này rồi");
+
+  // Gửi email thông báo
+  await queueService.push(
+    "sendApplyEmail",
+    {
+      email: email,
+      applicantName: name,
+      jobTitle: job.title,
+      company: job.company,
+    },
+    1,
+  );
 
   return res.success(201, application);
 }

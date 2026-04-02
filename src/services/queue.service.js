@@ -2,7 +2,7 @@ const prisma = require("@/libs/prisma");
 
 class QueueService {
   async push(type, payload, isPriority = 0) {
-    await prisma.queue.create({
+    return await prisma.queue.create({
       data: { type, payload: JSON.stringify(payload), isPriority },
     });
   }
@@ -15,7 +15,7 @@ class QueueService {
   }
 
   async updateStatus(id, status, info = null) {
-    await prisma.queue.update({
+    return await prisma.queue.update({
       where: { id },
       data: { status, info: info ? String(info) : null },
     });

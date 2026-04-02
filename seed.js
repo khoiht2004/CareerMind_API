@@ -1,22 +1,6 @@
-/**
- * ============================================================
- * SEED FILE — Smart Recruit Assistant
- * ============================================================
- * Accounts được tạo sẵn:
- *
- * ADMIN
- *   admin@sra.dev          | Admin@123456
- *
- * RECRUITERS
- *   recruiter1@techcorp.vn | Recruiter@123
- *   recruiter2@fintech.vn  | Recruiter@123
- *
- * CANDIDATES
- *   candidate1@gmail.com   | Candidate@123
- *   candidate2@gmail.com   | Candidate@123
- *   candidate3@gmail.com   | Candidate@123
- * ============================================================
- */
+// seed.js
+// Run: node seed.js
+// Requires: npm install @prisma/client bcryptjs
 
 require("dotenv").config();
 const { PrismaClient } = require("./generated/prisma");
@@ -33,1007 +17,3468 @@ const adapter = new PrismaMariaDb({
 
 const prisma = new PrismaClient({ adapter });
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
-const hash = (password) => bcrypt.hash(password, 10);
+const hash = (pw) => bcrypt.hashSync(pw, 10);
 
-const uuid = () => crypto.randomUUID();
+const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
-function daysFromNow(days) {
-  const d = new Date();
-  d.setDate(d.getDate() + days);
-  return d;
-}
+const randInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
-function daysAgo(days) {
-  return daysFromNow(-days);
-}
+const locations = ["TP. Hồ Chí Minh", "Hà Nội", "Remote", "Đà Nẵng"];
 
-// ─── Main ────────────────────────────────────────────────────────────────────
+// ─── Raw data ─────────────────────────────────────────────────────────────────
+
+const CANDIDATES = [
+  {
+    email: "nguyenvanminh@gmail.com",
+    fullName: "Nguyễn Văn Minh",
+    phone: "0912345678",
+    address: "Quận 3, TP. Hồ Chí Minh",
+    bio: "Tôi là lập trình viên backend với hơn 3 năm kinh nghiệm làm việc với Node.js, NestJS và PostgreSQL. Tôi đam mê xây dựng các hệ thống có khả năng mở rộng cao và luôn chú trọng đến chất lượng code. Trong thời gian rảnh, tôi thích đọc sách về kiến trúc phần mềm và đóng góp cho các dự án mã nguồn mở. Tôi đang tìm kiếm cơ hội để phát triển sự nghiệp tại các công ty công nghệ hàng đầu với môi trường làm việc chuyên nghiệp và sáng tạo.",
+    skills: [
+      "Node.js",
+      "NestJS",
+      "PostgreSQL",
+      "Docker",
+      "Redis",
+      "TypeScript",
+      "REST API",
+      "GraphQL",
+    ],
+  },
+  {
+    email: "tranthilanhanh@gmail.com",
+    fullName: "Trần Thị Lan Anh",
+    phone: "0987654321",
+    address: "Cầu Giấy, Hà Nội",
+    bio: "Chuyên viên marketing với 4 năm kinh nghiệm trong lĩnh vực digital marketing, đặc biệt là SEO, SEM và quản lý mạng xã hội. Tôi đã từng triển khai thành công nhiều chiến dịch quảng cáo cho các thương hiệu lớn trong ngành bán lẻ và thương mại điện tử. Tôi có khả năng phân tích dữ liệu tốt và luôn hướng đến các mục tiêu cụ thể, đo lường được. Hiện tại tôi đang tìm kiếm môi trường năng động hơn để phát huy tối đa năng lực sáng tạo của mình.",
+    skills: [
+      "SEO",
+      "Google Ads",
+      "Facebook Ads",
+      "Content Marketing",
+      "Analytics",
+      "Email Marketing",
+      "Canva",
+      "Copywriting",
+    ],
+  },
+  {
+    email: "phamquocbao@gmail.com",
+    fullName: "Phạm Quốc Bảo",
+    phone: "0901122334",
+    address: "Hải Châu, Đà Nẵng",
+    bio: "Nhân viên kinh doanh B2B với kinh nghiệm 5 năm trong ngành phần mềm doanh nghiệp. Tôi có kỹ năng đàm phán tốt, khả năng xây dựng mối quan hệ khách hàng bền vững và thành tích vượt KPI liên tục 3 năm liền. Tôi hiểu sâu về quy trình bán hàng từ prospecting đến closing và luôn đặt khách hàng làm trung tâm trong mọi chiến lược. Tôi mong muốn gia nhập một tổ chức có sản phẩm tốt và đội ngũ sales chuyên nghiệp để cùng nhau phát triển.",
+    skills: [
+      "B2B Sales",
+      "CRM",
+      "Negotiation",
+      "Prospecting",
+      "Cold Calling",
+      "HubSpot",
+      "Presentation",
+      "Market Research",
+    ],
+  },
+  {
+    email: "lethibichngoc@gmail.com",
+    fullName: "Lê Thị Bích Ngọc",
+    phone: "0933445566",
+    address: "Bình Thạnh, TP. Hồ Chí Minh",
+    bio: "Chuyên viên nhân sự với 3 năm kinh nghiệm trong tuyển dụng và phát triển nguồn nhân lực tại các công ty quy mô vừa và lớn. Tôi có thế mạnh trong việc xây dựng quy trình tuyển dụng, đánh giá năng lực ứng viên và triển khai chính sách phúc lợi nhân viên. Tôi quan tâm đến việc tạo ra môi trường làm việc tích cực, nơi mọi người đều có cơ hội phát triển. Hiện tại tôi đang tìm kiếm vị trí HRBP để gắn kết sâu hơn với chiến lược kinh doanh.",
+    skills: [
+      "Recruitment",
+      "HR Policy",
+      "HRBP",
+      "Onboarding",
+      "Employee Relations",
+      "KPI Design",
+      "Labor Law",
+      "Interviewing",
+    ],
+  },
+  {
+    email: "hoangminhtuan@gmail.com",
+    fullName: "Hoàng Minh Tuấn",
+    phone: "0944556677",
+    address: "Hoàn Kiếm, Hà Nội",
+    bio: "Kỹ sư frontend với đam mê tạo ra những giao diện người dùng đẹp và hiệu suất cao. Tôi có 4 năm kinh nghiệm với React, Next.js và TypeScript. Tôi chú trọng đến UX/UI và luôn tối ưu hiệu suất ứng dụng web. Ngoài công việc, tôi là người đam mê thiết kế, thường xuyên theo dõi các xu hướng UI mới nhất và thực hành qua các dự án cá nhân. Tôi đang tìm kiếm một môi trường startup năng động nơi tôi có thể vừa code vừa đóng góp ý kiến về product.",
+    skills: [
+      "React",
+      "Next.js",
+      "TypeScript",
+      "Tailwind CSS",
+      "Figma",
+      "Redux",
+      "Webpack",
+      "Jest",
+      "Storybook",
+    ],
+  },
+  {
+    email: "nguyenthimai@gmail.com",
+    fullName: "Nguyễn Thị Mai",
+    phone: "0955667788",
+    address: "Thanh Khê, Đà Nẵng",
+    bio: "Chuyên viên kế toán với 6 năm kinh nghiệm làm việc tại các doanh nghiệp sản xuất và thương mại. Tôi thành thạo các phần mềm kế toán như MISA, Fast, SAP và có kiến thức vững về chuẩn mực kế toán Việt Nam (VAS) lẫn IFRS. Tôi luôn cẩn thận, tỉ mỉ trong công việc và có khả năng làm việc dưới áp lực cao, đặc biệt trong các kỳ quyết toán. Tôi mong muốn phát triển lên vị trí Kế toán trưởng trong 2-3 năm tới.",
+    skills: [
+      "MISA",
+      "SAP",
+      "VAS",
+      "IFRS",
+      "Tax Declaration",
+      "Financial Reporting",
+      "Excel Advanced",
+      "Cost Accounting",
+      "Auditing",
+    ],
+  },
+  {
+    email: "vuducthanh@gmail.com",
+    fullName: "Vũ Đức Thành",
+    phone: "0966778899",
+    address: "Long Biên, Hà Nội",
+    bio: "Data Analyst với 3 năm kinh nghiệm phân tích dữ liệu kinh doanh cho các công ty fintech và e-commerce. Tôi thành thạo Python, SQL và các công cụ BI như Power BI, Tableau. Tôi có thế mạnh trong việc chuyển đổi dữ liệu thô thành insight có giá trị giúp doanh nghiệp đưa ra quyết định tốt hơn. Tôi luôn tò mò và không ngừng học hỏi, hiện đang nghiên cứu thêm về machine learning để mở rộng khả năng phân tích của mình.",
+    skills: [
+      "Python",
+      "SQL",
+      "Power BI",
+      "Tableau",
+      "Excel",
+      "Statistics",
+      "ETL",
+      "A/B Testing",
+      "Machine Learning Basics",
+    ],
+  },
+  {
+    email: "dothihuong@gmail.com",
+    fullName: "Đỗ Thị Hương",
+    phone: "0977889900",
+    address: "Quận 7, TP. Hồ Chí Minh",
+    bio: "Chuyên viên tư vấn tài chính cá nhân với chứng chỉ CFP và 5 năm kinh nghiệm tại các ngân hàng lớn. Tôi có kiến thức sâu về sản phẩm ngân hàng, bảo hiểm nhân thọ, quỹ đầu tư và lập kế hoạch tài chính cá nhân. Tôi luôn đặt lợi ích của khách hàng lên hàng đầu và có khả năng giải thích các khái niệm tài chính phức tạp một cách dễ hiểu. Tôi đang tìm kiếm vị trí Relationship Manager tại các ngân hàng có uy tín.",
+    skills: [
+      "Financial Planning",
+      "Investment Advisory",
+      "Insurance",
+      "CFP",
+      "Banking Products",
+      "KYC",
+      "AML",
+      "Wealth Management",
+      "Loan Advisory",
+    ],
+  },
+  {
+    email: "nguyenhuuphuc@gmail.com",
+    fullName: "Nguyễn Hữu Phúc",
+    phone: "0988990011",
+    address: "Sơn Trà, Đà Nẵng",
+    bio: "Kỹ sư DevOps với 4 năm kinh nghiệm xây dựng và vận hành hạ tầng cloud cho các ứng dụng quy mô lớn. Tôi có kinh nghiệm với AWS, GCP, Kubernetes và các công cụ CI/CD như Jenkins, GitHub Actions. Tôi có thế mạnh trong việc tối ưu chi phí cloud và cải thiện độ tin cậy hệ thống. Ngoài công việc, tôi thích đọc blog kỹ thuật và tham gia các cộng đồng DevOps trong nước. Tôi đang tìm kiếm môi trường có thách thức kỹ thuật cao.",
+    skills: [
+      "AWS",
+      "GCP",
+      "Kubernetes",
+      "Docker",
+      "Terraform",
+      "CI/CD",
+      "Linux",
+      "Monitoring",
+      "Ansible",
+      "Helm",
+    ],
+  },
+  {
+    email: "buithithuytien@gmail.com",
+    fullName: "Bùi Thị Thùy Tiên",
+    phone: "0999001122",
+    address: "Quận 1, TP. Hồ Chí Minh",
+    bio: "Chuyên viên quan hệ công chúng với 4 năm kinh nghiệm trong lĩnh vực PR và truyền thông doanh nghiệp. Tôi đã quản lý nhiều chiến dịch PR thành công cho các thương hiệu trong ngành FMCG, bất động sản và công nghệ. Tôi có mạng lưới quan hệ tốt với báo chí và truyền thông, cùng kỹ năng viết lách sắc bén. Tôi mong muốn đảm nhận vai trò PR Manager tại một công ty có thương hiệu mạnh, nơi tôi có thể triển khai các chiến lược truyền thông sáng tạo.",
+    skills: [
+      "PR Strategy",
+      "Media Relations",
+      "Crisis Management",
+      "Press Release",
+      "Event Management",
+      "Brand Communication",
+      "Social Media",
+      "Storytelling",
+    ],
+  },
+  {
+    email: "tranvankhanh@gmail.com",
+    fullName: "Trần Văn Khánh",
+    phone: "0900112233",
+    address: "Ba Đình, Hà Nội",
+    bio: "Chuyên viên phân tích hệ thống với 5 năm kinh nghiệm làm Business Analyst tại các công ty phần mềm và ngân hàng. Tôi có khả năng thu thập yêu cầu, phân tích quy trình nghiệp vụ và viết tài liệu đặc tả kỹ thuật rõ ràng, chính xác. Tôi thành thạo các phương pháp Agile/Scrum và có kinh nghiệm làm cầu nối giữa đội ngũ kỹ thuật và nghiệp vụ. Tôi luôn chú trọng đến việc hiểu đúng vấn đề trước khi đề xuất giải pháp.",
+    skills: [
+      "Business Analysis",
+      "Requirements Gathering",
+      "BPMN",
+      "UML",
+      "Agile",
+      "Scrum",
+      "JIRA",
+      "Confluence",
+      "SQL",
+      "Stakeholder Management",
+    ],
+  },
+  {
+    email: "phamthinghiem@gmail.com",
+    fullName: "Phạm Thị Nghiêm",
+    phone: "0911223344",
+    address: "Ngũ Hành Sơn, Đà Nẵng",
+    bio: "Giáo viên tiếng Anh với bằng TESOL và 6 năm kinh nghiệm giảng dạy tại các trung tâm anh ngữ và trường quốc tế. Tôi có phương pháp giảng dạy linh hoạt, phù hợp với từng đối tượng học viên và luôn tạo ra môi trường học tập vui vẻ, hiệu quả. Tôi có kinh nghiệm dạy IELTS, TOEIC và Business English cho người đi làm. Hiện nay tôi đang tìm kiếm cơ hội chuyển sang lĩnh vực đào tạo doanh nghiệp hoặc L&D (Learning & Development).",
+    skills: [
+      "TESOL",
+      "IELTS Training",
+      "Business English",
+      "Curriculum Design",
+      "E-learning",
+      "Facilitation",
+      "Content Development",
+      "Learning Assessment",
+    ],
+  },
+  {
+    email: "lethanhlong@gmail.com",
+    fullName: "Lê Thành Long",
+    phone: "0922334455",
+    address: "Tân Bình, TP. Hồ Chí Minh",
+    bio: "Kỹ sư AI/ML với 3 năm kinh nghiệm nghiên cứu và triển khai các mô hình học máy trong lĩnh vực xử lý ngôn ngữ tự nhiên và computer vision. Tôi có nền tảng toán học vững chắc và thành thạo các framework như TensorFlow, PyTorch. Tôi đã publish một số paper nghiên cứu và thường xuyên tham gia các cuộc thi AI trên Kaggle. Tôi mong muốn làm việc trong môi trường R&D năng động, nơi có thể áp dụng AI vào các bài toán thực tế.",
+    skills: [
+      "Python",
+      "TensorFlow",
+      "PyTorch",
+      "NLP",
+      "Computer Vision",
+      "MLOps",
+      "Scikit-learn",
+      "Transformers",
+      "Data Pipeline",
+      "Research",
+    ],
+  },
+];
+
+const RECRUITERS = [
+  {
+    email: "hr@fpt-software.com",
+    fullName: "Nguyễn Thị Thu Hà",
+    phone: "0281234567",
+    address: "Quận 9, TP. Hồ Chí Minh",
+    company: "FPT Software",
+    bio: "Chuyên viên tuyển dụng cấp cao tại FPT Software với 7 năm kinh nghiệm trong lĩnh vực công nghệ thông tin. Tôi chuyên tuyển dụng các vị trí kỹ thuật từ junior đến senior, bao gồm software engineer, BA, DevOps và data engineer. Tôi am hiểu sâu về thị trường IT Việt Nam và có mạng lưới ứng viên rộng lớn. Tôi luôn nỗ lực tìm ra ứng viên phù hợp nhất không chỉ về kỹ năng mà còn về văn hóa công ty.",
+    skills: [
+      "IT Recruitment",
+      "Technical Screening",
+      "Headhunting",
+      "LinkedIn Sourcing",
+      "Employer Branding",
+      "ATS",
+      "Interview Techniques",
+    ],
+  },
+  {
+    email: "talent@vingroup.net",
+    fullName: "Trần Minh Đức",
+    phone: "0242345678",
+    address: "Nam Từ Liêm, Hà Nội",
+    company: "Vingroup",
+    bio: "Talent Acquisition Manager tại Vingroup với 8 năm kinh nghiệm tuyển dụng đa lĩnh vực từ bất động sản, bán lẻ đến công nghệ. Tôi có kinh nghiệm xây dựng chiến lược tuyển dụng toàn diện và quản lý đội ngũ recruiter. Tôi chuyên tuyển dụng các vị trí leadership và high-potential talent cho hệ sinh thái Vingroup. Tôi luôn chú trọng đến chất lượng ứng viên và trải nghiệm ứng viên trong suốt quá trình tuyển dụng.",
+    skills: [
+      "Talent Strategy",
+      "Executive Search",
+      "Team Management",
+      "Employer Branding",
+      "HRIS",
+      "Competency Assessment",
+      "Succession Planning",
+      "Campus Recruiting",
+    ],
+  },
+  {
+    email: "careers@shopee.com",
+    fullName: "Lê Thị Phương Linh",
+    phone: "0283456789",
+    address: "Quận 4, TP. Hồ Chí Minh",
+    company: "Shopee Vietnam",
+    bio: "Senior Recruiter tại Shopee Vietnam với chuyên môn về tuyển dụng tech và product cho môi trường startup quy mô lớn. Tôi có 5 năm kinh nghiệm tuyển dụng tại các công ty công nghệ Đông Nam Á và hiểu rõ văn hóa fast-paced environment. Tôi thành thạo các kỹ thuật sourcing hiện đại và có kinh nghiệm tuyển dụng ứng viên từ nhiều quốc gia khác nhau. Tôi đam mê xây dựng đội ngũ tài năng góp phần vào sự phát triển vượt bậc của Shopee.",
+    skills: [
+      "Tech Recruiting",
+      "Product Recruiting",
+      "Global Hiring",
+      "Sourcing",
+      "Diversity Hiring",
+      "Data-driven Recruiting",
+      "Candidate Experience",
+      "Offer Negotiation",
+    ],
+  },
+  {
+    email: "recruit@techcombank.com.vn",
+    fullName: "Phạm Hồng Sơn",
+    phone: "0243567890",
+    address: "Hoàn Kiếm, Hà Nội",
+    company: "Techcombank",
+    bio: "Chuyên viên tuyển dụng tại Techcombank với 6 năm kinh nghiệm trong lĩnh vực ngân hàng tài chính. Tôi chuyên tuyển dụng các vị trí từ chuyên viên khách hàng cá nhân, phân tích tín dụng đến các vị trí công nghệ ngân hàng. Tôi am hiểu sâu về các yêu cầu năng lực và văn hóa làm việc đặc thù của ngành ngân hàng tại Việt Nam. Tôi luôn đảm bảo quá trình tuyển dụng minh bạch và công bằng cho tất cả ứng viên.",
+    skills: [
+      "Banking Recruitment",
+      "Financial Services HR",
+      "Compliance Hiring",
+      "Assessment Center",
+      "Volume Hiring",
+      "Competency-based Interview",
+      "Onboarding",
+      "HRIS",
+    ],
+  },
+  {
+    email: "hr@masan.com.vn",
+    fullName: "Hoàng Thị Lan",
+    phone: "0284678901",
+    address: "Quận 10, TP. Hồ Chí Minh",
+    company: "Masan Group",
+    bio: "HR Business Partner tại Masan Group với 7 năm kinh nghiệm trong lĩnh vực FMCG và bán lẻ. Tôi phụ trách tuyển dụng các vị trí sales, marketing và vận hành cho toàn bộ hệ thống phân phối của Masan. Tôi có kinh nghiệm triển khai các chương trình graduate recruitment và management trainee. Tôi luôn nỗ lực kết nối đúng người với đúng vị trí để tạo ra giá trị lâu dài cho cả nhân viên lẫn tổ chức.",
+    skills: [
+      "FMCG Recruiting",
+      "Graduate Program",
+      "Management Trainee",
+      "Field Sales Hiring",
+      "HRBP",
+      "Workforce Planning",
+      "Talent Mapping",
+      "L&D Integration",
+    ],
+  },
+  {
+    email: "jobs@kpmg.com.vn",
+    fullName: "Vũ Thị Thanh Tâm",
+    phone: "0244789012",
+    address: "Đống Đa, Hà Nội",
+    company: "KPMG Vietnam",
+    bio: "Campus & Experienced Hire Recruiter tại KPMG Vietnam với 5 năm kinh nghiệm tuyển dụng trong lĩnh vực kiểm toán và tư vấn. Tôi chuyên phụ trách chương trình tuyển sinh cho sinh viên mới ra trường và ứng viên có kinh nghiệm cho các bộ phận Audit, Tax và Advisory. Tôi có kinh nghiệm phối hợp với các trường đại học lớn để xây dựng nguồn ứng viên chất lượng. Tôi đặc biệt chú trọng đến việc đánh giá tiềm năng phát triển dài hạn của ứng viên.",
+    skills: [
+      "Audit Hiring",
+      "Tax Hiring",
+      "Campus Recruiting",
+      "Case Interview",
+      "Professional Services HR",
+      "Assessment Design",
+      "Graduate Program",
+      "Employer Branding",
+    ],
+  },
+  {
+    email: "careers@grab.com",
+    fullName: "Nguyễn Minh Quân",
+    phone: "0285890123",
+    address: "Quận 1, TP. Hồ Chí Minh",
+    company: "Grab Vietnam",
+    bio: "Senior Technical Recruiter tại Grab Vietnam với chuyên môn tuyển dụng kỹ sư phần mềm và data scientist cho thị trường Đông Nam Á. Tôi có 6 năm kinh nghiệm làm việc tại các công ty công nghệ đa quốc gia và có khả năng đánh giá kỹ năng kỹ thuật của ứng viên ở nhiều cấp độ khác nhau. Tôi tin vào phương châm hiring for potential và luôn tìm kiếm những người có tư duy tăng trưởng. Tôi cũng là mentor cho nhiều bạn trẻ muốn bước vào ngành tech recruiting.",
+    skills: [
+      "Technical Recruiting",
+      "Engineering Hiring",
+      "Data Science Hiring",
+      "System Design Interview",
+      "Competency Framework",
+      "Global Sourcing",
+      "Diversity & Inclusion",
+      "Offer Management",
+    ],
+  },
+];
+
+const JOBS_DATA = [
+  // ── IT / Software ──────────────────────────────────────────────────────────
+  {
+    title: "Senior Backend Engineer (Node.js)",
+    company: "FPT Software",
+    location: "TP. Hồ Chí Minh",
+    salary: "$2,000 - $3,500",
+    type: "FULL_TIME",
+    level: "Senior",
+    tags: [
+      "Node.js",
+      "NestJS",
+      "PostgreSQL",
+      "Microservices",
+      "Docker",
+      "AWS",
+      "TypeScript",
+      "Redis",
+      "REST API",
+      "Agile",
+    ],
+    description:
+      "Chúng tôi đang tìm kiếm Senior Backend Engineer có kinh nghiệm xây dựng hệ thống microservices quy mô lớn. Bạn sẽ thiết kế và phát triển các API hiệu suất cao, tối ưu cơ sở dữ liệu và mentoring cho junior developer.\n\nYêu cầu:\n- 4+ năm kinh nghiệm với Node.js/NestJS\n- Thành thạo PostgreSQL, Redis\n- Kinh nghiệm với Docker, Kubernetes\n- Hiểu biết về Clean Architecture và SOLID principles\n- Kinh nghiệm làm việc trong môi trường Agile",
+    benefits: [
+      "Lương cạnh tranh theo thị trường",
+      "Thưởng hiệu suất 2-4 tháng lương/năm",
+      "Bảo hiểm sức khỏe cao cấp cho cả gia đình",
+      "Budget học tập $500/năm",
+      "Làm việc hybrid 2 ngày/tuần tại nhà",
+      "Stock option sau 1 năm",
+      "Team building hàng quý",
+      "Chương trình mentorship",
+      "MacBook Pro được cấp",
+      "Câu lạc bộ thể thao nội bộ",
+    ],
+    status: "PUBLISHED",
+    isHot: true,
+    slots: 3,
+    deadline: new Date("2025-08-30"),
+    recruiterIndex: 0,
+  },
+  {
+    title: "Frontend Developer (React/Next.js)",
+    company: "FPT Software",
+    location: "Remote",
+    salary: "$1,500 - $2,500",
+    type: "REMOTE",
+    level: "Middle",
+    tags: [
+      "React",
+      "Next.js",
+      "TypeScript",
+      "Tailwind CSS",
+      "Redux",
+      "Figma",
+      "Jest",
+      "Storybook",
+      "GraphQL",
+      "Performance Optimization",
+    ],
+    description:
+      "Vị trí Frontend Developer remote tại FPT Software, tham gia phát triển các sản phẩm web cho khách hàng quốc tế. Bạn sẽ làm việc chặt chẽ với đội design và backend để xây dựng các giao diện chất lượng cao.\n\nYêu cầu:\n- 2+ năm với React, Next.js\n- Thành thạo TypeScript, Tailwind CSS\n- Kinh nghiệm với state management (Redux/Zustand)\n- Có khả năng đọc hiểu Figma và chuyển sang code chính xác\n- Tiếng Anh giao tiếp tốt",
+    benefits: [
+      "Hoàn toàn remote",
+      "Thiết bị làm việc được cấp",
+      "Allowance setup home office",
+      "Bảo hiểm sức khỏe",
+      "13 tháng lương",
+      "Flexible working hours",
+      "Phụ cấp điện/internet",
+      "Online training platform",
+      "Team trip hàng năm",
+      "Review lương 2 lần/năm",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 2,
+    deadline: new Date("2025-09-15"),
+    recruiterIndex: 0,
+  },
+  {
+    title: "DevOps Engineer",
+    company: "FPT Software",
+    location: "TP. Hồ Chí Minh",
+    salary: "$2,000 - $3,000",
+    type: "FULL_TIME",
+    level: "Senior",
+    tags: [
+      "AWS",
+      "Kubernetes",
+      "Terraform",
+      "CI/CD",
+      "Docker",
+      "Linux",
+      "Monitoring",
+      "Ansible",
+      "Helm",
+      "Security",
+    ],
+    description:
+      "Tìm kiếm DevOps Engineer có kinh nghiệm vận hành và tối ưu hóa hạ tầng cloud cho các dự án outsourcing quy mô lớn. Bạn sẽ xây dựng pipeline CI/CD, quản lý Kubernetes cluster và đảm bảo SLA 99.9%.\n\nYêu cầu:\n- 3+ năm kinh nghiệm DevOps/SRE\n- Thành thạo AWS hoặc GCP\n- Kinh nghiệm với Kubernetes, Terraform\n- Hiểu biết về bảo mật hệ thống\n- Kỹ năng scripting (Bash, Python)",
+    benefits: [
+      "Lương hấp dẫn theo năng lực",
+      "AWS/GCP certification được tài trợ",
+      "Bảo hiểm sức khỏe",
+      "Overtime allowance",
+      "Laptop cao cấp",
+      "Canteen nội bộ",
+      "On-call allowance",
+      "Training abroad opportunity",
+      "Chương trình wellness",
+      "Parking miễn phí",
+    ],
+    status: "PUBLISHED",
+    isHot: true,
+    slots: 2,
+    deadline: new Date("2025-08-01"),
+    recruiterIndex: 0,
+  },
+  {
+    title: "AI/ML Engineer",
+    company: "Grab Vietnam",
+    location: "TP. Hồ Chí Minh",
+    salary: "$3,000 - $5,000",
+    type: "FULL_TIME",
+    level: "Senior",
+    tags: [
+      "Python",
+      "TensorFlow",
+      "PyTorch",
+      "NLP",
+      "MLOps",
+      "Recommendation System",
+      "Deep Learning",
+      "Transformers",
+      "Data Pipeline",
+      "Research",
+    ],
+    description:
+      "Grab Vietnam đang tìm kiếm AI/ML Engineer tài năng để xây dựng các mô hình recommendation và fraud detection cho hàng triệu người dùng tại Đông Nam Á. Đây là cơ hội hiếm có để làm việc với dữ liệu quy mô thật sự lớn.\n\nYêu cầu:\n- 3+ năm kinh nghiệm ML/AI trong production\n- Thành thạo Python, TensorFlow/PyTorch\n- Kinh nghiệm xây dựng MLOps pipeline\n- Hiểu biết về distributed computing\n- Tiếng Anh thành thạo",
+    benefits: [
+      "Gói lương top thị trường",
+      "RSU (Restricted Stock Units)",
+      "Bảo hiểm sức khỏe cao cấp",
+      "Annual bonus",
+      "Flexible working hours",
+      "Free GrabFood credits",
+      "Learning & development budget",
+      "International conference sponsorship",
+      "Team trips",
+      "Gym membership",
+    ],
+    status: "PUBLISHED",
+    isHot: true,
+    slots: 2,
+    deadline: new Date("2025-07-31"),
+    recruiterIndex: 6,
+  },
+  {
+    title: "Data Analyst",
+    company: "Grab Vietnam",
+    location: "TP. Hồ Chí Minh",
+    salary: "$1,200 - $2,200",
+    type: "FULL_TIME",
+    level: "Middle",
+    tags: [
+      "SQL",
+      "Python",
+      "Power BI",
+      "Tableau",
+      "A/B Testing",
+      "Statistics",
+      "ETL",
+      "Excel",
+      "Business Intelligence",
+      "Stakeholder Management",
+    ],
+    description:
+      "Chúng tôi tìm Data Analyst có tư duy phân tích sắc bén để hỗ trợ đội ngũ Product và Business tại Grab Vietnam. Bạn sẽ phân tích hành vi người dùng, đo lường hiệu quả tính năng và đưa ra các đề xuất cải thiện có dữ liệu hỗ trợ.\n\nYêu cầu:\n- 2+ năm kinh nghiệm Data Analyst\n- Thành thạo SQL, Python (pandas, numpy)\n- Kinh nghiệm với BI tools (Power BI/Tableau)\n- Khả năng thiết kế và phân tích A/B test\n- Kỹ năng trình bày kết quả tốt",
+    benefits: [
+      "Competitive salary",
+      "Annual performance bonus",
+      "Premium health insurance",
+      "Free GrabFood allowance",
+      "Flexible hours",
+      "Remote work 2 days/week",
+      "L&D budget $1,000/year",
+      "Company events",
+      "Gym subsidy",
+      "13th month salary",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 3,
+    deadline: new Date("2025-09-01"),
+    recruiterIndex: 6,
+  },
+  {
+    title: "Business Analyst (Banking System)",
+    company: "Techcombank",
+    location: "Hà Nội",
+    salary: "25,000,000 - 40,000,000 VND",
+    type: "FULL_TIME",
+    level: "Senior",
+    tags: [
+      "Business Analysis",
+      "Banking Systems",
+      "BPMN",
+      "Requirements Gathering",
+      "Agile",
+      "SQL",
+      "UML",
+      "Stakeholder Management",
+      "JIRA",
+      "Core Banking",
+    ],
+    description:
+      "Techcombank tìm kiếm Business Analyst có kinh nghiệm trong lĩnh vực ngân hàng để tham gia các dự án chuyển đổi số. Bạn sẽ làm cầu nối giữa bộ phận nghiệp vụ và đội phát triển phần mềm.\n\nYêu cầu:\n- 4+ năm kinh nghiệm BA trong ngân hàng/tài chính\n- Am hiểu các quy trình nghiệp vụ ngân hàng\n- Thành thạo BPMN, UML, viết BRD/FRD\n- Kinh nghiệm với hệ thống core banking là lợi thế\n- Tiếng Anh đọc hiểu tốt",
+    benefits: [
+      "Lương cơ bản cao",
+      "Thưởng hiệu suất theo KPI",
+      "Bảo hiểm sức khỏe cao cấp cho gia đình 3 thành viên",
+      "Vay ưu đãi lãi suất thấp cho nhân viên",
+      "Nghỉ phép 15 ngày/năm",
+      "Chương trình đào tạo chuyên sâu",
+      "Lộ trình thăng tiến rõ ràng",
+      "Cantine nội bộ được trợ giá",
+      "Phụ cấp xăng xe, điện thoại",
+      "Teambuilding hàng năm",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 2,
+    deadline: new Date("2025-08-15"),
+    recruiterIndex: 3,
+  },
+  {
+    title: "Mobile Developer (React Native)",
+    company: "Shopee Vietnam",
+    location: "TP. Hồ Chí Minh",
+    salary: "$2,000 - $3,500",
+    type: "FULL_TIME",
+    level: "Senior",
+    tags: [
+      "React Native",
+      "iOS",
+      "Android",
+      "TypeScript",
+      "Redux",
+      "GraphQL",
+      "Jest",
+      "Fastlane",
+      "App Performance",
+      "Agile",
+    ],
+    description:
+      "Shopee Vietnam tìm Mobile Developer tài năng để phát triển ứng dụng di động phục vụ hàng triệu người dùng trên toàn khu vực Đông Nam Á. Đây là cơ hội tham gia vào một trong những siêu ứng dụng lớn nhất khu vực.\n\nYêu cầu:\n- 3+ năm kinh nghiệm React Native\n- Kinh nghiệm tối ưu hiệu suất ứng dụng\n- Hiểu biết về native iOS và Android\n- Kinh nghiệm với CI/CD cho mobile (Fastlane)\n- Thành thạo TypeScript",
+    benefits: [
+      "Mức lương top 10% thị trường",
+      "Annual bonus + Performance bonus",
+      "Stock purchase plan",
+      "Bảo hiểm sức khỏe cao cấp",
+      "Flexible working hours",
+      "Free lunch tại văn phòng",
+      "Learning budget $1,500/năm",
+      "International career opportunities",
+      "Gym và wellness program",
+      "Birthday leave",
+    ],
+    status: "PUBLISHED",
+    isHot: true,
+    slots: 2,
+    deadline: new Date("2025-08-31"),
+    recruiterIndex: 2,
+  },
+  {
+    title: "Product Manager - E-commerce",
+    company: "Shopee Vietnam",
+    location: "TP. Hồ Chí Minh",
+    salary: "$2,500 - $4,000",
+    type: "FULL_TIME",
+    level: "Senior",
+    tags: [
+      "Product Management",
+      "Agile",
+      "User Research",
+      "Data Analysis",
+      "OKRs",
+      "Roadmap Planning",
+      "A/B Testing",
+      "Stakeholder Management",
+      "E-commerce",
+      "SQL",
+    ],
+    description:
+      "Tìm kiếm Product Manager có kinh nghiệm trong mảng e-commerce để dẫn dắt phát triển các tính năng người dùng cuối. Bạn sẽ sở hữu toàn bộ product lifecycle từ discovery đến launch và optimization.\n\nYêu cầu:\n- 4+ năm kinh nghiệm Product Management\n- Hiểu biết sâu về e-commerce và hành vi người dùng\n- Thành thạo data analysis, A/B testing\n- Kinh nghiệm làm việc với đội ngũ kỹ thuật\n- Tiếng Anh thành thạo",
+    benefits: [
+      "Competitive salary package",
+      "Annual bonus",
+      "RSU cho cấp senior",
+      "Premium health insurance",
+      "Flexible work arrangement",
+      "Free lunch",
+      "L&D budget",
+      "Regional exposure",
+      "Career growth path",
+      "Company events & trips",
+    ],
+    status: "CLOSED",
+    isHot: false,
+    slots: 1,
+    deadline: new Date("2025-06-30"),
+    recruiterIndex: 2,
+  },
+  {
+    title: "Kỹ sư Phần mềm Nhúng (Embedded C)",
+    company: "Vingroup",
+    location: "Hà Nội",
+    salary: "20,000,000 - 35,000,000 VND",
+    type: "FULL_TIME",
+    level: "Middle",
+    tags: [
+      "C/C++",
+      "Embedded Systems",
+      "RTOS",
+      "CAN Bus",
+      "AUTOSAR",
+      "Linux Embedded",
+      "Hardware Debug",
+      "Firmware",
+      "IoT",
+      "Agile",
+    ],
+    description:
+      "VinAI (thành viên của Vingroup) tìm kỹ sư phần mềm nhúng để phát triển các hệ thống điều khiển cho xe ô tô điện VinFast. Đây là cơ hội tham gia vào một trong những dự án công nghệ tham vọng nhất Việt Nam.\n\nYêu cầu:\n- 3+ năm kinh nghiệm lập trình C/C++ nhúng\n- Kinh nghiệm với RTOS (FreeRTOS, QNX)\n- Hiểu biết về giao thức CAN Bus, SPI, I2C\n- Kinh nghiệm AUTOSAR là lợi thế lớn\n- Tư duy problem-solving tốt",
+    benefits: [
+      "Lương hấp dẫn tương đương thị trường quốc tế",
+      "Thưởng hiệu suất cuối năm",
+      "Bảo hiểm sức khỏe cao cấp",
+      "Vay mua xe VinFast ưu đãi",
+      "Môi trường làm việc hiện đại",
+      "Đào tạo chuyên môn liên tục",
+      "Cơ hội công tác nước ngoài",
+      "Căng tin được trợ giá",
+      "Shuttle bus",
+      "Chương trình wellness",
+    ],
+    status: "PUBLISHED",
+    isHot: true,
+    slots: 5,
+    deadline: new Date("2025-09-30"),
+    recruiterIndex: 1,
+  },
+  {
+    title: "Cybersecurity Engineer",
+    company: "FPT Software",
+    location: "Hà Nội",
+    salary: "$2,000 - $3,500",
+    type: "FULL_TIME",
+    level: "Senior",
+    tags: [
+      "Penetration Testing",
+      "SIEM",
+      "SOC",
+      "Network Security",
+      "Cloud Security",
+      "OWASP",
+      "ISO 27001",
+      "Forensics",
+      "Incident Response",
+      "Security Audit",
+    ],
+    description:
+      "Tìm kiếm Cybersecurity Engineer để bảo vệ hạ tầng và dữ liệu cho các khách hàng lớn của FPT Software. Bạn sẽ thực hiện đánh giá bảo mật, phát triển chính sách và ứng phó sự cố.\n\nYêu cầu:\n- 4+ năm kinh nghiệm bảo mật thông tin\n- Kinh nghiệm penetration testing\n- Chứng chỉ CISSP, CEH, hoặc OSCP là lợi thế\n- Hiểu biết về cloud security (AWS/Azure)\n- Khả năng viết báo cáo bảo mật tiếng Anh",
+    benefits: [
+      "Lương cao theo năng lực",
+      "Certification sponsored (CISSP, OSCP)",
+      "Bảo hiểm sức khỏe",
+      "Remote work option",
+      "Security conference budget",
+      "On-call allowance",
+      "Annual bonus",
+      "MacBook Pro",
+      "Gym membership",
+      "International project exposure",
+    ],
+    status: "DRAFT",
+    isHot: false,
+    slots: 2,
+    deadline: new Date("2025-10-31"),
+    recruiterIndex: 0,
+  },
+  // ── Marketing / PR ──────────────────────────────────────────────────────────
+  {
+    title: "Digital Marketing Manager",
+    company: "Shopee Vietnam",
+    location: "TP. Hồ Chí Minh",
+    salary: "30,000,000 - 50,000,000 VND",
+    type: "FULL_TIME",
+    level: "Manager",
+    tags: [
+      "Digital Marketing",
+      "SEO",
+      "SEM",
+      "Facebook Ads",
+      "Google Ads",
+      "Content Strategy",
+      "Analytics",
+      "Campaign Management",
+      "Budget Planning",
+      "Team Leadership",
+    ],
+    description:
+      "Shopee Vietnam tìm Digital Marketing Manager để lãnh đạo chiến lược marketing kỹ thuật số. Bạn sẽ quản lý ngân sách quảng cáo hàng tỷ đồng và đội ngũ marketing 10+ người.\n\nYêu cầu:\n- 5+ năm kinh nghiệm digital marketing, trong đó 2 năm quản lý\n- Kinh nghiệm quản lý campaign quy mô lớn\n- Thành thạo phân tích dữ liệu\n- Kinh nghiệm e-commerce là lợi thế\n- Tiếng Anh thành thạo",
+    benefits: [
+      "Gói lương cạnh tranh",
+      "Thưởng theo hiệu suất chiến dịch",
+      "Bảo hiểm sức khỏe toàn diện",
+      "Free lunch",
+      "Flexible working",
+      "Training & conference budget",
+      "Career development program",
+      "Birthday allowance",
+      "Company retreat",
+      "Product discount",
+    ],
+    status: "PUBLISHED",
+    isHot: true,
+    slots: 1,
+    deadline: new Date("2025-08-15"),
+    recruiterIndex: 2,
+  },
+  {
+    title: "Content Marketing Specialist",
+    company: "Masan Group",
+    location: "TP. Hồ Chí Minh",
+    salary: "15,000,000 - 22,000,000 VND",
+    type: "FULL_TIME",
+    level: "Junior",
+    tags: [
+      "Content Writing",
+      "SEO",
+      "Social Media",
+      "Copywriting",
+      "Brand Storytelling",
+      "Canva",
+      "Video Script",
+      "Analytics",
+      "Trend Research",
+      "Community Management",
+    ],
+    description:
+      "Masan Group tìm Content Marketing Specialist cho các thương hiệu tiêu dùng hàng đầu. Bạn sẽ sản xuất nội dung đa kênh từ social media, website đến email marketing.\n\nYêu cầu:\n- 1-2 năm kinh nghiệm content marketing\n- Khả năng viết lách sáng tạo, hiểu insight người tiêu dùng\n- Hiểu biết về SEO cơ bản\n- Thành thạo Canva/Photoshop cơ bản\n- Đam mê với ngành hàng tiêu dùng",
+    benefits: [
+      "Lương thưởng cạnh tranh",
+      "Bảo hiểm sức khỏe",
+      "13 tháng lương",
+      "Sản phẩm Masan miễn phí hàng tháng",
+      "Môi trường học hỏi nhanh",
+      "Teambuilding hàng quý",
+      "Review lương hàng năm",
+      "Phụ cấp điện thoại",
+      "Nghỉ phép 12 ngày",
+      "Cơ hội phát triển chuyên môn",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 2,
+    deadline: new Date("2025-08-20"),
+    recruiterIndex: 4,
+  },
+  {
+    title: "PR & Communications Manager",
+    company: "Vingroup",
+    location: "Hà Nội",
+    salary: "35,000,000 - 55,000,000 VND",
+    type: "FULL_TIME",
+    level: "Manager",
+    tags: [
+      "PR Strategy",
+      "Media Relations",
+      "Crisis Management",
+      "Corporate Communication",
+      "Press Conference",
+      "Stakeholder Engagement",
+      "Brand Reputation",
+      "ESG Communication",
+      "Event Management",
+      "Storytelling",
+    ],
+    description:
+      "Vingroup tìm PR & Communications Manager để quản lý hình ảnh và truyền thông của tập đoàn. Bạn sẽ xây dựng chiến lược PR toàn diện, quản lý quan hệ báo chí và xử lý khủng hoảng truyền thông.\n\nYêu cầu:\n- 6+ năm kinh nghiệm PR/Corporate Communications\n- Mạng lưới quan hệ báo chí rộng\n- Kinh nghiệm xử lý khủng hoảng truyền thông\n- Kỹ năng viết lách xuất sắc tiếng Việt và Anh\n- Tư duy chiến lược và nhạy bén với tin tức",
+    benefits: [
+      "Lương thỏa thuận theo năng lực",
+      "Bonus hiệu suất cao",
+      "Bảo hiểm sức khỏe toàn diện",
+      "Xe đưa đón hoặc phụ cấp xe",
+      "Ngân sách entertainment",
+      "Nghỉ phép cao cấp",
+      "Đào tạo leadership",
+      "Cơ hội lên C-level",
+      "Văn phòng sang trọng",
+      "Company events đẳng cấp",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 1,
+    deadline: new Date("2025-09-30"),
+    recruiterIndex: 1,
+  },
+  {
+    title: "SEO Specialist",
+    company: "Masan Group",
+    location: "TP. Hồ Chí Minh",
+    salary: "18,000,000 - 28,000,000 VND",
+    type: "FULL_TIME",
+    level: "Middle",
+    tags: [
+      "SEO",
+      "Technical SEO",
+      "Keyword Research",
+      "Link Building",
+      "Google Analytics",
+      "Search Console",
+      "Content Optimization",
+      "SEMrush",
+      "Ahrefs",
+      "Data Analysis",
+    ],
+    description:
+      "Vị trí SEO Specialist phụ trách tối ưu hóa công cụ tìm kiếm cho các website thương mại điện tử của hệ sinh thái Masan. Bạn sẽ xây dựng chiến lược SEO tổng thể và theo dõi hiệu quả liên tục.\n\nYêu cầu:\n- 2+ năm kinh nghiệm SEO\n- Thành thạo technical SEO và on-page optimization\n- Kinh nghiệm với Ahrefs, SEMrush, Google Search Console\n- Hiểu biết về thuật toán Google\n- Kỹ năng phân tích dữ liệu",
+    benefits: [
+      "Lương hấp dẫn theo năng lực",
+      "Bảo hiểm sức khỏe",
+      "Thưởng doanh thu từ organic traffic",
+      "Môi trường phát triển nhanh",
+      "Tool license được cấp",
+      "Teambuilding",
+      "Review lương 2 lần/năm",
+      "Nghỉ phép 12 ngày",
+      "Phụ cấp ăn trưa",
+      "Cơ hội thăng tiến",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 2,
+    deadline: new Date("2025-09-15"),
+    recruiterIndex: 4,
+  },
+  // ── Sales ───────────────────────────────────────────────────────────────────
+  {
+    title: "Enterprise Sales Executive",
+    company: "FPT Software",
+    location: "TP. Hồ Chí Minh",
+    salary: "$1,500 - $2,500 + hoa hồng",
+    type: "FULL_TIME",
+    level: "Senior",
+    tags: [
+      "B2B Sales",
+      "Enterprise Software",
+      "CRM",
+      "Solution Selling",
+      "IT Outsourcing",
+      "Negotiation",
+      "Account Management",
+      "Cold Outreach",
+      "Proposal Writing",
+      "Contract Closing",
+    ],
+    description:
+      "FPT Software tìm Enterprise Sales Executive để phát triển thị trường khách hàng doanh nghiệp lớn (Fortune 500). Bạn sẽ chịu trách nhiệm từ prospecting đến closing cho các hợp đồng outsourcing triệu đô.\n\nYêu cầu:\n- 4+ năm kinh nghiệm B2B sales trong ngành IT\n- Hiểu biết về IT outsourcing, software development\n- Kỹ năng đàm phán và thuyết trình đỉnh cao\n- Tiếng Anh thành thạo (giao tiếp với khách ngoại)\n- Có sẵn mạng lưới khách hàng là lợi thế lớn",
+    benefits: [
+      "Lương cơ bản cao + Commission không giới hạn",
+      "Xe công ty hoặc phụ cấp xăng xe",
+      "Bảo hiểm sức khỏe",
+      "International travel allowance",
+      "Thưởng deal lớn đặc biệt",
+      "Sales conference abroad",
+      "Đào tạo Sales methodology",
+      "CRM tools cấp",
+      "Annual quota bonus",
+      "Stock option",
+    ],
+    status: "PUBLISHED",
+    isHot: true,
+    slots: 3,
+    deadline: new Date("2025-08-31"),
+    recruiterIndex: 0,
+  },
+  {
+    title: "Sales Team Leader - FMCG",
+    company: "Masan Group",
+    location: "TP. Hồ Chí Minh",
+    salary: "22,000,000 - 35,000,000 VND",
+    type: "FULL_TIME",
+    level: "Team Lead",
+    tags: [
+      "FMCG Sales",
+      "Team Leadership",
+      "Distribution Management",
+      "Key Account",
+      "Route to Market",
+      "Trade Marketing",
+      "Sales Planning",
+      "KPI Management",
+      "Field Sales",
+      "Negotiation",
+    ],
+    description:
+      "Masan Group tìm Sales Team Leader phụ trách khu vực TP.HCM, dẫn dắt đội nhóm 8-10 nhân viên bán hàng thực địa. Bạn sẽ chịu trách nhiệm doanh số, phát triển kênh phân phối và quản lý quan hệ khách hàng lớn.\n\nYêu cầu:\n- 4+ năm kinh nghiệm FMCG sales, trong đó 1 năm quản lý\n- Am hiểu thị trường bán lẻ truyền thống và hiện đại\n- Kỹ năng coaching và phát triển nhân viên\n- Có xe máy/ô tô và bằng lái\n- Chịu được áp lực KPI cao",
+    benefits: [
+      "Lương cơ bản + thưởng doanh số",
+      "Xăng xe và phụ cấp đi lại",
+      "Bảo hiểm sức khỏe cho cả gia đình",
+      "Sản phẩm miễn phí hàng tháng",
+      "Đào tạo sales management",
+      "Cơ hội lên Area Sales Manager",
+      "13 tháng lương",
+      "Team retreat hàng quý",
+      "Công cụ bán hàng được cấp",
+      "Thưởng vượt KPI lên đến 20%",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 2,
+    deadline: new Date("2025-08-10"),
+    recruiterIndex: 4,
+  },
+  {
+    title: "Relationship Manager - Khách hàng Doanh nghiệp",
+    company: "Techcombank",
+    location: "Hà Nội",
+    salary: "25,000,000 - 45,000,000 VND",
+    type: "FULL_TIME",
+    level: "Senior",
+    tags: [
+      "Corporate Banking",
+      "Relationship Management",
+      "Credit Analysis",
+      "Trade Finance",
+      "Cash Management",
+      "Cross-selling",
+      "KYC/AML",
+      "Financial Advisory",
+      "Deal Structuring",
+      "Portfolio Management",
+    ],
+    description:
+      "Techcombank tìm Relationship Manager phụ trách quản lý và phát triển danh mục khách hàng doanh nghiệp vừa và lớn. Bạn sẽ cung cấp giải pháp tài chính toàn diện từ tín dụng đến quản lý dòng tiền.\n\nYêu cầu:\n- 3+ năm kinh nghiệm corporate banking\n- Hiểu biết sâu về phân tích tín dụng\n- Kinh nghiệm với trade finance, cash management\n- Kỹ năng thuyết trình và đàm phán tốt\n- CFA/ACCA là lợi thế",
+    benefits: [
+      "Lương cơ bản cao",
+      "Hoa hồng theo danh mục",
+      "Bảo hiểm cao cấp toàn gia đình",
+      "Vay ưu đãi nhân viên",
+      "Xe đưa đón",
+      "Du lịch hàng năm",
+      "Đào tạo chuyên sâu",
+      "Career roadmap rõ ràng",
+      "Phone allowance",
+      "Nghỉ phép 15 ngày/năm",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 3,
+    deadline: new Date("2025-09-15"),
+    recruiterIndex: 3,
+  },
+  {
+    title: "Telesales Representative",
+    company: "Techcombank",
+    location: "Hà Nội",
+    salary: "12,000,000 - 18,000,000 VND",
+    type: "FULL_TIME",
+    level: "Junior",
+    tags: [
+      "Telesales",
+      "Banking Products",
+      "Cold Calling",
+      "Customer Service",
+      "CRM",
+      "Credit Card Sales",
+      "Insurance Cross-sell",
+      "Communication",
+      "KPI",
+      "Objection Handling",
+    ],
+    description:
+      "Techcombank tuyển Telesales Representative để tư vấn và bán các sản phẩm ngân hàng qua điện thoại. Đây là vị trí phù hợp cho người mới ra trường muốn bước vào ngành ngân hàng.\n\nYêu cầu:\n- Tốt nghiệp đại học (ưu tiên Kinh tế, Tài chính)\n- Giọng nói rõ ràng, kỹ năng giao tiếp tốt\n- Chịu áp lực KPI\n- Có kinh nghiệm sales là lợi thế\n- Sẵn sàng làm việc theo ca",
+    benefits: [
+      "Lương cơ bản + hoa hồng hấp dẫn",
+      "Thưởng vượt chỉ tiêu hàng tháng",
+      "Bảo hiểm xã hội đầy đủ",
+      "Đào tạo nghiệp vụ bài bản",
+      "Môi trường trẻ trung, năng động",
+      "Xét tuyển dụng chính thức sau 2 tháng thử việc",
+      "Phụ cấp ăn trưa",
+      "Review lương sau 6 tháng",
+      "Cơ hội thăng tiến nhanh",
+      "Team activities hàng tháng",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 10,
+    deadline: new Date("2025-07-31"),
+    recruiterIndex: 3,
+  },
+  // ── Finance / Banking / Accounting ──────────────────────────────────────────
+  {
+    title: "Chuyên viên Phân tích Tín dụng",
+    company: "Techcombank",
+    location: "Hà Nội",
+    salary: "18,000,000 - 30,000,000 VND",
+    type: "FULL_TIME",
+    level: "Middle",
+    tags: [
+      "Credit Analysis",
+      "Financial Statement Analysis",
+      "Risk Assessment",
+      "Loan Structuring",
+      "Excel",
+      "Financial Modeling",
+      "Industry Research",
+      "Credit Scoring",
+      "Basel III",
+      "Due Diligence",
+    ],
+    description:
+      "Techcombank tìm Chuyên viên Phân tích Tín dụng để thẩm định hồ sơ vay vốn của khách hàng doanh nghiệp. Bạn sẽ phân tích tài chính, đánh giá rủi ro và đề xuất cấu trúc tín dụng phù hợp.\n\nYêu cầu:\n- 2+ năm kinh nghiệm phân tích tín dụng\n- Thành thạo phân tích báo cáo tài chính\n- Kỹ năng Excel/Financial Modeling tốt\n- Hiểu biết về ngành nghề và rủi ro kinh doanh\n- ACCA/CFA là lợi thế",
+    benefits: [
+      "Lương hấp dẫn theo năng lực",
+      "Thưởng hiệu suất cuối năm",
+      "Bảo hiểm sức khỏe",
+      "Vay ưu đãi nhân viên",
+      "Đào tạo chuyên sâu nghiệp vụ tín dụng",
+      "Lộ trình thăng tiến lên Senior/Manager",
+      "Môi trường chuyên nghiệp",
+      "Cantine được trợ giá",
+      "Nghỉ phép 15 ngày",
+      "Annual company trip",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 3,
+    deadline: new Date("2025-08-31"),
+    recruiterIndex: 3,
+  },
+  {
+    title: "Senior Auditor",
+    company: "KPMG Vietnam",
+    location: "Hà Nội",
+    salary: "25,000,000 - 40,000,000 VND",
+    type: "FULL_TIME",
+    level: "Senior",
+    tags: [
+      "External Audit",
+      "IFRS",
+      "VAS",
+      "Financial Reporting",
+      "Risk-based Audit",
+      "Client Management",
+      "Audit Methodology",
+      "Excel",
+      "Team Supervision",
+      "Big 4",
+    ],
+    description:
+      "KPMG Vietnam tìm Senior Auditor để thực hiện kiểm toán báo cáo tài chính cho các khách hàng lớn trong nhiều ngành. Bạn sẽ dẫn dắt nhóm kiểm toán và trực tiếp làm việc với khách hàng.\n\nYêu cầu:\n- 3+ năm kinh nghiệm kiểm toán (ưu tiên Big 4)\n- ACCA/CPA là bắt buộc hoặc đang học\n- Thành thạo IFRS và VAS\n- Kỹ năng quản lý nhóm\n- Tiếng Anh thành thạo",
+    benefits: [
+      "Lương cạnh tranh so với thị trường",
+      "Performance bonus",
+      "ACCA/CPA study leave và hỗ trợ thi",
+      "Bảo hiểm sức khỏe",
+      "Annual leave 18 ngày",
+      "International secondment opportunities",
+      "Professional development budget",
+      "Flexible working hours",
+      "Team events",
+      "Fast-track promotion",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 4,
+    deadline: new Date("2025-09-30"),
+    recruiterIndex: 5,
+  },
+  {
+    title: "Kế toán Tổng hợp",
+    company: "Masan Group",
+    location: "TP. Hồ Chí Minh",
+    salary: "18,000,000 - 28,000,000 VND",
+    type: "FULL_TIME",
+    level: "Middle",
+    tags: [
+      "General Accounting",
+      "MISA",
+      "VAS",
+      "Tax Declaration",
+      "Financial Reporting",
+      "Bank Reconciliation",
+      "Accounts Payable",
+      "Accounts Receivable",
+      "Fixed Assets",
+      "Month-end Close",
+    ],
+    description:
+      "Masan Group tìm Kế toán Tổng hợp để xử lý các nghiệp vụ kế toán hàng ngày và hỗ trợ lập báo cáo tài chính định kỳ. Vị trí phù hợp cho người muốn phát triển trong môi trường doanh nghiệp lớn.\n\nYêu cầu:\n- 3+ năm kinh nghiệm kế toán tổng hợp\n- Thành thạo MISA hoặc phần mềm kế toán tương đương\n- Hiểu biết vững về VAS và luật thuế\n- Kỹ năng Excel tốt\n- Cẩn thận, tỉ mỉ và có trách nhiệm cao",
+    benefits: [
+      "Lương cơ bản tốt",
+      "Bảo hiểm sức khỏe",
+      "Sản phẩm công ty miễn phí",
+      "Nghỉ phép 12 ngày/năm",
+      "13 tháng lương",
+      "Đào tạo nghiệp vụ",
+      "Cantine được trợ giá",
+      "Teambuilding hàng quý",
+      "Review lương hàng năm",
+      "Cơ hội thăng tiến lên Kế toán trưởng",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 2,
+    deadline: new Date("2025-08-25"),
+    recruiterIndex: 4,
+  },
+  {
+    title: "Tax Consultant",
+    company: "KPMG Vietnam",
+    location: "TP. Hồ Chí Minh",
+    salary: "20,000,000 - 35,000,000 VND",
+    type: "FULL_TIME",
+    level: "Middle",
+    tags: [
+      "Tax Advisory",
+      "CIT",
+      "VAT",
+      "Transfer Pricing",
+      "Tax Due Diligence",
+      "Tax Compliance",
+      "International Tax",
+      "Tax Planning",
+      "BEPS",
+      "Client Advisory",
+    ],
+    description:
+      "KPMG Vietnam tìm Tax Consultant để cung cấp dịch vụ tư vấn thuế cho khách hàng doanh nghiệp và FDI. Bạn sẽ nghiên cứu các vấn đề thuế phức tạp, chuẩn bị ý kiến tư vấn và hỗ trợ quyết toán thuế.\n\nYêu cầu:\n- 2+ năm kinh nghiệm tư vấn thuế hoặc thuế doanh nghiệp\n- Kiến thức sâu về CIT, VAT, thuế TNCN\n- Tiếng Anh thành thạo (đọc hiểu văn bản pháp lý)\n- Đang học hoặc có ACCA/CPA là lợi thế\n- Kỹ năng nghiên cứu và phân tích tốt",
+    benefits: [
+      "Lương theo năng lực và kinh nghiệm",
+      "Performance bonus",
+      "ACCA support",
+      "Bảo hiểm sức khỏe",
+      "Flexible working",
+      "Exposure to Big 4 methodology",
+      "Client diversity",
+      "Training programs",
+      "Annual leave 18 ngày",
+      "International opportunities",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 3,
+    deadline: new Date("2025-09-15"),
+    recruiterIndex: 5,
+  },
+  // ── Human Resources ─────────────────────────────────────────────────────────
+  {
+    title: "Senior Recruiter - Tech",
+    company: "Grab Vietnam",
+    location: "TP. Hồ Chí Minh",
+    salary: "$1,500 - $2,500",
+    type: "FULL_TIME",
+    level: "Senior",
+    tags: [
+      "Technical Recruiting",
+      "Sourcing",
+      "Headhunting",
+      "LinkedIn Recruiter",
+      "Employer Branding",
+      "Offer Management",
+      "ATS",
+      "Stakeholder Management",
+      "Data-driven Hiring",
+      "DEI",
+    ],
+    description:
+      "Grab Vietnam tìm Senior Recruiter phụ trách tuyển dụng kỹ sư phần mềm và data scientist. Bạn sẽ xây dựng pipeline ứng viên, tối ưu quy trình tuyển dụng và đảm bảo trải nghiệm ứng viên tốt nhất.\n\nYêu cầu:\n- 4+ năm kinh nghiệm tech recruiting\n- Thành thạo LinkedIn Recruiter và các kênh sourcing\n- Khả năng đánh giá kỹ năng kỹ thuật cơ bản\n- Kinh nghiệm tuyển dụng cho startup/tech company\n- Tiếng Anh thành thạo",
+    benefits: [
+      "Competitive salary",
+      "Recruiting performance bonus",
+      "Bảo hiểm cao cấp",
+      "Free GrabFood",
+      "Flexible working",
+      "L&D budget",
+      "Recruiter community events",
+      "International exposure",
+      "Career growth to HRBP",
+      "Grab credits",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 2,
+    deadline: new Date("2025-08-20"),
+    recruiterIndex: 6,
+  },
+  {
+    title: "HR Business Partner",
+    company: "Vingroup",
+    location: "Hà Nội",
+    salary: "28,000,000 - 45,000,000 VND",
+    type: "FULL_TIME",
+    level: "Senior",
+    tags: [
+      "HRBP",
+      "Talent Management",
+      "Organizational Development",
+      "Performance Management",
+      "Employee Relations",
+      "Change Management",
+      "Succession Planning",
+      "Workforce Planning",
+      "HR Analytics",
+      "Leadership Coaching",
+    ],
+    description:
+      "Vingroup tìm HRBP để đồng hành cùng các Business Unit trong chiến lược quản lý và phát triển nhân sự. Bạn sẽ là đối tác chiến lược cho các business leader trong các quyết định liên quan đến con người.\n\nYêu cầu:\n- 5+ năm kinh nghiệm HR, trong đó 2 năm HRBP\n- Hiểu biết sâu về organizational development\n- Kỹ năng tư vấn và ảnh hưởng stakeholder\n- Kinh nghiệm thiết kế và triển khai chương trình L&D\n- Tư duy data-driven trong HR",
+    benefits: [
+      "Lương hấp dẫn",
+      "Thưởng hiệu suất",
+      "Bảo hiểm cao cấp",
+      "Xe đưa đón",
+      "Đào tạo leadership",
+      "Nghỉ phép 15 ngày",
+      "Annual company trip",
+      "Health check cao cấp",
+      "Wellness program",
+      "Vay ưu đãi nhân viên",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 2,
+    deadline: new Date("2025-09-30"),
+    recruiterIndex: 1,
+  },
+  // ── Chuyên viên / Specialist ─────────────────────────────────────────────────
+  {
+    title: "Chuyên viên Tư vấn Tài chính Cá nhân",
+    company: "Techcombank",
+    location: "TP. Hồ Chí Minh",
+    salary: "18,000,000 - 30,000,000 VND + hoa hồng",
+    type: "FULL_TIME",
+    level: "Middle",
+    tags: [
+      "Retail Banking",
+      "Financial Planning",
+      "Investment Advisory",
+      "Insurance Cross-sell",
+      "KYC",
+      "Customer Onboarding",
+      "Portfolio Management",
+      "Wealth Management",
+      "Lending",
+      "Client Acquisition",
+    ],
+    description:
+      "Techcombank tuyển Chuyên viên Tư vấn Tài chính Cá nhân (Personal Banker) tại các chi nhánh TP.HCM. Bạn sẽ tư vấn toàn diện các sản phẩm tài chính từ tài khoản, thẻ, vay, bảo hiểm đến đầu tư.\n\nYêu cầu:\n- 2+ năm kinh nghiệm ngân hàng bán lẻ\n- Kỹ năng tư vấn và chốt sale tốt\n- Hiểu biết về sản phẩm tài chính cá nhân\n- Ngoại hình sáng sủa, giao tiếp tốt\n- CFP là lợi thế",
+    benefits: [
+      "Lương cơ bản + hoa hồng sản phẩm",
+      "KPI bonus hàng tháng",
+      "Bảo hiểm cao cấp",
+      "Vay ưu đãi nhân viên",
+      "Đào tạo nghiệp vụ chuyên sâu",
+      "Lộ trình lên Senior/Team Lead",
+      "Nghỉ phép 15 ngày",
+      "Annual award trip",
+      "Phụ cấp ăn trưa",
+      "Đồng phục được cấp",
+    ],
+    status: "PUBLISHED",
+    isHot: true,
+    slots: 5,
+    deadline: new Date("2025-08-01"),
+    recruiterIndex: 3,
+  },
+  {
+    title: "Chuyên viên Phát triển Sản phẩm FMCG",
+    company: "Masan Group",
+    location: "TP. Hồ Chí Minh",
+    salary: "22,000,000 - 35,000,000 VND",
+    type: "FULL_TIME",
+    level: "Senior",
+    tags: [
+      "Product Development",
+      "R&D",
+      "Food Technology",
+      "Market Research",
+      "Product Launch",
+      "Consumer Insights",
+      "Sensory Evaluation",
+      "Innovation",
+      "Project Management",
+      "Cross-functional Collaboration",
+    ],
+    description:
+      "Masan Group tìm Chuyên viên Phát triển Sản phẩm để nghiên cứu và ra mắt các sản phẩm thực phẩm mới đáp ứng xu hướng tiêu dùng. Bạn sẽ phối hợp với marketing, sản xuất và chuỗi cung ứng để đưa sản phẩm từ ý tưởng đến kệ hàng.\n\nYêu cầu:\n- 3+ năm kinh nghiệm R&D hoặc Product Development trong FMCG/Food\n- Kiến thức về công nghệ thực phẩm hoặc hóa học thực phẩm\n- Kinh nghiệm thực hiện nghiên cứu người tiêu dùng\n- Tư duy đổi mới và sáng tạo\n- Tiếng Anh đọc hiểu tốt",
+    benefits: [
+      "Lương cạnh tranh",
+      "Project bonus",
+      "Bảo hiểm sức khỏe",
+      "Sản phẩm công ty",
+      "Phòng lab hiện đại",
+      "Đào tạo R&D quốc tế",
+      "Teambuilding",
+      "13 tháng lương",
+      "Nghỉ phép 12 ngày",
+      "Career growth rõ ràng",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 2,
+    deadline: new Date("2025-09-20"),
+    recruiterIndex: 4,
+  },
+  {
+    title: "Operations Executive - Logistics",
+    company: "Grab Vietnam",
+    location: "TP. Hồ Chí Minh",
+    salary: "18,000,000 - 28,000,000 VND",
+    type: "FULL_TIME",
+    level: "Middle",
+    tags: [
+      "Logistics Operations",
+      "Supply Chain",
+      "Process Optimization",
+      "Data Analysis",
+      "Vendor Management",
+      "SLA Management",
+      "Problem Solving",
+      "Cross-functional Work",
+      "Project Coordination",
+      "SQL",
+    ],
+    description:
+      "Grab Vietnam tìm Operations Executive cho mảng GrabExpress và GrabMart. Bạn sẽ quản lý quy trình vận hành hàng ngày, tối ưu hóa hiệu suất giao hàng và xử lý các vấn đề phát sinh.\n\nYêu cầu:\n- 2+ năm kinh nghiệm operations/logistics\n- Kỹ năng phân tích dữ liệu và Excel tốt\n- Kinh nghiệm làm việc với đối tác/vendor\n- Tư duy problem-solving nhanh nhạy\n- Tiếng Anh giao tiếp được",
+    benefits: [
+      "Lương cạnh tranh",
+      "Performance bonus",
+      "GrabFood credits",
+      "Bảo hiểm sức khỏe",
+      "Flexible working",
+      "Grab credits hàng tháng",
+      "L&D budget",
+      "Career growth trong Grab ecosystem",
+      "Annual trip",
+      "Young dynamic team",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 3,
+    deadline: new Date("2025-08-31"),
+    recruiterIndex: 6,
+  },
+  {
+    title: "Chuyên viên Pháp chế",
+    company: "Vingroup",
+    location: "Hà Nội",
+    salary: "25,000,000 - 40,000,000 VND",
+    type: "FULL_TIME",
+    level: "Senior",
+    tags: [
+      "Corporate Law",
+      "Contract Review",
+      "M&A",
+      "Real Estate Law",
+      "Regulatory Compliance",
+      "Legal Research",
+      "Dispute Resolution",
+      "Due Diligence",
+      "Company Secretarial",
+      "Legal Advisory",
+    ],
+    description:
+      "Vingroup tìm Chuyên viên Pháp chế để hỗ trợ các hoạt động pháp lý cho tập đoàn và các công ty thành viên. Bạn sẽ soạn thảo, rà soát hợp đồng, tư vấn pháp lý và phối hợp với các đơn vị kinh doanh.\n\nYêu cầu:\n- Bằng cử nhân Luật (ưu tiên Luật Kinh tế, Luật Dân sự)\n- 4+ năm kinh nghiệm pháp chế doanh nghiệp\n- Am hiểu pháp luật bất động sản, doanh nghiệp\n- Chứng chỉ hành nghề luật sư là lợi thế\n- Tiếng Anh pháp lý tốt",
+    benefits: [
+      "Lương hấp dẫn theo năng lực",
+      "Thưởng cuối năm",
+      "Bảo hiểm sức khỏe toàn diện",
+      "Xe đưa đón",
+      "Văn phòng sang trọng",
+      "Đào tạo pháp lý chuyên sâu",
+      "Nghỉ phép 15 ngày",
+      "Du lịch công ty",
+      "Môi trường làm việc chuyên nghiệp",
+      "Cơ hội thăng tiến lên trưởng phòng pháp chế",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 2,
+    deadline: new Date("2025-09-30"),
+    recruiterIndex: 1,
+  },
+  // ── Education / Training ─────────────────────────────────────────────────────
+  {
+    title: "Chuyên viên Đào tạo & Phát triển (L&D)",
+    company: "Grab Vietnam",
+    location: "TP. Hồ Chí Minh",
+    salary: "22,000,000 - 35,000,000 VND",
+    type: "FULL_TIME",
+    level: "Senior",
+    tags: [
+      "Learning & Development",
+      "Curriculum Design",
+      "E-learning",
+      "Facilitation",
+      "Needs Assessment",
+      "LMS",
+      "Blended Learning",
+      "Leadership Development",
+      "Onboarding",
+      "Training Evaluation",
+    ],
+    description:
+      "Grab Vietnam tìm Chuyên viên L&D để thiết kế và triển khai các chương trình học tập cho hàng nghìn nhân viên. Bạn sẽ phối hợp với HRBP và các business leader để xác định nhu cầu đào tạo và xây dựng giải pháp phù hợp.\n\nYêu cầu:\n- 3+ năm kinh nghiệm L&D hoặc đào tạo doanh nghiệp\n- Kinh nghiệm thiết kế chương trình và e-learning\n- Kỹ năng facilitation và presentation xuất sắc\n- Kinh nghiệm với LMS (Workday, Cornerstone, etc.)\n- Tiếng Anh thành thạo",
+    benefits: [
+      "Lương cạnh tranh",
+      "L&D budget cho bản thân",
+      "Grab credits",
+      "Bảo hiểm sức khỏe",
+      "Flexible working",
+      "International L&D conferences",
+      "Career growth to L&D Manager",
+      "Young team culture",
+      "Annual trip",
+      "Learning library access",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 1,
+    deadline: new Date("2025-08-31"),
+    recruiterIndex: 6,
+  },
+  {
+    title: "Giảng viên Tiếng Anh Doanh nghiệp",
+    company: "Vingroup",
+    location: "Hà Nội",
+    salary: "20,000,000 - 30,000,000 VND",
+    type: "FULL_TIME",
+    level: "Middle",
+    tags: [
+      "Business English",
+      "TESOL",
+      "Corporate Training",
+      "Curriculum Development",
+      "E-learning Content",
+      "IELTS",
+      "Presentation Skills",
+      "Executive Coaching",
+      "Adult Education",
+      "Assessment Design",
+    ],
+    description:
+      "Vingroup tìm Giảng viên Tiếng Anh Doanh nghiệp để đào tạo ngoại ngữ cho cán bộ quản lý và nhân viên. Bạn sẽ thiết kế chương trình phù hợp với từng cấp độ và mục tiêu nghề nghiệp của học viên.\n\nYêu cầu:\n- Bằng TESOL/TEFL hoặc tương đương\n- 3+ năm kinh nghiệm dạy Business English\n- Kinh nghiệm đào tạo cho người đi làm\n- IELTS 7.5+ hoặc tương đương\n- Khả năng thiết kế tài liệu giảng dạy",
+    benefits: [
+      "Lương theo giờ cạnh tranh hoặc cố định",
+      "Bảo hiểm sức khỏe",
+      "Môi trường làm việc chuyên nghiệp",
+      "Teaching materials được cấp",
+      "Cơ hội dạy cho cấp C-level",
+      "Phát triển chuyên môn",
+      "Nghỉ phép 12 ngày",
+      "Môi trường đa văn hóa",
+      "Flexible schedule một phần",
+      "Shuttle bus nội bộ",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 2,
+    deadline: new Date("2025-09-15"),
+    recruiterIndex: 1,
+  },
+  // ── More diverse jobs ────────────────────────────────────────────────────────
+  {
+    title: "Supply Chain Analyst",
+    company: "Masan Group",
+    location: "TP. Hồ Chí Minh",
+    salary: "20,000,000 - 32,000,000 VND",
+    type: "FULL_TIME",
+    level: "Middle",
+    tags: [
+      "Supply Chain",
+      "Demand Planning",
+      "Inventory Management",
+      "SAP",
+      "Data Analysis",
+      "Forecasting",
+      "Vendor Management",
+      "S&OP",
+      "Excel",
+      "Logistics Coordination",
+    ],
+    description:
+      "Masan Group tìm Supply Chain Analyst để tối ưu hoạt động chuỗi cung ứng từ nhà máy đến điểm bán lẻ. Bạn sẽ phân tích dữ liệu, dự báo nhu cầu và phối hợp với các bộ phận liên quan để đảm bảo hàng hóa luôn sẵn có.\n\nYêu cầu:\n- 2+ năm kinh nghiệm supply chain hoặc logistics\n- Thành thạo Excel, SAP hoặc ERP tương đương\n- Kỹ năng phân tích dữ liệu tốt\n- Hiểu biết về S&OP process\n- Kinh nghiệm FMCG là lợi thế",
+    benefits: [
+      "Lương cạnh tranh",
+      "Performance bonus",
+      "Sản phẩm Masan",
+      "Bảo hiểm sức khỏe",
+      "Đào tạo supply chain",
+      "SAP training",
+      "13 tháng lương",
+      "Teambuilding",
+      "Nghỉ phép 12 ngày",
+      "Career growth",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 2,
+    deadline: new Date("2025-08-31"),
+    recruiterIndex: 4,
+  },
+  {
+    title: "UX/UI Designer",
+    company: "Shopee Vietnam",
+    location: "TP. Hồ Chí Minh",
+    salary: "$1,500 - $2,800",
+    type: "FULL_TIME",
+    level: "Senior",
+    tags: [
+      "UI Design",
+      "UX Research",
+      "Figma",
+      "Prototyping",
+      "Design System",
+      "User Testing",
+      "Mobile Design",
+      "Design Thinking",
+      "Accessibility",
+      "Product Design",
+    ],
+    description:
+      "Shopee Vietnam tìm UX/UI Designer cấp Senior để dẫn dắt thiết kế trải nghiệm người dùng cho các tính năng mới trên ứng dụng. Bạn sẽ làm việc chặt chẽ với product manager và kỹ sư để tạo ra những giao diện đẹp và dễ sử dụng.\n\nYêu cầu:\n- 4+ năm kinh nghiệm UX/UI design\n- Portfolio mạnh với case studies chi tiết\n- Thành thạo Figma và các prototyping tools\n- Kinh nghiệm thiết kế cho mobile app\n- Hiểu biết về user research methods",
+    benefits: [
+      "Competitive salary",
+      "Annual bonus",
+      "Bảo hiểm sức khỏe",
+      "Design tools license",
+      "Free lunch",
+      "Flexible hours",
+      "L&D budget",
+      "Design conference sponsorship",
+      "International team exposure",
+      "MacBook Pro",
+    ],
+    status: "PUBLISHED",
+    isHot: true,
+    slots: 2,
+    deadline: new Date("2025-08-15"),
+    recruiterIndex: 2,
+  },
+  {
+    title: "Chuyên viên Chăm sóc Khách hàng (Customer Success)",
+    company: "Shopee Vietnam",
+    location: "Đà Nẵng",
+    salary: "14,000,000 - 20,000,000 VND",
+    type: "FULL_TIME",
+    level: "Junior",
+    tags: [
+      "Customer Success",
+      "CRM",
+      "Problem Solving",
+      "Communication",
+      "Conflict Resolution",
+      "Data Entry",
+      "Email Support",
+      "Live Chat",
+      "Seller Support",
+      "SLA Management",
+    ],
+    description:
+      "Shopee Vietnam tuyển Chuyên viên Chăm sóc Khách hàng tại văn phòng Đà Nẵng để hỗ trợ người bán và người mua trên nền tảng. Bạn sẽ giải quyết khiếu nại, hỗ trợ kỹ thuật và đảm bảo trải nghiệm tốt nhất cho người dùng.\n\nYêu cầu:\n- Tốt nghiệp đại học\n- Kỹ năng giao tiếp và xử lý tình huống tốt\n- Kiên nhẫn và đồng cảm với khách hàng\n- Làm việc theo ca\n- Tiếng Anh cơ bản",
+    benefits: [
+      "Lương cơ bản + KPI bonus",
+      "Bảo hiểm xã hội đầy đủ",
+      "Đào tạo bài bản",
+      "Môi trường trẻ",
+      "Shopee voucher hàng tháng",
+      "Phụ cấp ca đêm",
+      "Review lương 6 tháng/lần",
+      "Career path rõ ràng",
+      "Teambuilding",
+      "Nghỉ phép 12 ngày",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 5,
+    deadline: new Date("2025-07-31"),
+    recruiterIndex: 2,
+  },
+  {
+    title: "Quản lý Dự án (IT Project Manager)",
+    company: "FPT Software",
+    location: "TP. Hồ Chí Minh",
+    salary: "$2,500 - $4,000",
+    type: "FULL_TIME",
+    level: "Manager",
+    tags: [
+      "Project Management",
+      "PMP",
+      "Agile",
+      "Scrum",
+      "Budget Management",
+      "Risk Management",
+      "Client Communication",
+      "Team Leadership",
+      "IT Outsourcing",
+      "Stakeholder Management",
+    ],
+    description:
+      "FPT Software tìm IT Project Manager để quản lý các dự án outsourcing quy mô lớn cho khách hàng Nhật Bản và Mỹ. Bạn sẽ chịu trách nhiệm về tiến độ, chất lượng và ngân sách dự án.\n\nYêu cầu:\n- 5+ năm kinh nghiệm quản lý dự án IT\n- Chứng chỉ PMP hoặc PMI-ACP\n- Kinh nghiệm với khách hàng quốc tế\n- Tiếng Anh thành thạo\n- Tiếng Nhật N2 là lợi thế lớn",
+    benefits: [
+      "Lương cao theo năng lực",
+      "Project completion bonus",
+      "PMP renewal sponsored",
+      "Bảo hiểm sức khỏe cao cấp",
+      "International travel",
+      "MacBook Pro",
+      "Flexible working",
+      "Learning budget",
+      "Stock option",
+      "Annual bonus",
+    ],
+    status: "PUBLISHED",
+    isHot: true,
+    slots: 3,
+    deadline: new Date("2025-08-31"),
+    recruiterIndex: 0,
+  },
+  {
+    title: "Chuyên viên Quản lý Thương hiệu (Brand Manager)",
+    company: "Masan Group",
+    location: "TP. Hồ Chí Minh",
+    salary: "28,000,000 - 45,000,000 VND",
+    type: "FULL_TIME",
+    level: "Senior",
+    tags: [
+      "Brand Management",
+      "FMCG",
+      "P&L Management",
+      "Consumer Insights",
+      "Campaign Planning",
+      "Agency Management",
+      "Product Launch",
+      "Market Research",
+      "Brand Strategy",
+      "Trade Marketing",
+    ],
+    description:
+      "Masan Group tìm Brand Manager cho một thương hiệu thực phẩm đang tăng trưởng mạnh. Bạn sẽ chịu trách nhiệm P&L của thương hiệu, xây dựng chiến lược và triển khai các hoạt động marketing tổng thể.\n\nYêu cầu:\n- 5+ năm kinh nghiệm brand management trong FMCG\n- Kinh nghiệm quản lý P&L\n- Hiểu biết sâu về consumer insights và market research\n- Kinh nghiệm làm việc với agency\n- Tiếng Anh thành thạo",
+    benefits: [
+      "Gói lương top thị trường FMCG",
+      "Annual bonus theo P&L",
+      "Bảo hiểm sức khỏe",
+      "Sản phẩm công ty",
+      "Đào tạo brand management",
+      "Agency management budget",
+      "Company car (cấp senior)",
+      "13 tháng lương",
+      "Nghỉ phép 15 ngày",
+      "Career path lên Marketing Director",
+    ],
+    status: "PUBLISHED",
+    isHot: true,
+    slots: 1,
+    deadline: new Date("2025-08-15"),
+    recruiterIndex: 4,
+  },
+  {
+    title: "React Native Developer (Intern)",
+    company: "Grab Vietnam",
+    location: "TP. Hồ Chí Minh",
+    salary: "7,000,000 - 10,000,000 VND",
+    type: "INTERNSHIP",
+    level: "Intern",
+    tags: [
+      "React Native",
+      "JavaScript",
+      "TypeScript",
+      "Git",
+      "Agile",
+      "REST API",
+      "Mobile Development",
+      "Problem Solving",
+      "Teamwork",
+      "Learning Mindset",
+    ],
+    description:
+      "Grab Vietnam tuyển thực tập sinh Mobile Developer để tham gia phát triển ứng dụng Grab. Đây là chương trình thực tập 6 tháng có trả lương với mentor support đầy đủ.\n\nYêu cầu:\n- Sinh viên năm 3-4 hoặc mới tốt nghiệp ngành CNTT\n- Biết React Native hoặc React.js\n- Hiểu cơ bản về REST API và Git\n- Khả năng học hỏi nhanh\n- Tiếng Anh đọc hiểu tốt",
+    benefits: [
+      "Thực tập có lương hấp dẫn",
+      "Mentor từ senior engineer",
+      "GrabFood credits",
+      "Làm dự án thực tế",
+      "Certificate hoàn thành chương trình",
+      "Cơ hội được offer full-time",
+      "Flexible working hours cho sinh viên",
+      "Môi trường quốc tế",
+      "Grab merchandise",
+      "Networking opportunities",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 5,
+    deadline: new Date("2025-07-15"),
+    recruiterIndex: 6,
+  },
+  {
+    title: "Chuyên viên Kiểm soát Nội bộ",
+    company: "Techcombank",
+    location: "Hà Nội",
+    salary: "22,000,000 - 35,000,000 VND",
+    type: "FULL_TIME",
+    level: "Senior",
+    tags: [
+      "Internal Control",
+      "Risk Management",
+      "Compliance",
+      "Process Review",
+      "Audit",
+      "Banking Regulations",
+      "SOP Development",
+      "Control Testing",
+      "Reporting",
+      "Basel",
+    ],
+    description:
+      "Techcombank tìm Chuyên viên Kiểm soát Nội bộ để rà soát và cải thiện hệ thống kiểm soát nội bộ của ngân hàng. Bạn sẽ đánh giá rủi ro quy trình, kiểm tra sự tuân thủ và đề xuất cải thiện.\n\nYêu cầu:\n- 3+ năm kinh nghiệm kiểm soát nội bộ hoặc kiểm toán trong ngân hàng\n- Hiểu biết về quy định của NHNN\n- Kỹ năng phân tích quy trình\n- CIA/CISA là lợi thế\n- Tiếng Anh đọc hiểu tốt",
+    benefits: [
+      "Lương cạnh tranh",
+      "Thưởng hiệu suất",
+      "Bảo hiểm cao cấp",
+      "Vay ưu đãi nhân viên",
+      "Đào tạo nghiệp vụ",
+      "CIA/CISA sponsored",
+      "Lộ trình thăng tiến",
+      "Môi trường chuyên nghiệp",
+      "Nghỉ phép 15 ngày",
+      "Company trip hàng năm",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 2,
+    deadline: new Date("2025-09-15"),
+    recruiterIndex: 3,
+  },
+  {
+    title: "Kỹ sư Xây dựng (Giám sát công trình)",
+    company: "Vingroup",
+    location: "Hà Nội",
+    salary: "20,000,000 - 35,000,000 VND",
+    type: "FULL_TIME",
+    level: "Middle",
+    tags: [
+      "Civil Engineering",
+      "Construction Supervision",
+      "AutoCAD",
+      "Project Management",
+      "Quality Control",
+      "Safety Management",
+      "BIM",
+      "Contract Management",
+      "Site Management",
+      "Structural Analysis",
+    ],
+    description:
+      "VinHomes (thành viên Vingroup) tìm Kỹ sư Xây dựng để giám sát thi công các dự án bất động sản cao cấp. Bạn sẽ quản lý tiến độ, chất lượng công trình và đảm bảo an toàn lao động.\n\nYêu cầu:\n- Bằng kỹ sư Xây dựng\n- 3+ năm kinh nghiệm giám sát công trình dân dụng\n- Thành thạo AutoCAD, đọc bản vẽ kỹ thuật\n- Kiến thức về vật liệu xây dựng và quy trình thi công\n- Chứng chỉ hành nghề xây dựng là lợi thế",
+    benefits: [
+      "Lương hấp dẫn",
+      "Phụ cấp công trường",
+      "Bảo hiểm tai nạn + sức khỏe",
+      "Xe đưa đón công trường",
+      "Đồng phục bảo hộ được cấp",
+      "Cơ hội làm dự án lớn",
+      "Đào tạo BIM",
+      "Nghỉ phép 12 ngày",
+      "13 tháng lương",
+      "Thăng tiến lên PM",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 4,
+    deadline: new Date("2025-09-30"),
+    recruiterIndex: 1,
+  },
+  {
+    title: "Chuyên viên Phân tích Đầu tư",
+    company: "Techcombank",
+    location: "Hà Nội",
+    salary: "28,000,000 - 50,000,000 VND",
+    type: "FULL_TIME",
+    level: "Senior",
+    tags: [
+      "Investment Analysis",
+      "Equity Research",
+      "Financial Modeling",
+      "DCF Valuation",
+      "CFA",
+      "Capital Markets",
+      "Fixed Income",
+      "Portfolio Analysis",
+      "Bloomberg",
+      "Market Research",
+    ],
+    description:
+      "Techcombank Securities tìm Chuyên viên Phân tích Đầu tư để nghiên cứu cổ phiếu và các cơ hội đầu tư trên thị trường chứng khoán Việt Nam. Bạn sẽ xây dựng mô hình định giá và viết báo cáo phân tích.\n\nYêu cầu:\n- 3+ năm kinh nghiệm equity research hoặc investment banking\n- CFA Level 2+ là yêu cầu bắt buộc\n- Thành thạo financial modeling và DCF valuation\n- Kinh nghiệm với Bloomberg\n- Tiếng Anh thành thạo",
+    benefits: [
+      "Lương top thị trường chứng khoán",
+      "Performance bonus lớn",
+      "Bảo hiểm cao cấp",
+      "Bloomberg terminal access",
+      "CFA support",
+      "Vay ưu đãi nhân viên",
+      "Annual trip",
+      "Flexible working",
+      "Career path lên Director",
+      "Stock option program",
+    ],
+    status: "PUBLISHED",
+    isHot: true,
+    slots: 2,
+    deadline: new Date("2025-08-31"),
+    recruiterIndex: 3,
+  },
+  {
+    title: "Warehouse Supervisor",
+    company: "Masan Group",
+    location: "TP. Hồ Chí Minh",
+    salary: "18,000,000 - 28,000,000 VND",
+    type: "FULL_TIME",
+    level: "Supervisor",
+    tags: [
+      "Warehouse Management",
+      "WMS",
+      "Inventory Control",
+      "Team Supervision",
+      "FIFO/FEFO",
+      "Safety",
+      "Process Improvement",
+      "KPI Management",
+      "Forklift",
+      "ERP",
+    ],
+    description:
+      "Masan Group tìm Warehouse Supervisor cho kho hàng tại TP.HCM, quản lý đội ngũ 20-30 nhân viên kho. Bạn sẽ đảm bảo hoạt động kho vận chính xác, an toàn và hiệu quả.\n\nYêu cầu:\n- 3+ năm kinh nghiệm quản lý kho (ưu tiên FMCG)\n- Thành thạo WMS và ERP (SAP)\n- Kinh nghiệm quản lý nhóm\n- Hiểu biết về FIFO/FEFO và quản lý tồn kho\n- Sẵn sàng làm ca/cuối tuần khi cần",
+    benefits: [
+      "Lương cơ bản + phụ cấp ca",
+      "Bảo hiểm tai nạn + sức khỏe",
+      "Bữa ăn ca được cấp",
+      "13 tháng lương",
+      "Thưởng hiệu suất kho",
+      "Đào tạo WMS",
+      "Lộ trình lên Warehouse Manager",
+      "Cantine được trợ giá",
+      "Đồng phục công ty",
+      "Teambuilding hàng quý",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 2,
+    deadline: new Date("2025-08-20"),
+    recruiterIndex: 4,
+  },
+  {
+    title: "Backend Developer (Java Spring Boot)",
+    company: "Techcombank",
+    location: "Hà Nội",
+    salary: "25,000,000 - 45,000,000 VND",
+    type: "FULL_TIME",
+    level: "Senior",
+    tags: [
+      "Java",
+      "Spring Boot",
+      "Microservices",
+      "Kafka",
+      "Oracle",
+      "Docker",
+      "REST API",
+      "Core Banking",
+      "TDD",
+      "Agile",
+    ],
+    description:
+      "Techcombank Technology tìm Senior Backend Developer để tham gia phát triển hệ thống ngân hàng lõi (core banking) và các ứng dụng fintech. Bạn sẽ xây dựng các microservice xử lý hàng triệu giao dịch mỗi ngày.\n\nYêu cầu:\n- 4+ năm kinh nghiệm Java Spring Boot\n- Kinh nghiệm với Kafka, Redis\n- Hiểu biết về bảo mật ứng dụng ngân hàng\n- Kinh nghiệm TDD và Clean Code\n- Tiếng Anh đọc hiểu tài liệu kỹ thuật",
+    benefits: [
+      "Lương cạnh tranh với Big Tech",
+      "Hiệu suất bonus",
+      "Bảo hiểm sức khỏe",
+      "Vay ưu đãi nhân viên",
+      "Remote 2 ngày/tuần",
+      "Môi trường fintech hiện đại",
+      "Certification budget",
+      "MacBook hoặc PC cao cấp",
+      "Nghỉ phép 15 ngày",
+      "Annual company trip",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 3,
+    deadline: new Date("2025-09-30"),
+    recruiterIndex: 3,
+  },
+  {
+    title: "Management Trainee Program",
+    company: "Vingroup",
+    location: "Hà Nội",
+    salary: "15,000,000 - 20,000,000 VND",
+    type: "FULL_TIME",
+    level: "Junior",
+    tags: [
+      "Management Trainee",
+      "Leadership Development",
+      "Rotation Program",
+      "Business Strategy",
+      "Project Management",
+      "Cross-functional",
+      "Mentorship",
+      "Fast-track Career",
+      "Presentation",
+      "Problem Solving",
+    ],
+    description:
+      "Vingroup tuyển Management Trainee cho chương trình phát triển lãnh đạo tương lai của tập đoàn. Chương trình 18 tháng với rotation qua các bộ phận chiến lược, mentoring từ C-level và lộ trình thăng tiến rõ ràng lên Manager trong 3 năm.\n\nYêu cầu:\n- Tốt nghiệp loại Giỏi trở lên từ trường đại học top\n- GPA 3.5+ hoặc tương đương\n- Tiếng Anh IELTS 7.0+\n- Năng lực lãnh đạo, tư duy phân tích tốt\n- Không quá 28 tuổi",
+    benefits: [
+      "Lương cạnh tranh cho fresher",
+      "Mentor là C-level executive",
+      "Rotation qua 4-5 bộ phận",
+      "Fast-track promotion",
+      "MBA sponsorship sau 3 năm",
+      "International training",
+      "Company car allowance (sau khi lên Manager)",
+      "Bảo hiểm cao cấp",
+      "Annual company retreat",
+      "Networking với lãnh đạo tập đoàn",
+    ],
+    status: "PUBLISHED",
+    isHot: true,
+    slots: 10,
+    deadline: new Date("2025-07-31"),
+    recruiterIndex: 1,
+  },
+  {
+    title: "Data Engineer",
+    company: "Shopee Vietnam",
+    location: "TP. Hồ Chí Minh",
+    salary: "$2,000 - $3,500",
+    type: "FULL_TIME",
+    level: "Senior",
+    tags: [
+      "Python",
+      "Spark",
+      "Kafka",
+      "Airflow",
+      "Data Warehouse",
+      "ETL",
+      "SQL",
+      "BigQuery",
+      "Data Pipeline",
+      "dbt",
+    ],
+    description:
+      "Shopee Vietnam tìm Data Engineer để xây dựng và vận hành hạ tầng dữ liệu phục vụ hàng chục team analyst và data scientist. Bạn sẽ thiết kế data pipeline, tối ưu warehouse và đảm bảo chất lượng dữ liệu.\n\nYêu cầu:\n- 3+ năm kinh nghiệm data engineering\n- Thành thạo Python, SQL\n- Kinh nghiệm với Spark, Kafka, Airflow\n- Kinh nghiệm với cloud data warehouse\n- Hiểu biết về data modeling",
+    benefits: [
+      "Lương top market",
+      "Annual bonus",
+      "RSU",
+      "Bảo hiểm cao cấp",
+      "Free lunch",
+      "Flexible working",
+      "L&D budget $1,500",
+      "International opportunities",
+      "MacBook Pro",
+      "Gym membership",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 2,
+    deadline: new Date("2025-09-15"),
+    recruiterIndex: 2,
+  },
+  {
+    title: "Marketing Intern",
+    company: "Grab Vietnam",
+    location: "TP. Hồ Chí Minh",
+    salary: "5,000,000 - 7,000,000 VND",
+    type: "INTERNSHIP",
+    level: "Intern",
+    tags: [
+      "Marketing",
+      "Social Media",
+      "Content Creation",
+      "Analytics",
+      "Campaign Support",
+      "Canva",
+      "Market Research",
+      "Copywriting",
+      "Email Marketing",
+      "Teamwork",
+    ],
+    description:
+      "Grab Vietnam tuyển Marketing Intern để hỗ trợ đội marketing trong việc triển khai các chiến dịch quảng cáo và quản lý nội dung mạng xã hội. Chương trình 4-6 tháng, phù hợp sinh viên năm 3-4 ngành Marketing.\n\nYêu cầu:\n- Sinh viên ngành Marketing, Truyền thông\n- Kỹ năng viết lách tốt tiếng Việt\n- Biết Canva, Photoshop cơ bản\n- Sáng tạo và chịu khó\n- Tiếng Anh giao tiếp cơ bản",
+    benefits: [
+      "Thực tập có lương",
+      "GrabFood credits hàng tháng",
+      "Mentor trực tiếp",
+      "Làm dự án thực tế",
+      "Certificate hoàn thành",
+      "Cơ hội full-time",
+      "Young team culture",
+      "Grab merchandise",
+      "Flexible hours",
+      "Learning materials",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 3,
+    deadline: new Date("2025-07-20"),
+    recruiterIndex: 6,
+  },
+  {
+    title: "Chuyên viên Nghiên cứu Thị trường",
+    company: "Masan Group",
+    location: "TP. Hồ Chí Minh",
+    salary: "22,000,000 - 35,000,000 VND",
+    type: "FULL_TIME",
+    level: "Middle",
+    tags: [
+      "Market Research",
+      "Consumer Insights",
+      "Quantitative Research",
+      "Qualitative Research",
+      "SPSS",
+      "Focus Group",
+      "Survey Design",
+      "Competitive Analysis",
+      "Trend Analysis",
+      "Report Writing",
+    ],
+    description:
+      "Masan Group tìm Chuyên viên Nghiên cứu Thị trường để cung cấp insight người tiêu dùng cho các team marketing và R&D. Bạn sẽ thiết kế và triển khai nghiên cứu định lượng và định tính, phân tích dữ liệu và trình bày kết quả.\n\nYêu cầu:\n- 3+ năm kinh nghiệm market research (client-side hoặc research agency)\n- Thành thạo SPSS hoặc R/Python cho phân tích dữ liệu\n- Kinh nghiệm tổ chức focus group và in-depth interview\n- Kỹ năng trình bày và storytelling tốt\n- Tiếng Anh đọc hiểu báo cáo tốt",
+    benefits: [
+      "Lương cạnh tranh",
+      "Project bonus",
+      "Sản phẩm công ty",
+      "Bảo hiểm sức khỏe",
+      "Tool license (SPSS)",
+      "Đào tạo research methodology",
+      "Teambuilding",
+      "13 tháng lương",
+      "Nghỉ phép 12 ngày",
+      "Môi trường creative",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 1,
+    deadline: new Date("2025-08-31"),
+    recruiterIndex: 4,
+  },
+  {
+    title: "Site Reliability Engineer (SRE)",
+    company: "Shopee Vietnam",
+    location: "Remote",
+    salary: "$2,500 - $4,000",
+    type: "REMOTE",
+    level: "Senior",
+    tags: [
+      "SRE",
+      "Kubernetes",
+      "AWS",
+      "Prometheus",
+      "Grafana",
+      "Linux",
+      "Python",
+      "Incident Response",
+      "Chaos Engineering",
+      "High Availability",
+    ],
+    description:
+      "Shopee Vietnam tìm SRE để đảm bảo độ tin cậy và hiệu suất cho hệ thống serving hàng triệu user mỗi ngày. Bạn sẽ xây dựng automation, cải thiện observability và phản ứng nhanh với sự cố.\n\nYêu cầu:\n- 4+ năm kinh nghiệm SRE/DevOps\n- Thành thạo Kubernetes, AWS\n- Kinh nghiệm với monitoring stack (Prometheus/Grafana)\n- Kỹ năng scripting Python/Go\n- Kinh nghiệm on-call và incident management",
+    benefits: [
+      "Lương top tier",
+      "On-call allowance",
+      "RSU",
+      "Bảo hiểm cao cấp",
+      "Hoàn toàn remote",
+      "Home office setup allowance",
+      "MacBook Pro",
+      "Annual bonus",
+      "L&D budget",
+      "Flexible hours",
+    ],
+    status: "PUBLISHED",
+    isHot: true,
+    slots: 2,
+    deadline: new Date("2025-09-30"),
+    recruiterIndex: 2,
+  },
+  {
+    title: "Part-time Social Media Specialist",
+    company: "Shopee Vietnam",
+    location: "Đà Nẵng",
+    salary: "8,000,000 - 12,000,000 VND",
+    type: "PART_TIME",
+    level: "Junior",
+    tags: [
+      "Social Media",
+      "Content Creation",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "Canva",
+      "Community Management",
+      "Trend Monitoring",
+      "Copywriting",
+      "Analytics",
+    ],
+    description:
+      "Shopee Vietnam tuyển Part-time Social Media Specialist tại Đà Nẵng để quản lý và phát triển kênh mạng xã hội địa phương. Làm việc 4 giờ/ngày, linh hoạt giờ giấc.\n\nYêu cầu:\n- Đam mê mạng xã hội, hiểu trend\n- Biết Canva, chỉnh sửa ảnh/video cơ bản\n- Viết lách tốt, sáng tạo nội dung\n- Có thể commit 4 tiếng/ngày\n- Kinh nghiệm là lợi thế",
+    benefits: [
+      "Lương theo giờ cạnh tranh",
+      "Shopee vouchers",
+      "Flexible working hours",
+      "Work from home option",
+      "Học hỏi môi trường e-commerce lớn",
+      "Certificate",
+      "Cơ hội full-time",
+      "Team events online",
+      "Phát triển personal brand",
+      "Mentor support",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 2,
+    deadline: new Date("2025-07-31"),
+    recruiterIndex: 2,
+  },
+  {
+    title: "Scrum Master",
+    company: "FPT Software",
+    location: "TP. Hồ Chí Minh",
+    salary: "$1,800 - $3,000",
+    type: "FULL_TIME",
+    level: "Senior",
+    tags: [
+      "Scrum",
+      "Agile",
+      "JIRA",
+      "Confluence",
+      "Facilitation",
+      "Coaching",
+      "Impediment Removal",
+      "Retrospective",
+      "Team Dynamics",
+      "Continuous Improvement",
+    ],
+    description:
+      "FPT Software tìm Scrum Master có kinh nghiệm để dẫn dắt 2-3 Scrum team trong các dự án outsourcing cho khách hàng Mỹ và Úc. Bạn sẽ là Agile coach, giúp các team phát huy tối đa năng lực.\n\nYêu cầu:\n- 3+ năm kinh nghiệm Scrum Master\n- CSM hoặc PSM chứng chỉ bắt buộc\n- Kinh nghiệm với distributed teams\n- Tiếng Anh thành thạo\n- Kỹ năng coaching và facilitation tốt",
+    benefits: [
+      "Lương cạnh tranh",
+      "CSP/A-CSM sponsored",
+      "Bảo hiểm sức khỏe",
+      "International project exposure",
+      "Remote work option",
+      "Agile community access",
+      "MacBook",
+      "Annual bonus",
+      "L&D budget",
+      "Flexible hours",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 2,
+    deadline: new Date("2025-09-01"),
+    recruiterIndex: 0,
+  },
+  {
+    title: "Contract Accountant (6 tháng)",
+    company: "KPMG Vietnam",
+    location: "TP. Hồ Chí Minh",
+    salary: "15,000,000 - 22,000,000 VND",
+    type: "CONTRACT",
+    level: "Junior",
+    tags: [
+      "Accounting",
+      "VAS",
+      "IFRS",
+      "Tax",
+      "Excel",
+      "Data Entry",
+      "Audit Support",
+      "Financial Reporting",
+      "Reconciliation",
+      "Documentation",
+    ],
+    description:
+      "KPMG Vietnam tuyển Accountant hợp đồng 6 tháng để hỗ trợ mùa kiểm toán cao điểm. Cơ hội tốt cho người muốn trải nghiệm môi trường Big 4.\n\nYêu cầu:\n- Tốt nghiệp Kế toán/Kiểm toán/Tài chính\n- Kiến thức kế toán nền tảng vững\n- Excel thành thạo\n- Cẩn thận, chịu khó làm việc trong mùa cao điểm\n- Tiếng Anh đọc hiểu cơ bản",
+    benefits: [
+      "Lương hấp dẫn cho hợp đồng",
+      "Trải nghiệm Big 4 thực tế",
+      "Mentor từ senior",
+      "Exposure đa ngành",
+      "Certificate hoàn thành",
+      "Cơ hội chuyển full-time",
+      "Môi trường chuyên nghiệp",
+      "ACCA study support",
+      "Networking",
+      "Free coffee/snacks",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 5,
+    deadline: new Date("2025-07-15"),
+    recruiterIndex: 5,
+  },
+  {
+    title: "Machine Learning Platform Engineer",
+    company: "Grab Vietnam",
+    location: "TP. Hồ Chí Minh",
+    salary: "$3,000 - $5,500",
+    type: "FULL_TIME",
+    level: "Senior",
+    tags: [
+      "MLOps",
+      "Kubernetes",
+      "Python",
+      "ML Platform",
+      "Feature Store",
+      "Model Serving",
+      "Data Infrastructure",
+      "Spark",
+      "Kubeflow",
+      "Distributed Systems",
+    ],
+    description:
+      "Grab Vietnam tìm ML Platform Engineer để xây dựng infrastructure cho hàng trăm ML models đang chạy trong production. Bạn sẽ làm việc với đội AI Research lớn nhất Đông Nam Á và giải quyết các bài toán scale thực sự thách thức.\n\nYêu cầu:\n- 4+ năm kinh nghiệm software engineering hoặc MLOps\n- Kinh nghiệm với distributed systems quy mô lớn\n- Thành thạo Python và một ngôn ngữ compiled (Go/Java/Scala)\n- Kinh nghiệm với Kubernetes, Spark\n- Tiếng Anh thành thạo",
+    benefits: [
+      "Gói lương dẫn đầu thị trường",
+      "RSU với vesting schedule hấp dẫn",
+      "Bảo hiểm sức khỏe premium",
+      "Free meals tại văn phòng",
+      "Flexible working",
+      "L&D budget $2,000/năm",
+      "International ML conferences",
+      "Grab credits",
+      "Gym membership",
+      "Annual bonus",
+    ],
+    status: "PUBLISHED",
+    isHot: true,
+    slots: 2,
+    deadline: new Date("2025-08-31"),
+    recruiterIndex: 6,
+  },
+  {
+    title: "Associate - Audit (Fresh Graduate)",
+    company: "KPMG Vietnam",
+    location: "Hà Nội",
+    salary: "13,000,000 - 17,000,000 VND",
+    type: "FULL_TIME",
+    level: "Junior",
+    tags: [
+      "External Audit",
+      "Financial Statements",
+      "VAS",
+      "Excel",
+      "Teamwork",
+      "Attention to Detail",
+      "Learning Agility",
+      "Client Communication",
+      "ACCA",
+      "Big 4",
+    ],
+    description:
+      "KPMG Vietnam tuyển Associate cho bộ phận Kiểm toán, chào đón sinh viên mới tốt nghiệp ngành Kế toán/Kiểm toán/Tài chính. Đây là bước đệm lý tưởng để xây dựng nền tảng nghề nghiệp vững chắc trong ngành tài chính.\n\nYêu cầu:\n- Tốt nghiệp loại Khá trở lên, ngành Kế toán/Kiểm toán/Tài chính\n- GPA 3.2+ (hệ 4.0)\n- Tiếng Anh TOEIC 700+ hoặc tương đương\n- Chăm chỉ, cẩn thận và có khả năng làm việc áp lực\n- Đang học ACCA là lợi thế",
+    benefits: [
+      "Lương cơ bản + overtime pay",
+      "ACCA study support & exam fee",
+      "Big 4 training methodology",
+      "Mentorship program",
+      "Annual leave 18 ngày",
+      "Bảo hiểm sức khỏe",
+      "Fast promotion track",
+      "International exposure",
+      "Campus events",
+      "Performance bonus",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 15,
+    deadline: new Date("2025-08-01"),
+    recruiterIndex: 5,
+  },
+  {
+    title: "Software QA Engineer",
+    company: "FPT Software",
+    location: "Đà Nẵng",
+    salary: "18,000,000 - 30,000,000 VND",
+    type: "FULL_TIME",
+    level: "Middle",
+    tags: [
+      "QA Testing",
+      "Automation Testing",
+      "Selenium",
+      "API Testing",
+      "Postman",
+      "JIRA",
+      "Test Planning",
+      "Regression Testing",
+      "Agile",
+      "Bug Reporting",
+    ],
+    description:
+      "FPT Software Đà Nẵng tìm QA Engineer để đảm bảo chất lượng phần mềm cho các dự án outsourcing Nhật Bản và Mỹ. Bạn sẽ viết test case, thực hiện manual và automation testing.\n\nYêu cầu:\n- 2+ năm kinh nghiệm QA/Testing\n- Kinh nghiệm với Selenium, API testing\n- Hiểu biết về quy trình phát triển phần mềm\n- Tiếng Anh đọc viết tài liệu tốt\n- Tiếng Nhật N3 là lợi thế",
+    benefits: [
+      "Lương theo năng lực",
+      "Bảo hiểm sức khỏe",
+      "Japanese project allowance",
+      "Đào tạo ISTQB",
+      "Flexible hours",
+      "Annual bonus",
+      "Career path lên QA Lead",
+      "MacBook hoặc PC tốt",
+      "Team activities",
+      "Parking miễn phí",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 4,
+    deadline: new Date("2025-09-15"),
+    recruiterIndex: 0,
+  },
+  {
+    title: "Real Estate Investment Analyst",
+    company: "Vingroup",
+    location: "Hà Nội",
+    salary: "28,000,000 - 50,000,000 VND",
+    type: "FULL_TIME",
+    level: "Senior",
+    tags: [
+      "Real Estate",
+      "Investment Analysis",
+      "Financial Modeling",
+      "DCF",
+      "Market Research",
+      "Due Diligence",
+      "Portfolio Management",
+      "Excel",
+      "CFA",
+      "Deal Structuring",
+    ],
+    description:
+      "VinHomes (Vingroup) tìm Real Estate Investment Analyst để đánh giá cơ hội đầu tư bất động sản và hỗ trợ các quyết định chiến lược của tập đoàn. Bạn sẽ xây dựng mô hình tài chính, phân tích thị trường và thực hiện due diligence.\n\nYêu cầu:\n- 4+ năm kinh nghiệm phân tích đầu tư bất động sản\n- CFA Level 1+ là lợi thế lớn\n- Thành thạo financial modeling\n- Hiểu biết về pháp lý bất động sản\n- Tiếng Anh thành thạo",
+    benefits: [
+      "Lương hấp dẫn",
+      "Deal bonus",
+      "Bảo hiểm cao cấp",
+      "Ưu đãi mua/thuê căn hộ VinHomes",
+      "Xe công ty",
+      "Annual trip cao cấp",
+      "CFA support",
+      "Workspace sang trọng",
+      "Networking với lãnh đạo",
+      "Career path lên Investment Manager",
+    ],
+    status: "PUBLISHED",
+    isHot: true,
+    slots: 2,
+    deadline: new Date("2025-08-31"),
+    recruiterIndex: 1,
+  },
+  {
+    title: "Customer Insights Manager",
+    company: "Grab Vietnam",
+    location: "TP. Hồ Chí Minh",
+    salary: "$2,500 - $4,000",
+    type: "FULL_TIME",
+    level: "Manager",
+    tags: [
+      "Customer Insights",
+      "User Research",
+      "NPS",
+      "Survey Design",
+      "Qualitative Research",
+      "Segmentation",
+      "Data Analysis",
+      "Stakeholder Management",
+      "Product Strategy",
+      "Storytelling",
+    ],
+    description:
+      "Grab Vietnam tìm Customer Insights Manager để xây dựng và lãnh đạo chức năng nghiên cứu người dùng trong công ty. Bạn sẽ cung cấp insight chiến lược cho Product, Marketing và Business development.\n\nYêu cầu:\n- 6+ năm kinh nghiệm consumer/user research\n- Kinh nghiệm quản lý team\n- Thành thạo cả phương pháp định tính và định lượng\n- Kỹ năng storytelling và trình bày cho C-level\n- Tiếng Anh thành thạo",
+    benefits: [
+      "Competitive salary",
+      "Annual bonus",
+      "Bảo hiểm cao cấp",
+      "GrabFood credits",
+      "Flexible working",
+      "L&D budget lớn",
+      "Research tools budget",
+      "International conferences",
+      "Career to Director",
+      "RSU",
+    ],
+    status: "CLOSED",
+    isHot: false,
+    slots: 1,
+    deadline: new Date("2025-06-30"),
+    recruiterIndex: 6,
+  },
+  {
+    title: "Chuyên viên Tuyển dụng Campus",
+    company: "KPMG Vietnam",
+    location: "Hà Nội",
+    salary: "18,000,000 - 28,000,000 VND",
+    type: "FULL_TIME",
+    level: "Middle",
+    tags: [
+      "Campus Recruiting",
+      "University Relations",
+      "Employer Branding",
+      "Assessment Center",
+      "Onboarding",
+      "Graduate Program",
+      "Event Management",
+      "Social Media Recruiting",
+      "Stakeholder Management",
+      "ATS",
+    ],
+    description:
+      "KPMG Vietnam tìm Chuyên viên Tuyển dụng Campus để quản lý chương trình tuyển sinh sinh viên và mới tốt nghiệp. Bạn sẽ xây dựng quan hệ với các trường đại học hàng đầu, tổ chức events và quản lý quy trình tuyển dụng.\n\nYêu cầu:\n- 2+ năm kinh nghiệm campus recruiting hoặc HR\n- Kinh nghiệm tổ chức events và assessment center\n- Kỹ năng giao tiếp và xây dựng quan hệ tốt\n- Năng động, thích làm việc với người trẻ\n- Tiếng Anh tốt",
+    benefits: [
+      "Lương theo năng lực",
+      "Performance bonus",
+      "Bảo hiểm sức khỏe",
+      "SHRM/CIPD support",
+      "Big 4 brand",
+      "Campus events exposure",
+      "Annual leave 18 ngày",
+      "Flexible hours",
+      "Young culture",
+      "Career to TA Manager",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 2,
+    deadline: new Date("2025-08-20"),
+    recruiterIndex: 5,
+  },
+  {
+    title: "Chuyên viên An toàn Lao động (HSE)",
+    company: "Vingroup",
+    location: "Hà Nội",
+    salary: "18,000,000 - 28,000,000 VND",
+    type: "FULL_TIME",
+    level: "Middle",
+    tags: [
+      "Health & Safety",
+      "Risk Assessment",
+      "ISO 45001",
+      "Incident Investigation",
+      "Safety Training",
+      "PPE Management",
+      "Emergency Response",
+      "Environmental Management",
+      "Compliance",
+      "Construction Safety",
+    ],
+    description:
+      "Vinhomes tìm Chuyên viên An toàn Lao động (HSE) để đảm bảo tuân thủ các quy định về an toàn lao động và môi trường tại các công trình xây dựng. Bạn sẽ thực hiện kiểm tra định kỳ, đào tạo và điều tra sự cố.\n\nYêu cầu:\n- 3+ năm kinh nghiệm HSE (ưu tiên xây dựng)\n- Chứng chỉ an toàn lao động theo quy định\n- Hiểu biết về ISO 45001, ISO 14001\n- Kỹ năng đào tạo và giao tiếp tốt\n- Sẵn sàng công tác tại công trường",
+    benefits: [
+      "Lương theo năng lực",
+      "Phụ cấp công trường",
+      "Bảo hiểm tai nạn + sức khỏe",
+      "Xe đưa đón công trường",
+      "Đồng phục bảo hộ",
+      "Chứng chỉ HSE được tài trợ",
+      "13 tháng lương",
+      "Nghỉ phép 12 ngày",
+      "Teambuilding",
+      "Career path lên HSE Manager",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 3,
+    deadline: new Date("2025-09-30"),
+    recruiterIndex: 1,
+  },
+  {
+    title: "Fullstack Developer (Vue.js + Laravel)",
+    company: "FPT Software",
+    location: "Đà Nẵng",
+    salary: "20,000,000 - 35,000,000 VND",
+    type: "FULL_TIME",
+    level: "Middle",
+    tags: [
+      "Vue.js",
+      "Laravel",
+      "PHP",
+      "MySQL",
+      "REST API",
+      "Docker",
+      "Git",
+      "Agile",
+      "Fullstack",
+      "TypeScript",
+    ],
+    description:
+      "FPT Software Đà Nẵng tuyển Fullstack Developer để phát triển ứng dụng web cho khách hàng Nhật Bản. Bạn sẽ làm việc trong team nhỏ, đảm nhận cả frontend và backend.\n\nYêu cầu:\n- 2+ năm kinh nghiệm Vue.js và Laravel\n- Thành thạo MySQL, REST API\n- Kinh nghiệm với Docker\n- Tiếng Anh đọc hiểu tài liệu\n- Tiếng Nhật là lợi thế",
+    benefits: [
+      "Lương cạnh tranh tại Đà Nẵng",
+      "Bảo hiểm sức khỏe",
+      "Flexible hours",
+      "Japanese project allowance",
+      "Annual bonus",
+      "Remote một phần",
+      "Training budget",
+      "MacBook",
+      "Teambuilding",
+      "Parking free",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 3,
+    deadline: new Date("2025-09-01"),
+    recruiterIndex: 0,
+  },
+  {
+    title: "Chuyên viên Phát triển Kinh doanh (BDM)",
+    company: "KPMG Vietnam",
+    location: "TP. Hồ Chí Minh",
+    salary: "28,000,000 - 50,000,000 VND",
+    type: "FULL_TIME",
+    level: "Senior",
+    tags: [
+      "Business Development",
+      "Professional Services",
+      "Proposal Writing",
+      "Client Acquisition",
+      "Relationship Management",
+      "Bid Management",
+      "Market Research",
+      "Pipeline Management",
+      "CRM",
+      "Networking",
+    ],
+    description:
+      "KPMG Vietnam tìm Business Development Manager để mở rộng danh mục khách hàng và dịch vụ tư vấn. Bạn sẽ phát triển mối quan hệ với C-level, quản lý proposal và phối hợp với các line of service.\n\nYêu cầu:\n- 6+ năm kinh nghiệm business development trong Professional Services\n- Mạng lưới C-level rộng\n- Kỹ năng proposal và pitch xuất sắc\n- Tiếng Anh thành thạo\n- Có kiến thức về audit/tax/advisory là lợi thế",
+    benefits: [
+      "Lương thỏa thuận cạnh tranh",
+      "Commission theo deal",
+      "Bảo hiểm cao cấp",
+      "Entertainment budget",
+      "Company car",
+      "Annual bonus",
+      "KPMG global network",
+      "Professional membership",
+      "Business class travel",
+      "Cơ hội lên Partner track",
+    ],
+    status: "PUBLISHED",
+    isHot: true,
+    slots: 2,
+    deadline: new Date("2025-09-30"),
+    recruiterIndex: 5,
+  },
+  {
+    title: "iOS Developer (Swift)",
+    company: "Grab Vietnam",
+    location: "TP. Hồ Chí Minh",
+    salary: "$2,000 - $3,500",
+    type: "FULL_TIME",
+    level: "Middle",
+    tags: [
+      "Swift",
+      "iOS",
+      "Xcode",
+      "UIKit",
+      "SwiftUI",
+      "CocoaPods",
+      "REST API",
+      "Git",
+      "Agile",
+      "Performance Optimization",
+    ],
+    description:
+      "Grab Vietnam tuyển iOS Developer để phát triển ứng dụng Grab trên nền tảng iOS. Bạn sẽ làm việc với codebase lớn, scale cao và có tác động trực tiếp đến hàng triệu người dùng.\n\nYêu cầu:\n- 3+ năm kinh nghiệm iOS Swift\n- Kinh nghiệm với UIKit và SwiftUI\n- Hiểu biết về app performance optimization\n- Kinh nghiệm publish app lên App Store\n- Tiếng Anh giao tiếp được",
+    benefits: [
+      "Competitive salary",
+      "Annual bonus",
+      "Bảo hiểm cao cấp",
+      "GrabFood credits",
+      "Flexible working",
+      "MacBook Pro",
+      "L&D budget",
+      "International team",
+      "RSU (senior)",
+      "Gym membership",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 3,
+    deadline: new Date("2025-09-15"),
+    recruiterIndex: 6,
+  },
+  {
+    title: "Chuyên viên Tư vấn Quản lý (Management Consultant)",
+    company: "KPMG Vietnam",
+    location: "Hà Nội",
+    salary: "25,000,000 - 45,000,000 VND",
+    type: "FULL_TIME",
+    level: "Senior",
+    tags: [
+      "Management Consulting",
+      "Strategy",
+      "Process Improvement",
+      "Change Management",
+      "Business Analysis",
+      "Project Management",
+      "Stakeholder Engagement",
+      "Presentation",
+      "Research",
+      "Problem Solving",
+    ],
+    description:
+      "KPMG Advisory tìm Senior Management Consultant để tham gia các dự án tư vấn chiến lược và cải thiện hoạt động cho các doanh nghiệp lớn tại Việt Nam. Bạn sẽ làm việc trực tiếp với C-level khách hàng và dẫn dắt phần công việc của mình.\n\nYêu cầu:\n- 4+ năm kinh nghiệm consulting hoặc industry trong vai trò chiến lược\n- Tư duy phân tích và giải quyết vấn đề xuất sắc\n- Kỹ năng trình bày và viết báo cáo tốt\n- Tiếng Anh thành thạo\n- MBA từ trường top là lợi thế",
+    benefits: [
+      "Lương cạnh tranh Big 4",
+      "Performance bonus",
+      "ACCA/MBA support",
+      "Bảo hiểm cao cấp",
+      "International travel",
+      "Annual leave 18 ngày",
+      "Training & certification",
+      "Exposure đa ngành",
+      "Fast-track promotion",
+      "KPMG global network",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 3,
+    deadline: new Date("2025-09-30"),
+    recruiterIndex: 5,
+  },
+  {
+    title: "Android Developer (Kotlin)",
+    company: "Shopee Vietnam",
+    location: "TP. Hồ Chí Minh",
+    salary: "$1,800 - $3,000",
+    type: "FULL_TIME",
+    level: "Middle",
+    tags: [
+      "Kotlin",
+      "Android",
+      "Jetpack Compose",
+      "MVVM",
+      "REST API",
+      "Room DB",
+      "Coroutines",
+      "Git",
+      "Unit Testing",
+      "Performance",
+    ],
+    description:
+      "Shopee Vietnam tìm Android Developer để phát triển ứng dụng mua sắm với hàng chục triệu lượt tải. Bạn sẽ xây dựng tính năng mới, tối ưu performance và cải thiện trải nghiệm người dùng.\n\nYêu cầu:\n- 2+ năm kinh nghiệm Android Kotlin\n- Kinh nghiệm với Jetpack Compose\n- Hiểu biết về MVVM/Clean Architecture\n- Kinh nghiệm tối ưu performance\n- Tiếng Anh đọc hiểu tốt",
+    benefits: [
+      "Competitive salary",
+      "Annual bonus",
+      "Bảo hiểm sức khỏe",
+      "Free lunch",
+      "Flexible working",
+      "L&D budget",
+      "Shopee vouchers",
+      "International career",
+      "MacBook/PC tốt",
+      "Fun team culture",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 3,
+    deadline: new Date("2025-09-01"),
+    recruiterIndex: 2,
+  },
+  {
+    title: "Chuyên viên Quan hệ Lao động",
+    company: "Vingroup",
+    location: "Hà Nội",
+    salary: "22,000,000 - 35,000,000 VND",
+    type: "FULL_TIME",
+    level: "Middle",
+    tags: [
+      "Labor Relations",
+      "Labor Law",
+      "Collective Bargaining",
+      "Grievance Handling",
+      "Policy Development",
+      "HRIS",
+      "Compliance",
+      "Employee Engagement",
+      "Disciplinary Process",
+      "Union Relations",
+    ],
+    description:
+      "Vingroup tìm Chuyên viên Quan hệ Lao động để quản lý các vấn đề về quan hệ lao động và đảm bảo tuân thủ pháp luật lao động trong toàn tập đoàn. Bạn sẽ tư vấn cho HR và management về các quy định lao động và xử lý tranh chấp.\n\nYêu cầu:\n- 3+ năm kinh nghiệm về quan hệ lao động hoặc pháp lý HR\n- Am hiểu sâu về Bộ luật Lao động Việt Nam\n- Kinh nghiệm xử lý tranh chấp lao động\n- Kỹ năng giao tiếp và đàm phán tốt\n- Bằng Luật hoặc QTNL là lợi thế",
+    benefits: [
+      "Lương cạnh tranh",
+      "Thưởng hiệu suất",
+      "Bảo hiểm cao cấp",
+      "Xe đưa đón",
+      "Đào tạo pháp lý",
+      "Môi trường chuyên nghiệp",
+      "Nghỉ phép 15 ngày",
+      "Company trip",
+      "HRIS access",
+      "Career path lên ER Manager",
+    ],
+    status: "DRAFT",
+    isHot: false,
+    slots: 1,
+    deadline: new Date("2025-10-31"),
+    recruiterIndex: 1,
+  },
+  {
+    title: "Growth Hacker / Performance Marketing Specialist",
+    company: "Grab Vietnam",
+    location: "TP. Hồ Chí Minh",
+    salary: "$1,500 - $2,500",
+    type: "FULL_TIME",
+    level: "Middle",
+    tags: [
+      "Performance Marketing",
+      "Growth Hacking",
+      "Facebook Ads",
+      "Google Ads",
+      "App Marketing",
+      "ASO",
+      "Attribution",
+      "A/B Testing",
+      "Analytics",
+      "Budget Optimization",
+    ],
+    description:
+      "Grab Vietnam tìm Performance Marketing Specialist để tối ưu chi phí acquisition và phát triển user base. Bạn sẽ quản lý ngân sách quảng cáo lớn trên nhiều kênh và liên tục thử nghiệm để cải thiện ROAS.\n\nYêu cầu:\n- 3+ năm kinh nghiệm performance marketing\n- Kinh nghiệm quản lý Facebook/Google Ads quy mô lớn\n- Thành thạo các công cụ attribution (Appsflyer, Adjust)\n- Tư duy data-driven và thử nghiệm liên tục\n- Tiếng Anh thành thạo",
+    benefits: [
+      "Competitive salary",
+      "Performance bonus",
+      "GrabFood credits",
+      "Bảo hiểm sức khỏe",
+      "Flexible hours",
+      "Marketing tools budget",
+      "L&D budget",
+      "International exposure",
+      "Annual bonus",
+      "Fun team culture",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 2,
+    deadline: new Date("2025-08-31"),
+    recruiterIndex: 6,
+  },
+  {
+    title: "Chuyên viên Tài chính Dự án",
+    company: "Vingroup",
+    location: "Hà Nội",
+    salary: "25,000,000 - 40,000,000 VND",
+    type: "FULL_TIME",
+    level: "Senior",
+    tags: [
+      "Project Finance",
+      "Financial Modeling",
+      "Bank Loan Negotiation",
+      "Cash Flow Management",
+      "Budget Control",
+      "Capex Planning",
+      "Real Estate Finance",
+      "Reporting",
+      "Excel",
+      "CFA",
+    ],
+    description:
+      "Vingroup tìm Chuyên viên Tài chính Dự án để quản lý tài chính cho các dự án bất động sản và hạ tầng lớn. Bạn sẽ xây dựng mô hình tài chính, đàm phán với ngân hàng và theo dõi cashflow.\n\nYêu cầu:\n- 4+ năm kinh nghiệm project finance hoặc corporate finance\n- Thành thạo financial modeling phức tạp\n- Kinh nghiệm làm việc với ngân hàng\n- Tiếng Anh thành thạo\n- CFA là lợi thế lớn",
+    benefits: [
+      "Lương hấp dẫn",
+      "Performance bonus",
+      "Ưu đãi mua nhà VinHomes",
+      "Bảo hiểm cao cấp",
+      "CFA support",
+      "Workspace sang trọng",
+      "Company car (senior)",
+      "Nghỉ phép 15 ngày",
+      "Annual high-end trip",
+      "Career to CFO track",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 2,
+    deadline: new Date("2025-09-30"),
+    recruiterIndex: 1,
+  },
+  {
+    title: "Chuyên viên Quản lý Rủi ro",
+    company: "Techcombank",
+    location: "Hà Nội",
+    salary: "25,000,000 - 40,000,000 VND",
+    type: "FULL_TIME",
+    level: "Senior",
+    tags: [
+      "Risk Management",
+      "Basel III",
+      "Market Risk",
+      "Credit Risk",
+      "Operational Risk",
+      "Stress Testing",
+      "VaR",
+      "Risk Reporting",
+      "FRM",
+      "Regulatory Compliance",
+    ],
+    description:
+      "Techcombank tìm Chuyên viên Quản lý Rủi ro để tham gia nhóm Enterprise Risk Management. Bạn sẽ phân tích và báo cáo các loại rủi ro theo chuẩn Basel, hỗ trợ stress testing và đảm bảo tuân thủ quy định NHNN.\n\nYêu cầu:\n- 3+ năm kinh nghiệm quản lý rủi ro ngân hàng\n- Hiểu biết sâu về Basel II/III\n- FRM là lợi thế lớn\n- Kỹ năng phân tích định lượng\n- Tiếng Anh thành thạo",
+    benefits: [
+      "Lương cạnh tranh",
+      "Thưởng hiệu suất",
+      "Bảo hiểm cao cấp",
+      "FRM sponsored",
+      "Vay ưu đãi nhân viên",
+      "Đào tạo chuyên sâu",
+      "Môi trường fintech hiện đại",
+      "Nghỉ phép 15 ngày",
+      "Annual trip",
+      "Career lên Risk Manager",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 2,
+    deadline: new Date("2025-09-15"),
+    recruiterIndex: 3,
+  },
+  {
+    title: "Trưởng Phòng Kế hoạch Kinh doanh",
+    company: "Masan Group",
+    location: "TP. Hồ Chí Minh",
+    salary: "40,000,000 - 65,000,000 VND",
+    type: "FULL_TIME",
+    level: "Manager",
+    tags: [
+      "Business Planning",
+      "Strategy",
+      "P&L Management",
+      "Budgeting",
+      "Forecasting",
+      "KPI Management",
+      "Executive Reporting",
+      "Cross-functional Leadership",
+      "Market Analysis",
+      "OKRs",
+    ],
+    description:
+      "Masan Group tìm Trưởng Phòng Kế hoạch Kinh doanh để dẫn dắt quy trình lập kế hoạch chiến lược và ngân sách hàng năm. Bạn sẽ là đối tác chiến lược của C-level trong việc theo dõi và cải thiện hiệu quả kinh doanh.\n\nYêu cầu:\n- 7+ năm kinh nghiệm business planning/FP&A/strategy\n- Kinh nghiệm quản lý nhóm\n- Thành thạo financial modeling và báo cáo\n- Kinh nghiệm FMCG là lợi thế\n- MBA là lợi thế",
+    benefits: [
+      "Gói lương top executive",
+      "Annual bonus lớn",
+      "Company car",
+      "Bảo hiểm VIP toàn gia đình",
+      "Cổ phần ưu đãi",
+      "Executive health check",
+      "Nghỉ phép 18 ngày",
+      "MBA sponsorship",
+      "C-level exposure",
+      "International business travel",
+    ],
+    status: "PUBLISHED",
+    isHot: true,
+    slots: 1,
+    deadline: new Date("2025-08-31"),
+    recruiterIndex: 4,
+  },
+  {
+    title: "Network Engineer",
+    company: "FPT Software",
+    location: "Hà Nội",
+    salary: "18,000,000 - 30,000,000 VND",
+    type: "FULL_TIME",
+    level: "Middle",
+    tags: [
+      "Networking",
+      "Cisco",
+      "Firewall",
+      "CCNA",
+      "VPN",
+      "Network Security",
+      "LAN/WAN",
+      "Troubleshooting",
+      "SD-WAN",
+      "Network Monitoring",
+    ],
+    description:
+      "FPT Software tìm Network Engineer để quản lý và vận hành hạ tầng mạng cho văn phòng và data center. Bạn sẽ thiết kế, triển khai và tối ưu hệ thống mạng doanh nghiệp.\n\nYêu cầu:\n- 3+ năm kinh nghiệm network engineering\n- CCNA/CCNP là bắt buộc\n- Kinh nghiệm với Cisco, Fortinet\n- Hiểu biết về network security\n- Khả năng on-call khi cần",
+    benefits: [
+      "Lương theo năng lực",
+      "CCNP sponsored",
+      "Bảo hiểm sức khỏe",
+      "On-call allowance",
+      "Annual bonus",
+      "Remote partial",
+      "Certification budget",
+      "Team activities",
+      "Parking free",
+      "Canteen nội bộ",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 2,
+    deadline: new Date("2025-09-01"),
+    recruiterIndex: 0,
+  },
+  {
+    title: "Trade Marketing Executive",
+    company: "Masan Group",
+    location: "TP. Hồ Chí Minh",
+    salary: "18,000,000 - 28,000,000 VND",
+    type: "FULL_TIME",
+    level: "Middle",
+    tags: [
+      "Trade Marketing",
+      "In-store Activation",
+      "POSM",
+      "Key Account",
+      "Promotion Planning",
+      "Market Visit",
+      "Distributor Management",
+      "Shopper Insights",
+      "Budget Management",
+      "FMCG",
+    ],
+    description:
+      "Masan Group tìm Trade Marketing Executive để triển khai các hoạt động marketing tại điểm bán cho các thương hiệu FMCG. Bạn sẽ phối hợp với Sales để tối đa hóa visibility và doanh số tại kênh GT và MT.\n\nYêu cầu:\n- 2+ năm kinh nghiệm trade marketing trong FMCG\n- Hiểu biết về kênh GT và MT\n- Kinh nghiệm quản lý POSM và activation\n- Có xe máy và sẵn sàng đi field\n- Kỹ năng phân tích dữ liệu bán hàng",
+    benefits: [
+      "Lương cạnh tranh",
+      "Xăng xe và phụ cấp field",
+      "Bảo hiểm sức khỏe",
+      "Sản phẩm miễn phí",
+      "13 tháng lương",
+      "Teambuilding",
+      "Đào tạo trade marketing",
+      "Review lương hàng năm",
+      "Nghỉ phép 12 ngày",
+      "Career path lên Trade Marketing Manager",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 2,
+    deadline: new Date("2025-08-31"),
+    recruiterIndex: 4,
+  },
+  {
+    title: "Technical Support Engineer",
+    company: "FPT Software",
+    location: "Đà Nẵng",
+    salary: "15,000,000 - 25,000,000 VND",
+    type: "FULL_TIME",
+    level: "Middle",
+    tags: [
+      "Technical Support",
+      "L2/L3 Support",
+      "Troubleshooting",
+      "Linux",
+      "SQL",
+      "Customer Communication",
+      "Incident Management",
+      "Documentation",
+      "ITIL",
+      "SLA Management",
+    ],
+    description:
+      "FPT Software Đà Nẵng tuyển Technical Support Engineer để hỗ trợ khách hàng quốc tế giải quyết các vấn đề kỹ thuật. Vị trí phù hợp cho người muốn làm việc trong môi trường kỹ thuật với nhiều cơ hội học hỏi.\n\nYêu cầu:\n- 2+ năm kinh nghiệm technical support\n- Thành thạo Linux command line\n- Kiến thức SQL cơ bản\n- Tiếng Anh giao tiếp tốt (viết và nói)\n- Kinh nghiệm ITIL là lợi thế",
+    benefits: [
+      "Lương cạnh tranh tại Đà Nẵng",
+      "Bảo hiểm sức khỏe",
+      "Shift allowance",
+      "ITIL certification support",
+      "Annual bonus",
+      "Môi trường quốc tế",
+      "Career path sang Developer/DevOps",
+      "Teambuilding",
+      "Parking free",
+      "Canteen nội bộ",
+    ],
+    status: "PUBLISHED",
+    isHot: false,
+    slots: 5,
+    deadline: new Date("2025-09-15"),
+    recruiterIndex: 0,
+  },
+];
+
+// ─── Application notes (realistic recruiter feedback) ─────────────────────────
+
+const RECRUITER_NOTES = [
+  "Ứng viên có profile khá ấn tượng, kỹ năng kỹ thuật phù hợp với yêu cầu JD. Tuy nhiên, qua vòng phỏng vấn kỹ thuật nhận thấy kinh nghiệm thực tế với microservices còn hạn chế. Đề xuất xem xét cho vị trí Middle thay vì Senior. Cần thêm 1 vòng kỹ thuật chuyên sâu.",
+  "Ứng viên trình bày tốt, thái độ chuyên nghiệp và có kinh nghiệm phù hợp. KPI tại công ty cũ đạt 120% liên tục. Salary expectation hợp lý. Đề xuất offer và onboard sớm vì có thể sẽ có counter-offer từ employer hiện tại.",
+  "CV tốt nhưng qua phỏng vấn ứng viên thiếu kinh nghiệm thực tế với các dự án quy mô lớn như yêu cầu. Portfolio chủ yếu là side projects cá nhân. Cần cân nhắc thêm.",
+  "Ứng viên có background đúng ngành nhưng salary expectation vượt budget 30%. Đã đàm phán nhưng ứng viên không linh hoạt. Tạm thời hold hồ sơ, có thể xem xét lại nếu có thêm budget trong Q4.",
+  "Vòng 1 pass tốt. Kỹ năng mềm xuất sắc, thái độ cầu tiến rõ ràng. Tuy nhiên technical test đạt 65/100, chưa đạt ngưỡng 70 theo quy định. Suggest bạn tiếp tục ôn luyện và apply lại sau 3-6 tháng.",
+  "Excellent candidate! Ứng viên vượt qua tất cả các vòng phỏng vấn với điểm số cao nhất trong batch này. Tư duy sắc bén, kinh nghiệm phù hợp và culture fit tốt. Đã gửi offer letter.",
+  "Ứng viên có kinh nghiệm tốt tại Big 4, nền tảng kỹ thuật vững. Điểm trừ là chưa có kinh nghiệm trong ngành banking/fintech. Team lead đánh giá cần thêm 2-3 tháng onboard. Vẫn đề xuất proceed vì learning curve ngắn.",
+  "Phỏng vấn vòng 2 xong, ứng viên thể hiện tốt về mặt chuyên môn nhưng có một số vấn đề về thái độ - ứng viên có vẻ quá tự tin và khó tiếp nhận feedback trong case interview. Cần trao đổi thêm với hiring manager trước khi quyết định.",
+  "Ứng viên apply nhầm vị trí - kinh nghiệm chủ yếu là B2C sales trong khi JD yêu cầu B2B enterprise. Đã liên hệ và đề xuất ứng viên apply vị trí phù hợp hơn trong công ty.",
+  "Rất tiếc phải từ chối ứng viên dù profile rất tốt. Sau khi internal discussion, vị trí này đã được chuyển thành internal promotion cho một nhân viên hiện tại. Ứng viên sẽ được ưu tiên xem xét cho các vị trí tương tự trong tương lai.",
+  "Ứng viên pass vòng HR và Technical nhưng reference check có một số thông tin không khớp với những gì ứng viên chia sẻ. Đang xác minh thêm trước khi đưa ra quyết định cuối.",
+  "Background ngành rất phù hợp, tiếng Anh trôi chảy - đây là điểm cộng lớn cho vị trí làm việc với khách nước ngoài. Cần thêm 1 buổi gặp trực tiếp với CTO để final decision.",
+];
+
+// Cover letter templates
+const COVER_LETTER_TEMPLATES = [
+  {
+    title: "Thư ứng tuyển vị trí Kỹ sư Backend",
+    content: `Kính gửi Phòng Nhân sự,
+
+Tôi viết thư này để bày tỏ sự quan tâm của mình đến vị trí Kỹ sư Backend được đăng tuyển tại quý công ty. Với hơn 3 năm kinh nghiệm phát triển hệ thống backend sử dụng Node.js và NestJS, tôi tin rằng mình có thể đóng góp giá trị cho đội ngũ kỹ thuật của quý công ty.
+
+Trong quá trình làm việc tại các công ty trước, tôi đã tham gia xây dựng các hệ thống microservices xử lý hàng triệu request mỗi ngày, tối ưu hóa hiệu suất cơ sở dữ liệu và triển khai các giải pháp caching với Redis. Tôi cũng có kinh nghiệm làm việc trong môi trường Agile và mentoring cho các junior developer.
+
+Điều khiến tôi đặc biệt quan tâm đến vị trí này là cơ hội được làm việc với công nghệ hiện đại và trong môi trường có thách thức kỹ thuật cao. Tôi cũng ấn tượng với văn hóa công ty qua các bài viết trên blog kỹ thuật và các chia sẻ của đồng nghiệp hiện tại.
+
+Tôi hy vọng có cơ hội được gặp gỡ và thảo luận thêm về cách tôi có thể đóng góp cho sự phát triển của công ty.
+
+Trân trọng.`,
+  },
+  {
+    title: "Thư xin việc - Chuyên viên Marketing",
+    content: `Kính gửi Ban Tuyển dụng,
+
+Tôi là ứng viên ứng tuyển vào vị trí Chuyên viên Digital Marketing. Với 4 năm kinh nghiệm trong lĩnh vực marketing kỹ thuật số, tôi đã xây dựng nhiều chiến dịch marketing thành công và có kiến thức vững về SEO, SEM, Social Media Marketing.
+
+Tại vị trí trước, tôi đã quản lý ngân sách quảng cáo 500 triệu VND/tháng và đạt ROAS trung bình 4.5x. Tôi cũng đã tăng organic traffic lên 200% trong 6 tháng thông qua chiến lược SEO toàn diện và content marketing bền vững.
+
+Tôi đặc biệt quan tâm đến cơ hội tại quý công ty vì tôi muốn áp dụng kinh nghiệm của mình vào lĩnh vực FMCG - một mảng mà tôi thấy rất thú vị và có nhiều tiềm năng phát triển. Tôi tin rằng sự kết hợp giữa kiến thức marketing kỹ thuật số và hiểu biết về hành vi người tiêu dùng sẽ giúp tôi đóng góp hiệu quả cho đội ngũ marketing của công ty.
+
+Tôi mong được có cơ hội trao đổi thêm về vị trí này.
+
+Trân trọng.`,
+  },
+  {
+    title: "Cover Letter - Sales Position",
+    content: `Dear Hiring Manager,
+
+I am writing to express my strong interest in the Sales Executive position at your company. With five years of B2B sales experience in the software and technology sector, I have consistently exceeded my quotas and built lasting client relationships.
+
+In my current role, I have closed deals worth over $2M annually and maintained a client retention rate of 92%. My approach combines consultative selling with a deep understanding of my clients' business challenges, allowing me to position our solutions as strategic investments rather than mere products.
+
+I am particularly excited about this opportunity because your company's innovative solutions align with market needs I've observed in my client base. I believe my experience navigating complex enterprise sales cycles and my existing network in the industry would enable me to contribute significantly from day one.
+
+I would welcome the opportunity to discuss how my background and skills would be an asset to your sales team.
+
+Best regards.`,
+  },
+  {
+    title: "Thư ứng tuyển - Kế toán Tổng hợp",
+    content: `Kính gửi Phòng Nhân sự,
+
+Tôi xin gửi đến quý công ty hồ sơ ứng tuyển vị trí Kế toán Tổng hợp. Tôi hiện có 6 năm kinh nghiệm trong lĩnh vực kế toán tại các doanh nghiệp sản xuất và thương mại, và mong muốn được đóng góp vào sự phát triển của công ty.
+
+Trong suốt quá trình làm việc, tôi đã xử lý đầy đủ các nghiệp vụ kế toán từ kế toán tiền mặt, ngân hàng, công nợ, tài sản cố định đến lập báo cáo tài chính theo chuẩn VAS. Tôi thành thạo phần mềm MISA và SAP, và luôn hoàn thành công việc đúng hạn kể cả trong các kỳ quyết toán áp lực cao.
+
+Tôi tin rằng sự cẩn thận, tỉ mỉ và trách nhiệm cao trong công việc của mình sẽ phù hợp với yêu cầu của vị trí này. Tôi cũng đang trong quá trình học ACCA để nâng cao kiến thức chuyên môn.
+
+Rất mong được quý công ty xem xét hồ sơ của tôi.
+
+Kính trân trọng.`,
+  },
+  {
+    title: "Thư ứng tuyển - Data Analyst",
+    content: `Kính gửi Phòng Nhân sự,
+
+Tôi đang ứng tuyển vào vị trí Data Analyst tại công ty. Với 3 năm kinh nghiệm phân tích dữ liệu trong lĩnh vực fintech và e-commerce, tôi tin rằng mình có thể cung cấp những insight có giá trị để hỗ trợ quyết định kinh doanh.
+
+Tôi thành thạo Python (pandas, numpy, matplotlib), SQL và các công cụ BI như Power BI và Tableau. Tôi đã xây dựng nhiều dashboard theo dõi KPI kinh doanh, phân tích cohort retention và thiết kế các A/B test để tối ưu conversion rate. Đặc biệt, tôi có kinh nghiệm xây dựng mô hình churn prediction đạt accuracy 87%.
+
+Tôi bị thu hút bởi cơ hội làm việc tại công ty vì quy mô dữ liệu lớn sẽ cho phép tôi áp dụng các phương pháp phân tích nâng cao hơn và học hỏi từ đội ngũ data scientist giỏi.
+
+Tôi hy vọng được cơ hội trình bày thêm về kinh nghiệm và kỹ năng của mình.
+
+Trân trọng.`,
+  },
+  {
+    title: "Thư ứng tuyển - HR Business Partner",
+    content: `Kính gửi Ban Tuyển dụng,
+
+Tôi ứng tuyển vào vị trí HR Business Partner với mong muốn mang lại giá trị chiến lược cho tổ chức thông qua quản lý nhân sự hiệu quả. Với 5 năm kinh nghiệm trong lĩnh vực HR, trong đó 2 năm đảm nhiệm vai trò HRBP, tôi hiểu rõ tầm quan trọng của việc gắn kết chiến lược nhân sự với mục tiêu kinh doanh.
+
+Tại vị trí HRBP hiện tại, tôi đã phối hợp với 3 business unit để thiết kế và triển khai chương trình performance management mới, giúp tăng employee engagement score từ 65% lên 78% trong 1 năm. Tôi cũng đã dẫn dắt dự án tái cơ cấu tổ chức cho một BU với 200 nhân viên.
+
+Tôi tin rằng sự kết hợp giữa tư duy business và chuyên môn HR của mình sẽ giúp tôi nhanh chóng trở thành đối tác chiến lược đáng tin cậy cho các business leader của công ty.
+
+Kính trân trọng.`,
+  },
+];
+
+// ─── Main seed function ───────────────────────────────────────────────────────
 
 async function main() {
-  console.log("🌱 Seeding database...\n");
+  console.log("🌱 Starting seed...");
 
-  // ── 1. USERS ──────────────────────────────────────────────────────────────
-
-  console.log("👤 Creating users...");
-
-  const [
-    adminUser,
-    recruiter1,
-    recruiter2,
-    candidate1,
-    candidate2,
-    candidate3,
-  ] = await Promise.all([
-    // Admin
-    prisma.user.create({
-      data: {
-        id: uuid(),
-        email: "admin@sra.dev",
-        password: await hash("Admin@123456"),
-        role: "ADMIN",
-        isVerified: true,
-        isActive: true,
-      },
-    }),
-
-    // Recruiters
-    prisma.user.create({
-      data: {
-        id: uuid(),
-        email: "recruiter1@techcorp.vn",
-        password: await hash("Recruiter@123"),
-        role: "RECRUITER",
-        isVerified: true,
-        isActive: true,
-      },
-    }),
-    prisma.user.create({
-      data: {
-        id: uuid(),
-        email: "recruiter2@fintech.vn",
-        password: await hash("Recruiter@123"),
-        role: "RECRUITER",
-        isVerified: true,
-        isActive: true,
-      },
-    }),
-
-    // Candidates
-    prisma.user.create({
-      data: {
-        id: uuid(),
-        email: "candidate1@gmail.com",
-        password: await hash("Candidate@123"),
-        role: "CANDIDATE",
-        isVerified: true,
-        isActive: true,
-      },
-    }),
-    prisma.user.create({
-      data: {
-        id: uuid(),
-        email: "candidate2@gmail.com",
-        password: await hash("Candidate@123"),
-        role: "CANDIDATE",
-        isVerified: true,
-        isActive: true,
-      },
-    }),
-    prisma.user.create({
-      data: {
-        id: uuid(),
-        email: "candidate3@gmail.com",
-        password: await hash("Candidate@123"),
-        role: "CANDIDATE",
-        isVerified: false, // chưa verify để test flow
-        isActive: true,
-        verificationCode: "482931",
-        verificationCodeExpAt: daysFromNow(1),
-      },
-    }),
+  // Clean up
+  await prisma.$transaction([
+    prisma.cvAnalysis.deleteMany(),
+    prisma.chatMessage.deleteMany(),
+    prisma.chatSession.deleteMany(),
+    prisma.application.deleteMany(),
+    prisma.savedJob.deleteMany(),
+    prisma.coverLetter.deleteMany(),
+    prisma.cv.deleteMany(),
+    prisma.job.deleteMany(),
+    prisma.profile.deleteMany(),
+    prisma.refreshToken.deleteMany(),
+    prisma.revokedToken.deleteMany(),
+    prisma.user.deleteMany(),
   ]);
 
-  console.log("  ✓ 6 users created");
+  console.log("🗑️  Cleaned existing data");
 
-  // ── 2. PROFILES ───────────────────────────────────────────────────────────
-
-  console.log("📋 Creating profiles...");
-
-  await Promise.all([
-    prisma.profile.create({
-      data: {
-        userId: adminUser.id,
-        fullName: "System Administrator",
-        phone: "0900000000",
-        bio: "Quản trị hệ thống Smart Recruit Assistant.",
-        address: "Ho Chi Minh City, Vietnam",
-      },
-    }),
-    prisma.profile.create({
-      data: {
-        userId: recruiter1.id,
-        fullName: "Nguyễn Văn Hùng",
-        phone: "0901234567",
-        bio: "HR Manager tại TechCorp Vietnam với 6 năm kinh nghiệm tuyển dụng ngành công nghệ.",
-        address: "Quận 1, TP. Hồ Chí Minh",
-        avatarUrl: "https://i.pravatar.cc/150?u=recruiter1",
-      },
-    }),
-    prisma.profile.create({
-      data: {
-        userId: recruiter2.id,
-        fullName: "Trần Thị Lan",
-        phone: "0912345678",
-        bio: "Talent Acquisition Lead tại FinTech Solutions, chuyên tuyển dụng vị trí kỹ thuật và sản phẩm.",
-        address: "Quận 7, TP. Hồ Chí Minh",
-        avatarUrl: "https://i.pravatar.cc/150?u=recruiter2",
-      },
-    }),
-    prisma.profile.create({
-      data: {
-        userId: candidate1.id,
-        fullName: "Lê Minh Khôi",
-        phone: "0987654321",
-        bio: "Backend Developer với 3 năm kinh nghiệm. Thành thạo Node.js, TypeScript, PostgreSQL. Đam mê xây dựng hệ thống scalable.",
-        address: "Bình Thạnh, TP. Hồ Chí Minh",
-        avatarUrl: "https://i.pravatar.cc/150?u=candidate1",
-        skills:
-          "Node.js, TypeScript, NestJS, PostgreSQL, MySQL, Redis, Docker, AWS, RESTful API, GraphQL",
-      },
-    }),
-    prisma.profile.create({
-      data: {
-        userId: candidate2.id,
-        fullName: "Phạm Thị Thu",
-        phone: "0976543210",
-        bio: "Frontend Developer 2 năm kinh nghiệm với React và Next.js. Quan tâm đến UI/UX và performance.",
-        address: "Gò Vấp, TP. Hồ Chí Minh",
-        avatarUrl: "https://i.pravatar.cc/150?u=candidate2",
-        skills:
-          "React, Next.js, TypeScript, TailwindCSS, Redux, React Query, Figma, Jest",
-      },
-    }),
-    prisma.profile.create({
-      data: {
-        userId: candidate3.id,
-        fullName: "Hoàng Đức Nam",
-        phone: "0965432109",
-        bio: "Fresh graduate ngành CNTT, tìm kiếm vị trí Intern/Junior Developer để phát triển kỹ năng.",
-        address: "Thủ Đức, TP. Hồ Chí Minh",
-        skills: "Java, Spring Boot, MySQL, HTML, CSS, JavaScript cơ bản",
-      },
-    }),
-  ]);
-
-  console.log("  ✓ 6 profiles created");
-
-  // ── 3. JOBS ───────────────────────────────────────────────────────────────
-
-  console.log("💼 Creating jobs...");
-
-  const [
-    jobBackend,
-    jobFrontend,
-    jobFullstack,
-    jobDevOps,
-    jobDataEngineer,
-    jobMobileAndroid,
-    jobFintech1,
-    jobFintech2,
-  ] = await Promise.all([
-    // TechCorp jobs (recruiter1)
-    prisma.job.create({
-      data: {
-        title: "Senior Backend Developer (Node.js)",
-        company: "TechCorp Vietnam",
-        location: "Quận 1, TP. Hồ Chí Minh",
-        salary: "25,000,000 - 40,000,000 VNĐ",
-        type: "FULL_TIME",
-        level: "Senior",
-        tags: ["Node.js", "TypeScript", "PostgreSQL", "Docker", "AWS"],
-        description: `## Mô tả công việc
-
-Chúng tôi đang tìm kiếm Senior Backend Developer tài năng để tham gia phát triển nền tảng SaaS quy mô lớn phục vụ hàng triệu người dùng.
-
-### Trách nhiệm chính
-- Thiết kế và phát triển các microservices hiệu năng cao
-- Tối ưu hóa database queries và hệ thống cache
-- Code review và mentor Junior developers
-- Tham gia vào quá trình thiết kế hệ thống
-- Đảm bảo coverage test tối thiểu 80%
-
-### Yêu cầu kỹ thuật
-- 4+ năm kinh nghiệm với Node.js / TypeScript
-- Thành thạo PostgreSQL, có kinh nghiệm với Redis
-- Hiểu biết về microservices và event-driven architecture
-- Kinh nghiệm với Docker, CI/CD
-- Tiếng Anh đọc hiểu tốt`,
-        benefits: [
-          "Lương cạnh tranh + thưởng hiệu suất",
-          "Laptop MacBook Pro",
-          "Bảo hiểm sức khỏe cao cấp",
-          "15 ngày phép/năm",
-          "Budget học tập $500/năm",
-          "Flexible working hours",
-          "Team building hàng quý",
-        ],
-        slots: 2,
-        deadline: daysFromNow(30),
-        status: "PUBLISHED",
-        isHot: true,
-        postedById: recruiter1.id,
-      },
-    }),
-
-    prisma.job.create({
-      data: {
-        title: "Frontend Developer (React/Next.js)",
-        company: "TechCorp Vietnam",
-        location: "Quận 1, TP. Hồ Chí Minh",
-        salary: "18,000,000 - 28,000,000 VNĐ",
-        type: "FULL_TIME",
-        level: "Middle",
-        tags: ["React", "Next.js", "TypeScript", "TailwindCSS"],
-        description: `## Mô tả công việc
-
-TechCorp Vietnam tìm kiếm Frontend Developer để xây dựng giao diện người dùng cho sản phẩm chính.
-
-### Trách nhiệm
-- Phát triển UI components với React và Next.js
-- Tối ưu performance web (Core Web Vitals)
-- Làm việc chặt chẽ với team Design và Backend
-- Viết unit test với Jest/Testing Library
-
-### Yêu cầu
-- 2+ năm kinh nghiệm React
-- Thành thạo TypeScript
-- Có kinh nghiệm với TailwindCSS
-- Hiểu biết về SSR/SSG với Next.js`,
-        benefits: [
-          "Lương hấp dẫn",
-          "MacBook cấp phát",
-          "Làm việc hybrid (3 ngày remote)",
-          "Bảo hiểm sức khỏe",
-          "Môi trường làm việc trẻ trung",
-        ],
-        slots: 1,
-        deadline: daysFromNow(21),
-        status: "PUBLISHED",
-        isHot: false,
-        postedById: recruiter1.id,
-      },
-    }),
-
-    prisma.job.create({
-      data: {
-        title: "Fullstack Developer (NestJS + React)",
-        company: "TechCorp Vietnam",
-        location: "Remote",
-        salary: "20,000,000 - 35,000,000 VNĐ",
-        type: "REMOTE",
-        level: "Middle/Senior",
-        tags: ["NestJS", "React", "TypeScript", "MySQL", "Redis"],
-        description: `## Fullstack Developer
-
-Vị trí làm việc 100% remote, phù hợp với developer có khả năng tự quản lý công việc tốt.
-
-### Yêu cầu
-- Thành thạo NestJS và React/TypeScript
-- Kinh nghiệm với MySQL và Redis
-- Có khả năng làm việc độc lập
-- Kỹ năng giao tiếp tốt`,
-        benefits: [
-          "100% Remote",
-          "Thời gian làm việc linh hoạt",
-          "Thiết bị hỗ trợ",
-          "Môi trường international",
-        ],
-        slots: 3,
-        deadline: daysFromNow(45),
-        status: "PUBLISHED",
-        isHot: true,
-        postedById: recruiter1.id,
-      },
-    }),
-
-    prisma.job.create({
-      data: {
-        title: "DevOps Engineer",
-        company: "TechCorp Vietnam",
-        location: "Quận 1, TP. Hồ Chí Minh",
-        salary: "28,000,000 - 45,000,000 VNĐ",
-        type: "FULL_TIME",
-        level: "Senior",
-        tags: ["Kubernetes", "AWS", "Terraform", "CI/CD", "Docker"],
-        description: `## DevOps Engineer
-
-Xây dựng và vận hành hạ tầng cloud cho hệ thống phục vụ 1M+ users.
-
-### Yêu cầu
-- 3+ năm kinh nghiệm DevOps
-- Thành thạo AWS (EKS, RDS, S3, CloudFront)
-- Kinh nghiệm với Kubernetes và Terraform
-- Kiến thức về security và monitoring`,
-        benefits: [
-          "Lương top-of-market",
-          "Stock options",
-          "Full remote option",
-          "Conference budget",
-        ],
-        slots: 1,
-        deadline: daysFromNow(60),
-        status: "PUBLISHED",
-        isHot: false,
-        postedById: recruiter1.id,
-      },
-    }),
-
-    prisma.job.create({
-      data: {
-        title: "Data Engineer",
-        company: "TechCorp Vietnam",
-        location: "Quận 1, TP. Hồ Chí Minh",
-        salary: "22,000,000 - 38,000,000 VNĐ",
-        type: "FULL_TIME",
-        level: "Middle",
-        tags: ["Python", "Spark", "Airflow", "dbt", "BigQuery"],
-        description: `## Data Engineer
-
-Xây dựng data pipeline và data warehouse cho hệ thống phân tích kinh doanh.
-
-### Yêu cầu
-- Thành thạo Python và SQL
-- Kinh nghiệm với Airflow hoặc Prefect
-- Hiểu biết về data modeling (Star schema, dimensional modeling)
-- Kinh nghiệm với cloud data warehouse`,
-        benefits: [
-          "Dự án dữ liệu quy mô lớn",
-          "Đào tạo chuyên sâu",
-          "Lương thưởng hấp dẫn",
-        ],
-        slots: 2,
-        deadline: daysFromNow(30),
-        status: "PUBLISHED",
-        isHot: false,
-        postedById: recruiter1.id,
-      },
-    }),
-
-    prisma.job.create({
-      data: {
-        title: "Android Developer (Kotlin)",
-        company: "TechCorp Vietnam",
-        location: "Quận 1, TP. Hồ Chí Minh",
-        salary: "20,000,000 - 30,000,000 VNĐ",
-        type: "FULL_TIME",
-        level: "Middle",
-        tags: ["Kotlin", "Android", "Jetpack Compose", "MVVM"],
-        description: `## Android Developer
-
-Phát triển ứng dụng Android cho sản phẩm với 500K+ downloads.
-
-### Yêu cầu
-- 2+ năm kinh nghiệm Android với Kotlin
-- Thành thạo Jetpack Compose
-- Kinh nghiệm MVVM/Clean Architecture
-- Publish ít nhất 1 app lên Play Store`,
-        benefits: [
-          "Sản phẩm thực tế, tác động lớn",
-          "Thiết bị test cấp phát",
-          "Môi trường agile",
-        ],
-        slots: 1,
-        deadline: daysFromNow(25),
-        status: "DRAFT", // chưa publish
-        isHot: false,
-        postedById: recruiter1.id,
-      },
-    }),
-
-    // FinTech jobs (recruiter2)
-    prisma.job.create({
-      data: {
-        title: "Backend Developer (Java/Spring Boot)",
-        company: "FinTech Solutions",
-        location: "Quận 7, TP. Hồ Chí Minh",
-        salary: "20,000,000 - 35,000,000 VNĐ",
-        type: "FULL_TIME",
-        level: "Middle",
-        tags: ["Java", "Spring Boot", "MySQL", "Kafka", "Microservices"],
-        description: `## Backend Developer - Core Banking
-
-Tham gia phát triển hệ thống Core Banking xử lý hàng triệu giao dịch mỗi ngày.
-
-### Yêu cầu
-- 2+ năm kinh nghiệm Java Spring Boot
-- Kinh nghiệm với MySQL, hiểu biết transaction isolation
-- Kiến thức về messaging (Kafka/RabbitMQ)
-- Ưu tiên có kinh nghiệm fintech hoặc banking`,
-        benefits: [
-          "Lương + thưởng KPI",
-          "Bảo hiểm sức khỏe gia đình",
-          "18 ngày phép",
-          "Cổ phần nhân viên",
-          "Lộ trình thăng tiến rõ ràng",
-        ],
-        slots: 3,
-        deadline: daysFromNow(35),
-        status: "PUBLISHED",
-        isHot: true,
-        postedById: recruiter2.id,
-      },
-    }),
-
-    prisma.job.create({
-      data: {
-        title: "Intern Frontend Developer",
-        company: "FinTech Solutions",
-        location: "Quận 7, TP. Hồ Chí Minh",
-        salary: "4,000,000 - 6,000,000 VNĐ",
-        type: "INTERNSHIP",
-        level: "Intern",
-        tags: ["React", "JavaScript", "HTML", "CSS"],
-        description: `## Intern Frontend Developer
-
-Cơ hội thực tập tại công ty Fintech hàng đầu Việt Nam.
-
-### Yêu cầu
-- Sinh viên năm 3/4 ngành CNTT
-- Biết HTML, CSS, JavaScript cơ bản
-- Biết React là lợi thế
-- Chăm chỉ, ham học hỏi`,
-        benefits: [
-          "Hỗ trợ 4-6 triệu/tháng",
-          "Mentorship 1-1",
-          "Xét tuyển dụng sau thực tập",
-          "Môi trường thân thiện",
-        ],
-        slots: 5,
-        deadline: daysFromNow(14),
-        status: "PUBLISHED",
-        isHot: false,
-        postedById: recruiter2.id,
-      },
-    }),
-  ]);
-
-  // 1 job đã CLOSED (hết hạn)
-  await prisma.job.create({
+  // ── 1. Admin ───────────────────────────────────────────────────────────────
+  const adminUser = await prisma.user.create({
     data: {
-      title: "Product Manager (Tech)",
-      company: "FinTech Solutions",
-      location: "Quận 7, TP. Hồ Chí Minh",
-      salary: "35,000,000 - 55,000,000 VNĐ",
-      type: "FULL_TIME",
-      level: "Senior",
-      tags: ["Product Management", "Agile", "Fintech"],
-      description: "Vị trí đã đóng tuyển dụng.",
-      benefits: [],
-      slots: 1,
-      deadline: daysAgo(10),
-      status: "CLOSED",
-      isHot: false,
-      postedById: recruiter2.id,
+      email: "admin@sra.dev",
+      password: hash("Admin@123456"),
+      role: "ADMIN",
+      isVerified: true,
+      isActive: true,
+      profile: {
+        create: {
+          fullName: "Quản trị viên Hệ thống",
+          phone: "0800000000",
+          address: "Quận 1, TP. Hồ Chí Minh",
+          bio: "Quản trị viên hệ thống SRA Job Portal. Chịu trách nhiệm vận hành, giám sát và đảm bảo chất lượng dịch vụ tuyển dụng trên nền tảng. Liên hệ để được hỗ trợ về các vấn đề liên quan đến tài khoản và nội dung đăng tuyển.",
+          skills: JSON.stringify([
+            "System Administration",
+            "Platform Management",
+            "User Support",
+            "Content Moderation",
+            "Data Analysis",
+          ]),
+        },
+      },
     },
   });
+  console.log("✅ Admin created");
 
-  console.log("  ✓ 9 jobs created (6 PUBLISHED, 1 DRAFT, 1 CLOSED, 1 HOT)");
-
-  // ── 4. CVs ────────────────────────────────────────────────────────────────
-
-  console.log("📄 Creating CVs...");
-
-  const [cv1Default, cv1Alt, cv2Default] = await Promise.all([
-    prisma.cv.create({
+  // ── 2. Recruiters ──────────────────────────────────────────────────────────
+  const recruiterUsers = [];
+  for (const r of RECRUITERS) {
+    const u = await prisma.user.create({
       data: {
-        name: "CV_LeMinhKhoi_Backend_2024.pdf",
-        fileUrl: "https://storage.sra.dev/cvs/candidate1/cv_backend_2024.pdf",
-        isDefault: true,
-        userId: candidate1.id,
+        email: r.email,
+        password: hash("password"),
+        role: "RECRUITER",
+        isVerified: true,
+        isActive: true,
+        profile: {
+          create: {
+            fullName: r.fullName,
+            phone: r.phone,
+            address: r.address,
+            bio: r.bio,
+            skills: JSON.stringify(r.skills),
+          },
+        },
       },
-    }),
-    prisma.cv.create({
+    });
+    recruiterUsers.push(u);
+  }
+  console.log(`✅ ${recruiterUsers.length} recruiters created`);
+
+  // ── 3. Candidates ──────────────────────────────────────────────────────────
+  const candidateUsers = [];
+  for (const c of CANDIDATES) {
+    const u = await prisma.user.create({
       data: {
-        name: "CV_LeMinhKhoi_Fullstack_2024.pdf",
-        fileUrl: "https://storage.sra.dev/cvs/candidate1/cv_fullstack_2024.pdf",
-        isDefault: false,
-        userId: candidate1.id,
+        email: c.email,
+        password: hash("password"),
+        role: "CANDIDATE",
+        isVerified: true,
+        isActive: true,
+        profile: {
+          create: {
+            fullName: c.fullName,
+            phone: c.phone,
+            address: c.address,
+            bio: c.bio,
+            skills: JSON.stringify(c.skills),
+          },
+        },
       },
-    }),
-    prisma.cv.create({
+    });
+    candidateUsers.push(u);
+  }
+  console.log(`✅ ${candidateUsers.length} candidates created`);
+
+  // ── 4. Jobs ────────────────────────────────────────────────────────────────
+  const createdJobs = [];
+  for (const jobData of JOBS_DATA) {
+    const recruiter = recruiterUsers[jobData.recruiterIndex];
+    const job = await prisma.job.create({
       data: {
-        name: "CV_PhamThiThu_Frontend_2024.pdf",
-        fileUrl: "https://storage.sra.dev/cvs/candidate2/cv_frontend_2024.pdf",
-        isDefault: true,
-        userId: candidate2.id,
+        title: jobData.title,
+        company: jobData.company,
+        location: jobData.location,
+        salary: jobData.salary,
+        type: jobData.type,
+        level: jobData.level,
+        tags: JSON.stringify(jobData.tags),
+        description: jobData.description,
+        benefits: JSON.stringify(jobData.benefits),
+        slots: jobData.slots,
+        deadline: jobData.deadline,
+        status: jobData.status,
+        isHot: jobData.isHot,
+        postedById: recruiter.id,
       },
-    }),
-  ]);
+    });
+    createdJobs.push(job);
+  }
+  console.log(`✅ ${createdJobs.length} jobs created`);
 
-  console.log("  ✓ 3 CVs created");
+  // ── 5. CVs for candidates ──────────────────────────────────────────────────
+  const candidateCvs = {};
+  for (const candidate of candidateUsers) {
+    const cvs = await prisma.$transaction([
+      prisma.cv.create({
+        data: {
+          name: "CV Chính",
+          fileUrl: `https://storage.sra.dev/cvs/${candidate.id}/main-cv.pdf`,
+          isDefault: true,
+          userId: candidate.id,
+        },
+      }),
+      prisma.cv.create({
+        data: {
+          name: "CV Tiếng Anh",
+          fileUrl: `https://storage.sra.dev/cvs/${candidate.id}/english-cv.pdf`,
+          isDefault: false,
+          userId: candidate.id,
+        },
+      }),
+    ]);
+    candidateCvs[candidate.id] = cvs;
+  }
+  console.log("✅ CVs created");
 
-  // ── 5. COVER LETTERS ──────────────────────────────────────────────────────
+  // ── 6. Cover Letters ───────────────────────────────────────────────────────
+  for (const candidate of candidateUsers) {
+    // Assign 3 cover letters per candidate, cycling through templates
+    const idx = candidateUsers.indexOf(candidate);
+    const tpl1 = COVER_LETTER_TEMPLATES[idx % COVER_LETTER_TEMPLATES.length];
+    const tpl2 =
+      COVER_LETTER_TEMPLATES[(idx + 1) % COVER_LETTER_TEMPLATES.length];
+    const tpl3 =
+      COVER_LETTER_TEMPLATES[(idx + 2) % COVER_LETTER_TEMPLATES.length];
+    await prisma.coverLetter.createMany({
+      data: [
+        { title: tpl1.title, content: tpl1.content, userId: candidate.id },
+        { title: tpl2.title, content: tpl2.content, userId: candidate.id },
+        { title: tpl3.title, content: tpl3.content, userId: candidate.id },
+      ],
+    });
+  }
+  console.log("✅ Cover letters created");
 
-  console.log("✉️  Creating cover letters...");
+  // ── 7. Applications ────────────────────────────────────────────────────────
+  // Published/Closed jobs get applications, Draft jobs don't
+  const applicableJobs = createdJobs.filter((j) => j.status !== "DRAFT");
 
-  await Promise.all([
-    prisma.coverLetter.create({
+  const APPLICATION_STATUSES = [
+    "PENDING",
+    "REVIEWING",
+    "INTERVIEW",
+    "ACCEPTED",
+    "REJECTED",
+  ];
+
+  const usedPairs = new Set(); // track userId+jobId to avoid duplicates
+
+  let appCount = 0;
+  for (const candidate of candidateUsers) {
+    // Each candidate applies to 3-6 jobs
+    const numApps = randInt(3, 6);
+    const shuffled = [...applicableJobs].sort(() => Math.random() - 0.5);
+
+    let applied = 0;
+    for (const job of shuffled) {
+      if (applied >= numApps) break;
+      const key = `${candidate.id}:${job.id}`;
+      if (usedPairs.has(key)) continue;
+      usedPairs.add(key);
+
+      const status = pick(APPLICATION_STATUSES);
+      const hasNote = [
+        "REVIEWING",
+        "INTERVIEW",
+        "ACCEPTED",
+        "REJECTED",
+      ].includes(status);
+      const cvUrl = candidateCvs[candidate.id][0].fileUrl;
+
+      await prisma.application.create({
+        data: {
+          userId: candidate.id,
+          jobId: job.id,
+          status,
+          cvUrl,
+          phone: "091" + Math.floor(Math.random() * 9000000 + 1000000),
+          coverLetter:
+            "Kính gửi quý công ty, tôi xin ứng tuyển vào vị trí này với mong muốn đóng góp kiến thức và kinh nghiệm của mình. Tôi tin tưởng rằng bản thân có đủ năng lực để hoàn thành tốt các nhiệm vụ được giao và phát triển cùng công ty trong dài hạn.",
+          note: hasNote ? pick(RECRUITER_NOTES) : null,
+        },
+      });
+      applied++;
+      appCount++;
+    }
+  }
+  console.log(`✅ ${appCount} applications created`);
+
+  // ── 8. Saved Jobs ──────────────────────────────────────────────────────────
+  const savedPairs = new Set();
+  for (const candidate of candidateUsers) {
+    const numSaved = randInt(4, 7);
+    const shuffled = [...createdJobs].sort(() => Math.random() - 0.5);
+    let saved = 0;
+    for (const job of shuffled) {
+      if (saved >= numSaved) break;
+      const key = `${candidate.id}:${job.id}`;
+      if (savedPairs.has(key)) continue;
+      savedPairs.add(key);
+      await prisma.savedJob.create({
+        data: { userId: candidate.id, jobId: job.id },
+      });
+      saved++;
+    }
+  }
+  console.log("✅ Saved jobs created");
+
+  // ── 9. Chat sessions ───────────────────────────────────────────────────────
+  for (const candidate of candidateUsers.slice(0, 5)) {
+    await prisma.chatSession.create({
       data: {
-        title: "Cover Letter - Senior Backend TechCorp",
-        content: `Kính gửi Phòng nhân sự TechCorp Vietnam,
-
-Tôi tên là Lê Minh Khôi, có 3 năm kinh nghiệm phát triển backend với Node.js và TypeScript. Qua tìm hiểu về văn hóa kỹ thuật tại TechCorp, tôi tin mình phù hợp với vị trí Senior Backend Developer.
-
-Trong 3 năm qua, tôi đã:
-- Xây dựng hệ thống xử lý 100K requests/giờ với NestJS + PostgreSQL
-- Thiết kế và triển khai microservices architecture
-- Tối ưu query giảm 60% latency cho hệ thống legacy
-
-Tôi mong có cơ hội được gặp gỡ và trao đổi thêm.
-
-Trân trọng,
-Lê Minh Khôi`,
-        userId: candidate1.id,
+        title: "Tư vấn nghề nghiệp và phân tích CV",
+        userId: candidate.id,
+        messages: {
+          create: [
+            {
+              role: "USER",
+              content:
+                "Bạn có thể giúp tôi phân tích CV và tư vấn hướng phát triển nghề nghiệp không?",
+              messageType: "TEXT",
+            },
+            {
+              role: "ASSISTANT",
+              content:
+                "Chào bạn! Tôi rất vui khi được hỗ trợ bạn. Hãy chia sẻ CV của bạn hoặc mô tả kinh nghiệm và mục tiêu nghề nghiệp của bạn, tôi sẽ đưa ra nhận xét và gợi ý phù hợp.",
+              messageType: "TEXT",
+            },
+          ],
+        },
       },
-    }),
-    prisma.coverLetter.create({
-      data: {
-        title: "Cover Letter - Fullstack Remote",
-        content: `Kính gửi team tuyển dụng,
+    });
+  }
+  console.log("✅ Chat sessions created");
 
-Tôi rất quan tâm đến vị trí Fullstack Developer (NestJS + React) làm việc remote. Với kinh nghiệm cả backend lẫn frontend, tôi tự tin đóng góp hiệu quả ngay từ tuần đầu.
-
-Trân trọng,
-Lê Minh Khôi`,
-        userId: candidate1.id,
-      },
-    }),
-    prisma.coverLetter.create({
-      data: {
-        title: "Cover Letter - Frontend TechCorp",
-        content: `Kính gửi TechCorp Vietnam,
-
-Tôi là Phạm Thị Thu, Frontend Developer với 2 năm kinh nghiệm React và Next.js. Tôi rất hứng thú với vị trí Frontend Developer tại quý công ty.
-
-Điểm mạnh của tôi là khả năng tối ưu performance và xây dựng UI/UX thân thiện với người dùng. Tôi đã cải thiện Lighthouse score từ 65 lên 94 cho một dự án e-commerce lớn.
-
-Mong được trao đổi thêm.
-
-Phạm Thị Thu`,
-        userId: candidate2.id,
-      },
-    }),
-  ]);
-
-  console.log("  ✓ 3 cover letters created");
-
-  // ── 6. APPLICATIONS ───────────────────────────────────────────────────────
-
-  console.log("📝 Creating applications...");
-
-  await Promise.all([
-    // candidate1 apply 3 jobs
-    prisma.application.create({
-      data: {
-        userId: candidate1.id,
-        jobId: jobBackend.id,
-        cvUrl: cv1Default.fileUrl,
-        phone: "0987654321",
-        coverLetter:
-          "Tôi rất muốn ứng tuyển vị trí Senior Backend tại TechCorp. Với 3 năm kinh nghiệm Node.js, tôi tin mình đáp ứng tốt yêu cầu.",
-        status: "INTERVIEW",
-        note: "Candidate có kỹ năng tốt, cần kiểm tra thêm system design",
-      },
-    }),
-    prisma.application.create({
-      data: {
-        userId: candidate1.id,
-        jobId: jobFullstack.id,
-        cvUrl: cv1Alt.fileUrl,
-        phone: "0987654321",
-        coverLetter:
-          "Tôi quan tâm đến vị trí Fullstack remote vì phù hợp với định hướng phát triển của tôi.",
-        status: "REVIEWING",
-      },
-    }),
-    prisma.application.create({
-      data: {
-        userId: candidate1.id,
-        jobId: jobFintech1.id,
-        cvUrl: cv1Default.fileUrl,
-        phone: "0987654321",
-        coverLetter:
-          "Tôi muốn thử thách bản thân trong môi trường fintech với hệ thống core banking.",
-        status: "PENDING",
-      },
-    }),
-
-    // candidate2 apply 2 jobs
-    prisma.application.create({
-      data: {
-        userId: candidate2.id,
-        jobId: jobFrontend.id,
-        cvUrl: cv2Default.fileUrl,
-        phone: "0976543210",
-        coverLetter:
-          "Tôi có 2 năm kinh nghiệm React và Next.js, rất phù hợp với yêu cầu vị trí này.",
-        status: "ACCEPTED",
-        note: "Candidate xuất sắc, đã offer 26 triệu",
-      },
-    }),
-    prisma.application.create({
-      data: {
-        userId: candidate2.id,
-        jobId: jobFullstack.id,
-        cvUrl: cv2Default.fileUrl,
-        phone: "0976543210",
-        coverLetter: "Tôi muốn phát triển thêm kỹ năng backend với NestJS.",
-        status: "REJECTED",
-        note: "Backend skill chưa đủ mạnh cho vị trí này",
-      },
-    }),
-
-    // candidate3 apply 2 jobs (intern)
-    prisma.application.create({
-      data: {
-        userId: candidate3.id,
-        jobId: jobFintech2.id,
-        phone: "0965432109",
-        coverLetter:
-          "Em là sinh viên năm 4 ngành CNTT, mong muốn được thực tập tại FinTech Solutions để tích lũy kinh nghiệm thực tế.",
-        status: "PENDING",
-      },
-    }),
-    prisma.application.create({
-      data: {
-        userId: candidate3.id,
-        jobId: jobFrontend.id,
-        phone: "0965432109",
-        coverLetter:
-          "Em muốn ứng tuyển vị trí Frontend Developer để học hỏi thêm về React.",
-        status: "PENDING",
-      },
-    }),
-  ]);
-
+  console.log("\n🎉 Seed completed successfully!");
+  console.log("📊 Summary:");
+  console.log("   - 1 Admin account: admin@sra.dev / Admin@123456");
   console.log(
-    "  ✓ 7 applications created (PENDING/REVIEWING/INTERVIEW/ACCEPTED/REJECTED)",
+    `   - ${recruiterUsers.length} Recruiter accounts (password: password)`,
   );
-
-  // ── 7. SAVED JOBS ─────────────────────────────────────────────────────────
-
-  console.log("🔖 Creating saved jobs...");
-
-  await Promise.all([
-    prisma.savedJob.create({
-      data: { userId: candidate1.id, jobId: jobDevOps.id },
-    }),
-    prisma.savedJob.create({
-      data: { userId: candidate1.id, jobId: jobDataEngineer.id },
-    }),
-    prisma.savedJob.create({
-      data: { userId: candidate2.id, jobId: jobFullstack.id },
-    }),
-    prisma.savedJob.create({
-      data: { userId: candidate3.id, jobId: jobFintech1.id },
-    }),
-    prisma.savedJob.create({
-      data: { userId: candidate3.id, jobId: jobFintech2.id },
-    }),
-  ]);
-
-  console.log("  ✓ 5 saved jobs created");
-
-  // ── 8. CHAT SESSIONS & MESSAGES ───────────────────────────────────────────
-
-  console.log("💬 Creating chat sessions & messages...");
-
-  // Session 1: candidate1 - chat thường về career
-  const session1 = await prisma.chatSession.create({
-    data: {
-      title: "Tư vấn định hướng Backend Developer",
-      userId: candidate1.id,
-    },
-  });
-
-  await prisma.chatMessage.createMany({
-    data: [
-      {
-        sessionId: session1.id,
-        role: "USER",
-        messageType: "TEXT",
-        content:
-          "Mình đang là Backend Developer 3 năm kinh nghiệm với Node.js. Mình nên học thêm gì để lên Senior?",
-      },
-      {
-        sessionId: session1.id,
-        role: "ASSISTANT",
-        messageType: "TEXT",
-        content: `Với 3 năm kinh nghiệm Node.js, để lên Senior bạn cần tập trung vào các nhóm kỹ năng sau:
-
-**1. System Design**
-- Học cách thiết kế distributed systems
-- Hiểu sâu về CAP theorem, eventual consistency
-- Luyện tập với bài toán như thiết kế URL shortener, chat system
-
-**2. Database chuyên sâu**
-- Query optimization, execution plan
-- Database indexing strategies
-- Sharding và replication
-
-**3. Observability**
-- Distributed tracing (Jaeger, Zipkin)
-- Structured logging, metrics
-- Alerting strategy
-
-**4. Leadership**
-- Code review skills
-- Kỹ năng mentor junior
-- Technical writing (ADR, RFC)
-
-Bạn đang yếu nhất ở mảng nào trong số này?`,
-      },
-      {
-        sessionId: session1.id,
-        role: "USER",
-        messageType: "TEXT",
-        content:
-          "Mình thấy System Design là điểm yếu nhất. Có tài nguyên nào để học không?",
-      },
-      {
-        sessionId: session1.id,
-        role: "ASSISTANT",
-        messageType: "TEXT",
-        content: `Đây là lộ trình học System Design mình recommend:
-
-**Sách**
-- "Designing Data-Intensive Applications" - Martin Kleppmann (must-read)
-- "System Design Interview" - Alex Xu (Vol 1 & 2)
-
-**Online**
-- ByteByteGo (YouTube + newsletter)
-- High Scalability blog
-- engineering blogs của Netflix, Uber, Airbnb
-
-**Luyện tập**
-- Tham gia mock interview trên Pramp hoặc interviewing.io
-- Tự thiết kế lại các hệ thống bạn đang dùng hàng ngày
-
-Mỗi tuần chọn 1 hệ thống để thiết kế, viết ra document, sau đó so sánh với cách các công ty lớn làm thực tế. Đây là cách hiệu quả nhất.`,
-      },
-    ],
-  });
-
-  // Session 2: candidate1 - CV analysis session
-  const session2 = await prisma.chatSession.create({
-    data: {
-      title: "Phân tích CV - Backend Developer",
-      userId: candidate1.id,
-    },
-  });
-
-  await prisma.chatMessage.createMany({
-    data: [
-      {
-        sessionId: session2.id,
-        role: "USER",
-        messageType: "TEXT",
-        content:
-          "Mình muốn nhờ bạn phân tích CV của mình cho vị trí Senior Backend tại TechCorp.",
-      },
-      {
-        sessionId: session2.id,
-        role: "ASSISTANT",
-        messageType: "TEXT",
-        content:
-          "Được, bạn hãy upload file CV (PDF) lên để mình phân tích nhé. Mình sẽ đánh giá theo yêu cầu của vị trí Senior Backend Developer tại TechCorp.",
-      },
-      {
-        sessionId: session2.id,
-        role: "USER",
-        messageType: "TEXT",
-        content: "[Uploaded: CV_LeMinhKhoi_Backend_2024.pdf]",
-      },
-    ],
-  });
-
-  // Message CV_ANALYSIS từ assistant
-  const cvAnalysisMessage = await prisma.chatMessage.create({
-    data: {
-      sessionId: session2.id,
-      role: "ASSISTANT",
-      messageType: "CV_ANALYSIS",
-      content: "Mình đã phân tích xong CV của bạn. Đây là kết quả chi tiết:",
-    },
-  });
-
-  // Tạo CvAnalysis liên kết với message trên
-  await prisma.cvAnalysis.create({
-    data: {
-      messageId: cvAnalysisMessage.id,
-      jobId: jobBackend.id,
-      cvId: cv1Default.id,
-      score: 72,
-      strengths: [
-        "Kinh nghiệm 3 năm với Node.js và TypeScript - phù hợp yêu cầu",
-        "Đã làm việc với PostgreSQL và Redis trong production",
-        "Có kinh nghiệm Docker và CI/CD cơ bản",
-        "Project thực tế xử lý 100K requests/giờ - minh chứng rõ ràng",
-      ],
-      weaknesses: [
-        "Chưa có kinh nghiệm microservices rõ ràng (JD yêu cầu bắt buộc)",
-        "Thiếu kinh nghiệm AWS (JD yêu cầu)",
-        "Không đề cập đến kinh nghiệm code review hoặc mentoring",
-        "Mô tả các dự án còn chung chung, thiếu số liệu cụ thể",
-      ],
-      improvements: [
-        "Bổ sung section về AWS experience, dù chỉ là side project",
-        "Thêm số liệu cụ thể: giảm latency bao nhiêu %, uptime đạt bao nhiêu",
-        "Đề cập kinh nghiệm với distributed systems hoặc event-driven",
-        "Nêu bật kỹ năng leadership nếu đã từng lead nhóm nhỏ",
-        "Thêm link GitHub với các repo có code chất lượng",
-      ],
-      summary:
-        "CV có nền tảng tốt với kinh nghiệm thực tế phù hợp. Tuy nhiên còn thiếu một số kỹ năng bắt buộc trong JD (microservices, AWS). Với điểm 72/100, bạn vẫn có cơ hội được phỏng vấn nếu bổ sung thêm trong Cover Letter và chuẩn bị kỹ cho technical interview về system design.",
-      rawCvText:
-        "LÊ MINH KHÔI | Backend Developer | leminkhoi@gmail.com | 0987654321\n\nKINH NGHIỆM\nTechStartup ABC (2021-nay) - Backend Developer\n- Phát triển REST API với Node.js + TypeScript + NestJS\n- Tối ưu PostgreSQL queries, giảm response time 60%\n- Triển khai Redis cache cho session management\n- Sử dụng Docker trong môi trường development\n\nKỸ NĂNG\nNode.js, TypeScript, NestJS, PostgreSQL, MySQL, Redis, Docker, Git\n\nHỌC VẤN\nĐại học Công nghệ Thông tin - 2018-2022",
-    },
-  });
-
-  // Tiếp tục chat sau analysis
-  await prisma.chatMessage.createMany({
-    data: [
-      {
-        sessionId: session2.id,
-        role: "USER",
-        messageType: "TEXT",
-        content:
-          "Score 72 thì có được phỏng vấn không? Mình cần cải thiện gì gấp nhất?",
-      },
-      {
-        sessionId: session2.id,
-        role: "ASSISTANT",
-        messageType: "TEXT",
-        content: `72/100 là **borderline** — bạn vẫn có cơ hội được vào vòng phỏng vấn, đặc biệt nếu CV của các ứng viên khác không quá mạnh.
-
-**Cần làm ngay (trước khi submit):**
-
-1. **Bổ sung AWS vào CV** — Dù chỉ là tự học, hãy deploy một side project lên EC2/S3/RDS và đề cập. TechCorp coi đây là điểm quan trọng.
-
-2. **Rewrite phần mô tả kinh nghiệm** theo format: *Action + Technology + Result*
-   - ❌ "Phát triển REST API với Node.js"
-   - ✅ "Thiết kế và triển khai 15 REST API endpoints xử lý 100K req/giờ với Node.js + TypeScript, đạt p99 latency < 200ms"
-
-3. **Cover Letter là cứu cánh** — Giải thích trực tiếp rằng bạn đang học microservices và có kế hoạch cụ thể.
-
-Bạn có muốn mình giúp viết lại phần Experience không?`,
-      },
-    ],
-  });
-
-  // Session 3: candidate2 - chat về Frontend interview
-  const session3 = await prisma.chatSession.create({
-    data: {
-      title: "Chuẩn bị phỏng vấn Frontend",
-      userId: candidate2.id,
-    },
-  });
-
-  await prisma.chatMessage.createMany({
-    data: [
-      {
-        sessionId: session3.id,
-        role: "USER",
-        messageType: "TEXT",
-        content:
-          "Mình được nhận vào TechCorp rồi! Có tips gì cho ngày đầu đi làm không?",
-      },
-      {
-        sessionId: session3.id,
-        role: "ASSISTANT",
-        messageType: "TEXT",
-        content: `Chúc mừng bạn! 🎉 Đây là một số tips cho ngày đầu:
-
-**Tuần 1 — Observe & Learn**
-- Đừng vội commit code, hãy đọc hiểu codebase trước
-- Hỏi về coding conventions, git flow của team
-- Setup local environment, hiểu deployment pipeline
-
-**Về con người**
-- Ghi nhớ tên và role của từng người trong team
-- Chủ động trong các cuộc họp, hỏi khi không hiểu
-- Nhờ ai đó "buddy" để hỏi các câu nhỏ
-
-**Về kỹ thuật**
-- Review open PRs để hiểu code style
-- Hỏi về tech debt và các vấn đề đang tồn đọng
-- Đừng ngại đề xuất cải tiến nhỏ sau khi đã hiểu context
-
-Chúc bạn có khởi đầu tốt đẹp!`,
-      },
-    ],
-  });
-
-  console.log("  ✓ 3 chat sessions created (TEXT + CV_ANALYSIS mixed)");
-
-  // ── 9. QUEUE (sample jobs) ────────────────────────────────────────────────
-
-  console.log("⚙️  Creating queue entries...");
-
-  await prisma.queue.createMany({
-    data: [
-      {
-        type: "EMAIL_VERIFICATION",
-        payload: JSON.stringify({
-          userId: candidate3.id,
-          email: "candidate3@gmail.com",
-          code: "482931",
-        }),
-        status: "pending",
-        isPriority: 1,
-      },
-      {
-        type: "EMAIL_APPLICATION_NOTIFY",
-        payload: JSON.stringify({
-          applicationId: "sample-app-id",
-          candidateEmail: "candidate1@gmail.com",
-          jobTitle: "Senior Backend Developer",
-          status: "INTERVIEW",
-        }),
-        status: "completed",
-        isPriority: 0,
-        info: "Sent successfully at " + new Date().toISOString(),
-      },
-      {
-        type: "CV_ANALYSIS_ASYNC",
-        payload: JSON.stringify({
-          cvId: cv1Default.id,
-          jobId: jobBackend.id,
-          userId: candidate1.id,
-        }),
-        status: "completed",
-        isPriority: 0,
-        info: "Analysis completed, score: 72",
-      },
-    ],
-  });
-
-  console.log("  ✓ 3 queue entries created");
-
-  // ── SUMMARY ───────────────────────────────────────────────────────────────
-
-  console.log(`
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅  SEED COMPLETED SUCCESSFULLY
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-📊 Data summary:
-   Users         : 6 (1 admin, 2 recruiters, 3 candidates)
-   Profiles      : 6
-   Jobs          : 9 (6 published, 1 draft, 1 closed, 1 hot)
-   CVs           : 3
-   Cover Letters : 3
-   Applications  : 7
-   Saved Jobs    : 5
-   Chat Sessions : 3
-   Chat Messages : 14 (TEXT + CV_ANALYSIS)
-   CV Analyses   : 1
-   Queue entries : 3
-
-🔑 Test accounts:
-   admin@sra.dev           Admin@123456   (ADMIN)
-   recruiter1@techcorp.vn  Recruiter@123  (RECRUITER)
-   recruiter2@fintech.vn   Recruiter@123  (RECRUITER)
-   candidate1@gmail.com    Candidate@123  (CANDIDATE - verified)
-   candidate2@gmail.com    Candidate@123  (CANDIDATE - verified, accepted)
-   candidate3@gmail.com    Candidate@123  (CANDIDATE - unverified)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  `);
+  console.log(
+    `   - ${candidateUsers.length} Candidate accounts (password: password)`,
+  );
+  console.log(`   - ${createdJobs.length} Jobs (various industries, statuses)`);
+  console.log(`   - ${appCount} Applications`);
+  console.log("   - CVs, Cover Letters, Saved Jobs, Chat Sessions included");
 }
-
-// ─── Run ─────────────────────────────────────────────────────────────────────
 
 main()
   .catch((e) => {

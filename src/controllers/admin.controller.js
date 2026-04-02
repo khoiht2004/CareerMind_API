@@ -51,8 +51,9 @@ async function getJobsByType(req, res) {
 }
 
 async function getRecentApplications(req, res) {
+  const { limit = 10 } = req.query;
   const applications = await prisma.application.findMany({
-    take: 10,
+    take: Number(limit),
     orderBy: { createdAt: "desc" },
     select: {
       id: true,

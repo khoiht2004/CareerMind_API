@@ -85,7 +85,7 @@ model Profile {
   avatarUrl String?  @map("avatar_url")
   bio       String?  @map("bio") @db.Text
   address   String?  @map("address")
-  skills    String?  @map("skills") @db.Text
+  skills    Json?    @map("skills")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   userId String @unique @map("user_id")
@@ -289,8 +289,8 @@ model RevokedToken {
 
 model Queue {
   id         Int      @id @default(autoincrement())
-  type       String?  @map("type") @db.VarChar(255)
-  payload    String?  @map("payload") @db.Text
+  type       String  @map("type") @db.VarChar(255)
+  payload    String  @map("payload") @db.Text
   status     String   @default("pending") @map("status") @db.VarChar(255)
   isPriority Int      @default(0) @map("is_priority") @db.SmallInt
   info       String?  @map("info") @db.Text

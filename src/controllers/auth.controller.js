@@ -5,22 +5,34 @@ const AuthService = require("@/services/auth.service");
 async function register(req, res) {
   const { name, email, password } = req.body;
 
-  if (!email || !password) return res.error(400, "Email và mật khẩu là bắt buộc");
-  if (!/^[^@]+@[^@]+\.[^@]+$/.test(email)) return res.error(400, "Email không hợp lệ");
-  if (password.length < 6) return res.error(400, "Mật khẩu phải ít nhất 6 ký tự");
+  if (!email || !password)
+    return res.error(400, "Email và mật khẩu là bắt buộc");
+  if (!/^[^@]+@[^@]+\.[^@]+$/.test(email))
+    return res.error(400, "Email không hợp lệ");
+  if (password.length < 6)
+    return res.error(400, "Mật khẩu phải ít nhất 6 ký tự");
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  const user = await model.createUser(email, hashedPassword, name?.trim() || null);
+  const user = await model.createUser(
+    email,
+    hashedPassword,
+    name?.trim() || null,
+  );
   if (!user) return res.error(409, "Email đã tồn tại");
 
   await AuthService.sendVerificationOtp(user.id, user.email);
 
-  return res.success(201, { message: "Đăng ký thành công, vui lòng xác thực email", id: user.id, email: user.email });
+  return res.success(201, {
+    message: "Đăng ký thành công, vui lòng xác thực email",
+    id: user.id,
+    email: user.email,
+  });
 }
 
 async function login(req, res) {
   const { email, password } = req.body;
-  if (!email || !password) return res.error(400, "Email và mật khẩu là bắt buộc");
+  if (!email || !password)
+    return res.error(400, "Email và mật khẩu là bắt buộc");
 
   const user = await model.findByEmail(email);
   if (!user) return res.error(401, "Email hoặc mật khẩu không đúng");
@@ -45,7 +57,8 @@ async function login(req, res) {
 
 async function verifyEmail(req, res) {
   const { email, code } = req.body;
-  if (!email || !code) return res.error(400, "Email và mã xác thực là bắt buộc");
+  if (!email || !code)
+    return res.error(400, "Email và mã xác thực là bắt buộc");
 
   const error = await model.verifyOtp(email, code);
   if (error) return res.error(400, error);
@@ -82,7 +95,8 @@ async function refreshToken(req, res) {
   if (!token) return res.error(400, "Refresh token là bắt buộc");
 
   const stored = await model.getRefreshToken(token);
-  if (!stored || stored.expiresAt < new Date()) return res.error(401, "Refresh token không hợp lệ hoặc đã hết hạn");
+  if (!stored || stored.expiresAt < new Date())
+    return res.error(401, "Refresh token không hợp lệ hoặc đã hết hạn");
 
   await model.deleteRefreshToken(token);
 
@@ -92,17 +106,35 @@ async function refreshToken(req, res) {
   const { accessToken, timeExp } = await AuthService.signAccessToken(user);
   const newRefreshToken = await AuthService.createRefreshToken(user);
 
-  return res.success(200, { accessToken, refreshToken: newRefreshToken, expiredAt: timeExp });
+  return res.success(200, {
+    accessToken,
+    refreshToken: newRefreshToken,
+    expiredAt: timeExp,
+  });
 }
 
 async function changePassword(req, res) {
   const { oldPassword, newPassword, confirmPassword } = req.body;
   const { user } = req.auth;
 
-  const [error, data] = await AuthService.changePassword(user, oldPassword, newPassword, confirmPassword);
+  const [error, data] = await AuthService.changePassword(
+    user,
+    oldPassword,
+    newPassword,
+    confirmPassword,
+  );
   if (error) return res.error(400, error);
 
   return res.success(200, data);
 }
 
-module.exports = { register, login, verifyEmail, resendVerification, getMe, logout, refreshToken, changePassword };
+module.exports = {
+  register,
+  login,
+  verifyEmail,
+  resendVerification,
+  getMe,
+  logout,
+  refreshToken,
+  changePassword,
+};

@@ -8,7 +8,10 @@ const queueService = require("@/services/queue.service");
 class AuthService {
   async signAccessToken(user) {
     const timeExp = Math.floor(Date.now() / 1000) + 60 * 60; // 1 giờ
-    const accessToken = jwt.sign({ sub: user.id, exp: timeExp }, authConfig.jwtSecret);
+    const accessToken = jwt.sign(
+      { sub: user.id, exp: timeExp },
+      authConfig.jwtSecret,
+    );
     return { accessToken, timeExp };
   }
 
@@ -31,7 +34,7 @@ class AuthService {
     const code = this.generateOtp();
     const expAt = new Date(Date.now() + 10 * 60 * 1000); // 10 phút
     await model.saveOtp(userId, code, expAt);
-    await queueService.push("sendVerificationEmail", { email, code });
+    await queueService.push("sendVerificationEmail", { email, code }, 1);
   }
 
   async changePassword(user, oldPassword, newPassword, confirmPassword) {
@@ -41,12 +44,18 @@ class AuthService {
     const hashedPw = await model.getUserPasswordById(user.id);
     const isMatch = await bcrypt.compare(oldPassword, hashedPw);
     if (!isMatch) return ["Mật khẩu hiện tại không đúng", null];
-    if (newPassword === oldPassword) return ["Mật khẩu mới phải khác mật khẩu cũ", null];
-    if (newPassword !== confirmPassword) return ["Xác nhận mật khẩu không khớp", null];
+    if (newPassword === oldPassword)
+      return ["Mật khẩu mới phải khác mật khẩu cũ", null];
+    if (newPassword !== confirmPassword)
+      return ["Xác nhận mật khẩu không khớp", null];
 
     const hashed = await bcrypt.hash(newPassword, 10);
     await model.changePassword(user.id, hashed);
-    await queueService.push("sendPasswordChangeEmail", { id: user.id, email: user.email }, 1);
+    await queueService.push(
+      "sendPasswordChangeEmail",
+      { id: user.id, email: user.email },
+      1,
+    );
     return [null, "Đổi mật khẩu thành công"];
   }
 }
