@@ -1,5 +1,6 @@
 const { transporter } = require("@/libs/nodemailer");
 const mailConfig = require("@/config/mail.config");
+const { formatVN } = require("@/utils/helper");
 const ejs = require("ejs");
 const path = require("path");
 
@@ -81,17 +82,21 @@ class MailService {
     confirmDeadline,
   }) {
     const { fromAddress } = mailConfig;
+    const interviewDateFormat = formatVN(interviewDate);
+    const confirmDeadlineFormat = formatVN(confirmDeadline);
+    const formatInterview =
+      interviewFormat === "DIRECT" ? "Trực tiếp " : "Online";
     return this.send({
       template: "job/interviewEmail",
       templateData: {
         applicantName,
         jobTitle,
         company,
-        interviewDate,
+        interviewDateFormat,
         interviewTime,
-        interviewFormat,
+        formatInterview,
         interviewLocation,
-        confirmDeadline,
+        confirmDeadlineFormat,
       },
       from: `Smart Recruit Assistant <${fromAddress}>`,
       to: email,
@@ -109,13 +114,14 @@ class MailService {
     officeAddress,
   }) {
     const { fromAddress } = mailConfig;
+    const startDateFormat = formatVN(startDate);
     return this.send({
       template: "job/acceptedEmail",
       templateData: {
         applicantName,
         jobTitle,
         company,
-        startDate,
+        startDateFormat,
         startTime,
         officeAddress,
       },

@@ -19,7 +19,7 @@
     <table style="width:100%;border-collapse:collapse">
       <tr>
         <td style="padding:6px 0;color:#6b7280;width:40%">Ngày phỏng vấn</td>
-        <td style="padding:6px 0;font-weight:600"><%= interviewDate %></td>
+        <td style="padding:6px 0;font-weight:600"><%= interviewDateFormat %></td>
       </tr>
       <tr>
         <td style="padding:6px 0;color:#6b7280">Thời gian</td>
@@ -27,8 +27,7 @@
       </tr>
       <tr>
         <td style="padding:6px 0;color:#6b7280">Hình thức</td>
-        <td style="padding:6px 0;font-weight:600"><%= interviewFormat %></td>
-        <!-- interviewFormat: "Trực tiếp tại văn phòng" | "Online qua Google Meet" | v.v. -->
+        <td style="padding:6px 0;font-weight:600"><%= formatInterview %></td>
       </tr>
       <tr>
         <td style="padding:6px 0;color:#6b7280">Địa điểm / Link</td>
@@ -39,7 +38,7 @@
 
   <p style="color:#6b7280;font-size:14px;margin:0 0 16px">
     Vui lòng xác nhận tham dự bằng cách phản hồi email này hoặc liên hệ trực tiếp với chúng tôi trước
-    <strong><%= confirmDeadline %></strong>. Nếu bạn có bất kỳ thắc mắc nào, đừng ngần ngại liên hệ để được hỗ trợ.
+    <strong><%= confirmDeadlineFormat %></strong>. Nếu bạn có bất kỳ thắc mắc nào, đừng ngần ngại liên hệ để được hỗ trợ.
   </p>
 
   <p style="color:#6b7280;font-size:14px;margin:0 0 24px">

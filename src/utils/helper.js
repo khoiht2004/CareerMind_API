@@ -38,8 +38,18 @@ const toJsonString = (val) => {
   }
 };
 
+const formatVN = (dateStr) =>
+  dateStr
+    ? new Date(dateStr).toLocaleDateString("vi-VN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      })
+    : null;
+
 module.exports = {
   formatTime,
   getDateStringYmdHis,
   toJsonString,
+  formatVN,
 };
