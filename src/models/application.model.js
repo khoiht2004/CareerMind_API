@@ -7,6 +7,14 @@ const APP_SELECT = {
   phone: true,
   status: true,
   note: true,
+  interviewDate: true,
+  interviewTime: true,
+  interviewFormat: true,
+  interviewLocation: true,
+  confirmDeadline: true,
+  startDate: true,
+  startTime: true,
+  officeAddress: true,
   createdAt: true,
   updatedAt: true,
   job: {
@@ -96,10 +104,14 @@ const getAllApplications = async ({
   };
 };
 
-const updateStatus = async (id, status, note) => {
+const updateStatus = async (id, status, note, extraFields = {}) => {
   return prisma.application.update({
     where: { id },
-    data: { status, ...(note !== undefined && { note }) },
+    data: {
+      status,
+      ...(note !== undefined && { note }),
+      ...extraFields,
+    },
     select: APP_SELECT,
   });
 };

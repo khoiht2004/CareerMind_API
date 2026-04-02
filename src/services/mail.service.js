@@ -68,6 +68,77 @@ class MailService {
       subject: `Ứng tuyển vị trí ${jobTitle} thành công`,
     });
   }
+
+  async sendInterviewEmail({
+    email,
+    applicantName,
+    jobTitle,
+    company,
+    interviewDate,
+    interviewTime,
+    interviewFormat,
+    interviewLocation,
+    confirmDeadline,
+  }) {
+    const { fromAddress } = mailConfig;
+    return this.send({
+      template: "job/interviewEmail",
+      templateData: {
+        applicantName,
+        jobTitle,
+        company,
+        interviewDate,
+        interviewTime,
+        interviewFormat,
+        interviewLocation,
+        confirmDeadline,
+      },
+      from: `Smart Recruit Assistant <${fromAddress}>`,
+      to: email,
+      subject: `Lịch phỏng vấn vị trí ${jobTitle}`,
+    });
+  }
+
+  async sendAcceptedEmail({
+    email,
+    applicantName,
+    jobTitle,
+    company,
+    startDate,
+    startTime,
+    officeAddress,
+  }) {
+    const { fromAddress } = mailConfig;
+    return this.send({
+      template: "job/acceptedEmail",
+      templateData: {
+        applicantName,
+        jobTitle,
+        company,
+        startDate,
+        startTime,
+        officeAddress,
+      },
+      from: `Smart Recruit Assistant <${fromAddress}>`,
+      to: email,
+      subject: `Kết quả ứng tuyển vị trí ${jobTitle} tại ${company}`,
+    });
+  }
+
+  async sendRejectedEmail({ email, applicantName, jobTitle, company }) {
+    const { fromAddress } = mailConfig;
+    return this.send({
+      template: "job/rejectedEmail",
+      templateData: {
+        applicantName,
+        jobTitle,
+        company,
+      },
+      from: `Smart Recruit Assistant <${fromAddress}>`,
+      to: email,
+      subject: `Kết quả ứng tuyển vị trí ${jobTitle} tại ${company}`,
+    });
+  }
 }
 
 module.exports = new MailService();

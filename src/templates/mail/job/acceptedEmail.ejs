@@ -1,0 +1,54 @@
+<div
+  style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;background:#fff;border-radius:12px;border:1px solid #e5e7eb">
+  <div style="text-align:center;margin-bottom:24px">
+    <div style="display:inline-block;background:#111;color:#fff;font-weight:700;padding:8px 16px;border-radius:8px;font-size:14px">
+      SRA
+    </div>
+  </div>
+
+  <!-- Badge chúc mừng -->
+  <div style="text-align:center;margin-bottom:20px">
+    <span
+      style="display:inline-block;background:#f0fdf4;color:#16a34a;font-weight:600;font-size:13px;padding:6px 14px;border-radius:999px;border:1px solid #bbf7d0">
+       Chào mừng bạn gia nhập đội ngũ!
+    </span>
+  </div>
+
+  <h2 style="font-size:20px;font-weight:700;margin:0 0 8px">Thư chào mừng nhân viên mới</h2>
+  <p style="color:#6b7280;font-size:14px;margin:0 0 16px">Chào <strong><%= applicantName %></strong>,</p>
+
+  <p style="color:#6b7280;font-size:14px;margin:0 0 16px">
+    Thay mặt toàn thể <strong><%= company %></strong>, chúng tôi vui mừng thông báo rằng bạn đã chính thức
+    được tuyển dụng cho vị trí <strong><%= jobTitle %></strong>.
+    Đây là quyết định được đội ngũ đưa ra với sự kỳ vọng cao vào những đóng góp mà bạn sẽ mang lại.
+  </p>
+
+  <div
+    style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:16px 20px;margin:0 0 24px;font-size:14px;color:#111827">
+    <table style="width:100%;border-collapse:collapse">
+      <tr>
+        <td style="padding:6px 0;color:#6b7280;width:40%"> Vị trí</td>
+        <td style="padding:6px 0;font-weight:600"><%= jobTitle %></td>
+      </tr>
+      <tr>
+        <td style="padding:6px 0;color:#6b7280"> Ngày bắt đầu</td>
+        <td style="padding:6px 0;font-weight:600"><%= startDate %></td>
+      </tr>
+      <tr>
+        <td style="padding:6px 0;color:#6b7280"> Giờ có mặt</td>
+        <td style="padding:6px 0;font-weight:600"><%= startTime %></td>
+      </tr>
+      <tr>
+        <td style="padding:6px 0;color:#6b7280"> Địa điểm</td>
+        <td style="padding:6px 0;font-weight:600"><%= officeAddress %></td>
+      </tr>
+    </table>
+  </div>
+
+  <p style="color:#6b7280;font-size:14px;margin:0 0 24px">
+    Nếu bạn có bất kỳ câu hỏi nào trước ngày nhận việc, vui lòng liên hệ với chúng tôi qua email này.
+    Chúng tôi rất mong chờ được đồng hành cùng bạn!
+  </p>
+
+  <p style="color:#6b7280;font-size:13px;margin:0">Trân trọng,<br />Đội ngũ Nhân sự — <strong><%= company %></strong></p>
+</div>

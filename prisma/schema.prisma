@@ -127,14 +127,24 @@ model Job {
 // ─── Application ──────────────────────────────────────────────────────────────
 
 model Application {
-  id          String            @id @default(uuid())
-  coverLetter String?           @map("cover_letter") @db.Text
-  cvUrl       String?           @map("cv_url")
-  phone       String?           @map("phone")
-  status      ApplicationStatus @default(PENDING) @map("status")
-  note        String?           @map("note") @db.Text
-  createdAt   DateTime          @default(now()) @map("created_at")
-  updatedAt   DateTime          @updatedAt @map("updated_at")
+  id                String            @id @default(uuid())
+  coverLetter       String?           @map("cover_letter") @db.Text
+  cvUrl             String?           @map("cv_url")
+  phone             String?           @map("phone")
+  status            ApplicationStatus @default(PENDING) @map("status")
+  note              String?           @map("note") @db.Text
+  // Interview fields
+  interviewDate     DateTime?         @map("interview_date")
+  interviewTime     String?           @map("interview_time") @db.VarChar(10)
+  interviewFormat   String?           @map("interview_format") @db.VarChar(20)
+  interviewLocation String?           @map("interview_location") @db.VarChar(500)
+  confirmDeadline   DateTime?         @map("confirm_deadline")
+  // Accepted fields
+  startDate         DateTime?         @map("start_date")
+  startTime         String?           @map("start_time") @db.VarChar(10)
+  officeAddress     String?           @map("office_address") @db.VarChar(500)
+  createdAt         DateTime          @default(now()) @map("created_at")
+  updatedAt         DateTime          @updatedAt @map("updated_at")
 
   userId String @map("user_id")
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -289,8 +299,8 @@ model RevokedToken {
 
 model Queue {
   id         Int      @id @default(autoincrement())
-  type       String  @map("type") @db.VarChar(255)
-  payload    String  @map("payload") @db.Text
+  type       String   @map("type") @db.VarChar(255)
+  payload    String   @map("payload") @db.Text
   status     String   @default("pending") @map("status") @db.VarChar(255)
   isPriority Int      @default(0) @map("is_priority") @db.SmallInt
   info       String?  @map("info") @db.Text
