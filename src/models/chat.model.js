@@ -16,7 +16,7 @@ const getSessions = async (userId) => {
 
 const createSession = async (userId, title) => {
   return prisma.chatSession.create({
-    data: { userId, title: title || "Cuộc trò chuyện mới" },
+    data: { userId, title: title || "Trợ lý AI SRA" },
     select: { id: true, title: true, createdAt: true },
   });
 };
@@ -34,6 +34,16 @@ const getMessages = async (sessionId) => {
     orderBy: { createdAt: "asc" },
     select: { id: true, role: true, content: true, createdAt: true },
   });
+};
+
+const getRecentMessages = async (sessionId, limit = 10) => {
+  const messages = await prisma.chatMessage.findMany({
+    where: { sessionId },
+    orderBy: { createdAt: "desc" },
+    take: limit,
+    select: { id: true, role: true, content: true, createdAt: true },
+  });
+  return messages.reverse();
 };
 
 const addMessage = async (sessionId, role, content) => {
@@ -61,6 +71,7 @@ module.exports = {
   createSession,
   getSession,
   getMessages,
+  getRecentMessages,
   addMessage,
   updateTitle,
   deleteSession,

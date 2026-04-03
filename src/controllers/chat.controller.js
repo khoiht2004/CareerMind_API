@@ -1,4 +1,5 @@
 const model = require("@/models/chat.model");
+const chatbotService = require("@/services/chatbot.service");
 
 async function getSessions(req, res) {
   const sessions = await model.getSessions(req.auth.user.id);
@@ -22,18 +23,14 @@ async function getMessages(req, res) {
 async function sendMessage(req, res) {
   const { id } = req.params;
   const { content } = req.body;
-  if (!content?.trim()) return res.error(400, "Nội dung tin nhắn không được trống");
+  if (!content?.trim())
+    return res.error(400, "Nội dung tin nhắn không được trống");
 
   const session = await model.getSession(id, req.auth.user.id);
   if (!session) return res.error(404, "Không tìm thấy cuộc trò chuyện");
 
-  const userMsg = await model.addMessage(id, "USER", content);
-
-  // Placeholder AI response — replace with actual AI integration
-  const aiReply = `Tôi đã nhận được tin nhắn của bạn: "${content}". Đây là phản hồi tạm thời từ hệ thống.`;
-  const aiMsg = await model.addMessage(id, "ASSISTANT", aiReply);
-
-  return res.success(200, { userMessage: userMsg, assistantMessage: aiMsg });
+  const result = await chatbotService.chat(req.auth.user, id, content);
+  return res.success(200, result);
 }
 
 async function updateTitle(req, res) {
@@ -57,4 +54,11 @@ async function deleteSession(req, res) {
   return res.success(200, "Xóa cuộc trò chuyện thành công");
 }
 
-module.exports = { getSessions, createSession, getMessages, sendMessage, updateTitle, deleteSession };
+module.exports = {
+  getSessions,
+  createSession,
+  getMessages,
+  sendMessage,
+  updateTitle,
+  deleteSession,
+};
