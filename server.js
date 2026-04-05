@@ -30,6 +30,10 @@ const corsOptions = {
 app.use(cors());
 app.use(express.json());
 
+app.get("/pong-render", (req, res) => {
+  return res.send("pong");
+});
+
 // Middlewares
 app.use(responseFormat);
 
