@@ -22,6 +22,8 @@ const corsOptions = {
     "http://localhost:5173",
     "http://localhost:5174",
     "https://khoiht2004.github.io",
+    "https://sra-fe-demo.vercel.app",
+    "https://sra-fe-demo.vercel.app/",
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   optionsSuccessStatus: 200,
@@ -31,13 +33,13 @@ app.get("/pong-render", (req, res) => {
   return res.send("pong");
 });
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Middlewares
 app.use(responseFormat);
 
-// app.use("/api", apiRateLimiter);
+app.use("/api", apiRateLimiter);
 app.use("/sra", router);
 
 // 404 và Error handlers cuối cùng
