@@ -1,8 +1,8 @@
 require("module-alias/register");
 require("dotenv").config();
 
-// require("./queue");
-// require("./schedule");
+require("./queue");
+require("./schedule");
 
 const cors = require("cors");
 const express = require("express");
