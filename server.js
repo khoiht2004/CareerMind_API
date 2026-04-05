@@ -27,6 +27,10 @@ const corsOptions = {
   optionsSuccessStatus: 200,
 };
 
+app.get("/pong-render", (req, res) => {
+  return res.send("pong");
+});
+
 app.use(cors());
 app.use(express.json());
 
