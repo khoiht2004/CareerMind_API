@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "concurrently \"npm run server\" \"npm run queue\" \"npm run schedule\"",
+    "build": "echo \"no build needed\"",
     "start": "node server.js",
     "server": "node --watch server.js",
     "queue": "node --watch queue.js",
