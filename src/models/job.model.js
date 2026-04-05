@@ -87,6 +87,29 @@ const deleteJob = async (id) => {
   return prisma.job.delete({ where: { id } });
 };
 
+const getJobsForUser = async (keywords = [], limit = 10) => {
+  if (!keywords.length) {
+    return prisma.job.findMany({
+      where: { status: "PUBLISHED" },
+      select: JOB_SELECT,
+      orderBy: [{ isHot: "desc" }, { createdAt: "desc" }],
+      take: limit,
+    });
+  }
+
+  const orConditions = keywords.flatMap((kw) => [
+    { title: { contains: kw } },
+    { description: { contains: kw } },
+  ]);
+
+  return prisma.job.findMany({
+    where: { status: "PUBLISHED", OR: orConditions },
+    select: JOB_SELECT,
+    orderBy: [{ isHot: "desc" }, { createdAt: "desc" }],
+    take: limit,
+  });
+};
+
 const isOwner = async (id, userId) => {
   const count = await prisma.job.count({ where: { id, postedById: userId } });
   return count > 0;
@@ -147,6 +170,7 @@ const getMyStats = async (userId) => {
 module.exports = {
   getJobs,
   getJobById,
+  getJobsForUser,
   createJob,
   updateJob,
   deleteJob,
