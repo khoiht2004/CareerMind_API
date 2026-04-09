@@ -4,3 +4,4 @@ node_modules/
 .DS_Store
 src/storage/BackupDB
 generated/prisma
+isrgrootx1.pem

@@ -23,7 +23,6 @@ const corsOptions = {
     "http://localhost:5174",
     "https://khoiht2004.github.io",
     "https://sra-fe-demo.vercel.app",
-    "https://sra-fe-demo.vercel.app/",
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   optionsSuccessStatus: 200,
@@ -46,7 +45,7 @@ app.use("/sra", router);
 app.use(notFoundHandler);
 app.use(exceptionHandler);
 
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);
 });
