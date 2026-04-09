@@ -82,7 +82,7 @@ model User {
 model Profile {
   id        String   @id @default(uuid())
   fullName  String?  @map("full_name")
-  phone     String?  @map("phone")
+  phone     String?  @map("phone") @db.Text
   avatarUrl String?  @map("avatar_url")
   bio       String?  @map("bio") @db.Text
   address   String?  @map("address")

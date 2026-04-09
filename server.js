@@ -10,6 +10,7 @@ const {
   notFoundHandler,
   exceptionHandler,
   responseFormat,
+  handleMulterError,
 } = require("@/middlewares");
 const { apiRateLimiter } = require("@/middlewares/rateLimiter");
 const router = require("@/routes");
@@ -34,6 +35,7 @@ app.get("/pong-render", (req, res) => {
 
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(express.static("public"));
 
 // Middlewares
 app.use(responseFormat);
@@ -41,7 +43,8 @@ app.use(responseFormat);
 app.use("/api", apiRateLimiter);
 app.use("/sra", router);
 
-// 404 và Error handlers cuối cùng
+// 404 và Error handlers
+app.use(handleMulterError);
 app.use(notFoundHandler);
 app.use(exceptionHandler);
 

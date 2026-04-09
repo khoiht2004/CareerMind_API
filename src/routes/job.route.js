@@ -1,7 +1,6 @@
 const router = require("express").Router();
 const controller = require("@/controllers/job.controller");
-const authRequired = require("@/middlewares/authRequired");
-const roleRequired = require("@/middlewares/roleRequired");
+const { authRequired, roleRequired } = require("@/middlewares");
 
 // Public
 router.get("/", controller.getJobs);

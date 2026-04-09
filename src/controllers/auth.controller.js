@@ -5,13 +5,6 @@ const AuthService = require("@/services/auth.service");
 async function register(req, res) {
   const { name, email, password } = req.body;
 
-  if (!email || !password)
-    return res.error(400, "Email và mật khẩu là bắt buộc");
-  if (!/^[^@]+@[^@]+\.[^@]+$/.test(email))
-    return res.error(400, "Email không hợp lệ");
-  if (password.length < 6)
-    return res.error(400, "Mật khẩu phải ít nhất 6 ký tự");
-
   const hashedPassword = await bcrypt.hash(password, 10);
   const user = await model.createUser(
     email,

@@ -1,10 +1,12 @@
 const router = require("express").Router();
 const controller = require("@/controllers/savedJob.controller");
-const authRequired = require("@/middlewares/authRequired");
+const { authRequired } = require("@/middlewares");
 
-router.get("/", authRequired, controller.getSaved);
-router.post("/", authRequired, controller.save);
-router.get("/:jobId/check", authRequired, controller.checkSaved);
-router.delete("/:jobId", authRequired, controller.unsave);
+router.use(authRequired);
+
+router.get("/", controller.getSaved);
+router.post("/", controller.save);
+router.get("/:jobId/check", controller.checkSaved);
+router.delete("/:jobId", controller.unsave);
 
 module.exports = router;

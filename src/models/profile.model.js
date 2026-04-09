@@ -36,4 +36,27 @@ const upsertProfile = async (userId, data) => {
   });
 };
 
-module.exports = { getProfile, upsertProfile };
+const updateAvatar = async (userId, avatarUrl) => {
+  return prisma.profile.update({
+    where: { userId },
+    data: { avatarUrl },
+    select: PROFILE_SELECT,
+  });
+};
+
+const deleteAvatar = async (userId) => {
+  return prisma.$transaction(async (tx) => {
+    const current = await tx.profile.findUnique({
+      where: { userId },
+      select: { avatarUrl: true },
+    });
+    const updated = await tx.profile.update({
+      where: { userId },
+      data: { avatarUrl: null },
+      select: PROFILE_SELECT,
+    });
+    return { prevAvatarUrl: current?.avatarUrl ?? null, ...updated };
+  });
+};
+
+module.exports = { getProfile, upsertProfile, updateAvatar, deleteAvatar };

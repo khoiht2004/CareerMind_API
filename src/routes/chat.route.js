@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const controller = require("@/controllers/chat.controller");
-const authRequired = require("@/middlewares/authRequired");
+const { authRequired } = require("@/middlewares");
 
 router.use(authRequired);
 
