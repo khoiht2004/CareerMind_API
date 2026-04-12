@@ -28,8 +28,8 @@ async function createJob(req, res) {
 
   const payload = {
     ...req.body,
-    tags: toJsonString(req.body.tags),
-    benefits: toJsonString(req.body.benefits),
+    tags: req.body.tags,
+    benefits: req.body.benefits,
   };
 
   const job = await model.createJob(payload, req.auth.user.id);
@@ -48,8 +48,8 @@ async function updateJob(req, res) {
 
   const payload = {
     ...req.body,
-    tags: toJsonString(req.body.tags),
-    benefits: toJsonString(req.body.benefits),
+    tags: req.body.tags,
+    benefits: req.body.benefits,
   };
 
   const job = await model.updateJob(id, payload);

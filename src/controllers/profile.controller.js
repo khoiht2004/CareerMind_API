@@ -4,20 +4,20 @@ const { cloudinaryConfig } = require("@/config");
 async function getProfile(req, res) {
   const profile = await model.getProfile(req.auth.user.id);
   if (!profile) return res.success(200, null);
-  if (profile.skills) profile.skills = JSON.parse(profile.skills);
+  if (profile.skills) profile.skills = profile.skills;
   return res.success(200, profile);
 }
 
 async function updateProfile(req, res) {
   const profile = await model.upsertProfile(req.auth.user.id, req.body);
-  if (profile.skills) profile.skills = JSON.stringify(profile.skills);
+  if (profile.skills) profile.skills = profile.skills;
   return res.success(200, profile);
 }
 
 async function updateAvatar(req, res) {
   const file = req.file;
   if (!file) return res.error(400, "File không hợp lệ");
-  const avatarUrl = file.path; 
+  const avatarUrl = file.path;
   const avatar = await model.updateAvatar(req.auth.user.id, avatarUrl);
   return res.success(200, avatar);
 }

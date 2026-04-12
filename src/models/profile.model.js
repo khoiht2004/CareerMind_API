@@ -25,12 +25,12 @@ const upsertProfile = async (userId, data) => {
     where: { userId },
     update: {
       ...rest,
-      ...(skills !== undefined && { skills: JSON.stringify(skills) }),
+      ...(skills !== undefined && { skills: skills }),
     },
     create: {
       userId,
       ...rest,
-      ...(skills !== undefined && { skills: JSON.stringify(skills) }),
+      ...(skills !== undefined && { skills: skills }),
     },
     select: PROFILE_SELECT,
   });
