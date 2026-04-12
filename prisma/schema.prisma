@@ -153,9 +153,13 @@ model Application {
   jobId String @map("job_id")
   job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
+  cvId String? @map("cv_id")
+  cv   Cv?     @relation(fields: [cvId], references: [id], onDelete: SetNull)
+
   @@unique([userId, jobId])
   @@index([userId])
   @@index([jobId])
+  @@index([cvId])
   @@map("applications")
 }
 
@@ -183,13 +187,16 @@ model Cv {
   id        String   @id @default(uuid())
   name      String   @map("name")
   fileUrl   String   @map("file_url")
+  fileType  String?  @map("file_type") @db.VarChar(10) // pdf | doc | docx
+  fileSize  Int?     @map("file_size") // bytes
   isDefault Boolean  @default(false) @map("is_default")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  userId     String       @map("user_id")
-  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  cvAnalyses CvAnalysis[]
+  userId       String        @map("user_id")
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cvAnalyses   CvAnalysis[]
+  applications Application[]
 
   @@index([userId])
   @@map("cvs")

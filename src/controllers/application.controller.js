@@ -3,7 +3,7 @@ const jobModel = require("@/models/job.model");
 const queueService = require("@/services/queue.service");
 
 async function apply(req, res) {
-  const { jobId, coverLetter, cvUrl, phone, email, name } = req.body;
+  const { jobId, coverLetter, cvUrl, cvId, phone, email, name } = req.body;
   if (!jobId) return res.error(400, "jobId là bắt buộc");
 
   const job = await jobModel.getJobById(jobId);
@@ -13,6 +13,7 @@ async function apply(req, res) {
   const application = await model.apply(req.auth.user.id, jobId, {
     coverLetter,
     cvUrl,
+    cvId: cvId || undefined,
     phone,
   });
 

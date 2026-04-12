@@ -17,6 +17,15 @@ const APP_SELECT = {
   officeAddress: true,
   createdAt: true,
   updatedAt: true,
+  cv: {
+    select: {
+      id: true,
+      name: true,
+      fileUrl: true,
+      fileType: true,
+      fileSize: true,
+    },
+  },
   job: {
     select: {
       id: true,
