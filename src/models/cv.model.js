@@ -12,7 +12,6 @@ const CV_SELECT = {
 };
 
 const createCv = async (userId, data) => {
-  // If the new CV is set as default, unset others first
   if (data.isDefault) {
     await prisma.cv.updateMany({
       where: { userId, isDefault: true },
@@ -56,7 +55,6 @@ const setDefault = async (id, userId) => {
   });
   if (!cv || cv.userId !== userId) return null;
 
-  // Unset current default, then set new one
   await prisma.cv.updateMany({
     where: { userId, isDefault: true },
     data: { isDefault: false },

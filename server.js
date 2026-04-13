@@ -25,7 +25,7 @@ const corsOptions = {
     "https://khoiht2004.github.io",
     "https://sra-fe-demo.vercel.app",
   ],
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   optionsSuccessStatus: 200,
 };
 
