@@ -9,6 +9,8 @@ const findByEmail = async (email) => {
       password: true,
       isVerified: true,
       role: true,
+      companyId: true,
+      canCompanyManage: true,
     },
   });
 };
@@ -38,6 +40,8 @@ const getUserById = async (id) => {
       email: true,
       role: true,
       isVerified: true,
+      companyId: true,
+      canCompanyManage: true,
       profile: {
         select: {
           fullName: true,

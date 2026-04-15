@@ -3,7 +3,9 @@ const prisma = require("@/libs/prisma");
 const JOB_SELECT = {
   id: true,
   title: true,
-  company: true,
+  company: {
+    select: { id: true, name: true, logoUrl: true, isVerified: true },
+  },
   location: true,
   salary: true,
   type: true,
@@ -33,7 +35,10 @@ const getJobs = async ({
   const where = {
     status,
     ...(search && {
-      OR: [{ title: { contains: search } }, { company: { contains: search } }],
+      OR: [
+        { title: { contains: search } },
+        { company: { name: { contains: search } } },
+      ],
     }),
     ...(type && type !== "ALL" && { type }),
     ...(location && location !== "ALL" && { location: { contains: location } }),
@@ -57,13 +62,14 @@ const getJobById = async (id) => {
   return prisma.job.findUnique({ where: { id }, select: JOB_SELECT });
 };
 
-const createJob = async (data, postedById) => {
-  const { deadline, ...rest } = data;
+const createJob = async (data, postedById, companyId) => {
+  const { deadline, company, ...rest } = data; // strip legacy `company` string
   return prisma.job.create({
     data: {
       ...rest,
       ...(deadline && { deadline: new Date(deadline) }),
       postedById,
+      companyId,
     },
     select: JOB_SELECT,
   });
@@ -120,7 +126,10 @@ const getMyJobs = async (userId, { page = 1, limit = 10, status, search }) => {
     postedById: userId,
     ...(status && status !== "ALL" && { status }),
     ...(search && {
-      OR: [{ title: { contains: search } }, { company: { contains: search } }],
+      OR: [
+        { title: { contains: search } },
+        { company: { name: { contains: search } } },
+      ],
     }),
   };
   const [jobs, total] = await Promise.all([
