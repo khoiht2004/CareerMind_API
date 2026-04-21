@@ -59,6 +59,7 @@ model Job {
   level        String?       @map("level")
   tags         Json?         @map("tags")
   description  String        @map("description") @db.LongText
+  requirements Json?         @map("requirements")
   benefits     Json?         @map("benefits")
   slots        Int           @default(1) @map("slots")
   deadline     DateTime?     @map("deadline")

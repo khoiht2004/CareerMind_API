@@ -18,6 +18,8 @@ const JOB_SELECT = {
   status: true,
   isHot: true,
   createdAt: true,
+  updatedAt: true,
+  requirements: true,
   postedBy: {
     select: { id: true, email: true, profile: { select: { fullName: true } } },
   },

@@ -35,6 +35,7 @@ async function createJob(req, res) {
     ...req.body,
     tags: req.body.tags,
     benefits: req.body.benefits,
+    requirements: req.body.requirements,
   };
 
   const job = await model.createJob(payload, req.auth.user.id, companyId);
@@ -55,6 +56,7 @@ async function updateJob(req, res) {
     ...req.body,
     tags: req.body.tags,
     benefits: req.body.benefits,
+    requirements: req.body.requirements,
   };
 
   const job = await model.updateJob(id, payload);
