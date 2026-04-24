@@ -6,6 +6,8 @@ const COMPANY_PUBLIC_SELECT = {
       email: true,
       phone: true,
       description: true,
+      subDescription: true,
+      mapUrl: true,
       address: true,
       logoUrl: true,
       coverImageUrl: true,

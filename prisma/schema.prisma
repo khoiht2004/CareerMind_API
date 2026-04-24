@@ -84,9 +84,11 @@ model Company {
   email             String        @map("email")
   phone             String?       @map("phone")
   description       String?       @map("description") @db.Text
-  address           String?       @map("address")
-  logoUrl           String?       @map("logo_url")
-  coverImageUrl     String?       @map("cover_image_url")
+  subDescription    String?       @map("sub_description") @db.Text
+  mapUrl            String?       @map("map_url") @db.Text
+  address           String?       @map("address") @db.VarChar(255)
+  logoUrl           String?       @map("logo_url") @db.Text
+  coverImageUrl     String?       @map("cover_image_url") @db.Text
   socialLinks       Json?         @map("social_links")
   isVerified        Boolean       @default(false) @map("is_verified")
   isActive          Boolean       @default(true) @map("is_active")

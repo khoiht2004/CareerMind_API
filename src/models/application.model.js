@@ -43,7 +43,7 @@ const APP_SELECT = {
     select: {
       id: true,
       email: true,
-      profile: { select: { fullName: true, avatarUrl: true, phone: true, bio: true, skills: true } },
+      profile: { select: { fullName: true, avatarUrl: true, phone: true, bio: true, skills: true, address: true } },
     },
   },
 };
