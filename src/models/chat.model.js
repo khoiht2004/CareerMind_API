@@ -16,7 +16,7 @@ const getSessions = async (userId) => {
 
 const createSession = async (userId, title) => {
   return prisma.chatSession.create({
-    data: { userId, title: title || "Trợ lý AI SRA" },
+    data: { userId, title: title || "AI Scout" },
     select: { id: true, title: true, createdAt: true },
   });
 };
