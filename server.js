@@ -34,7 +34,7 @@ app.get("/pong-render", (req, res) => {
 });
 
 app.use(cors(corsOptions));
-app.use(express.json());
+app.use(express.json({ limit: "20mb" }));
 app.use(express.static("public"));
 
 // Middlewares

@@ -5,23 +5,37 @@ const authModel = require("@/models/auth.model");
 const { _getMatchingJobs, _formatJobs } = require("@/utils/chatbot.helper");
 
 class ChatBotService {
-  async chat(user, sessionId, input) {
-    const userMessage = await chatModel.addMessage(sessionId, "USER", input);
+  async chat(user, sessionId, input, images = null) {
+    const userMessage = await chatModel.addMessage(sessionId, "USER", input, images);
 
     const history = await chatModel.getRecentMessages(sessionId, 10);
-    const messages = history.map((msg) => ({
-      role: msg.role === "USER" ? "user" : "assistant",
-      content: msg.content,
-    }));
 
     const loadMoreKeywords = /thêm|nữa|tiếp|khác|more/i;
     let loadMoreCount = 0;
-    [...history, { role: "USER", content: input }].forEach((msg) => {
+    history.forEach((msg) => {
       if ((msg.role === "USER" || msg.role === "user") && loadMoreKeywords.test(msg.content)) {
         loadMoreCount++;
       }
     });
     const jobLimit = 20 + loadMoreCount * 5;
+
+    // Build AI message array — images only on the most recent user message
+    const messages = history.map((msg, idx) => {
+      const isLastUserMsg = idx === history.length - 1 && msg.role === "USER";
+      const hasImages = isLastUserMsg && images?.length;
+      return {
+        role: msg.role === "USER" ? "user" : "assistant",
+        content: hasImages
+          ? [
+            ...images.map((img) => ({
+              type: "image_url",
+              image_url: { url: `data:${img.mediaType};base64,${img.data}` },
+            })),
+            { type: "text", text: input || "" },
+          ]
+          : msg.content,
+      };
+    });
 
     const systemPrompt = await this.generateSystemPrompt(user, jobLimit);
     const aiReply = await aiService.completions(systemPrompt, messages);
@@ -92,6 +106,7 @@ NGUYÊN TẮC BẤT BIẾN
 - Chỉ xử lý chủ đề liên quan đến tuyển dụng và tìm việc. Từ chối lịch sự các yêu cầu ngoài phạm vi.
 - Nếu không chắc chắn → "Tôi không chắc về điều này, bạn vui lòng kiểm tra lại."
 - Ghi nhớ ngữ cảnh hội thoại. Không hỏi lại thông tin người dùng đã cung cấp.
+- Hạn chế dòng trống: chỉ xuống 1 dòng trống để ngăn cách giữa các ý CHÍNH khác nhau. Không để nhiều dòng trống liên tiếp. Không xuống dòng thừa giữa tiêu đề và nội dung của cùng một ý.
 
 ════════════════════════════════
 PHÂN QUYỀN THEO VAI TRÒ

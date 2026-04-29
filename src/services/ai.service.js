@@ -21,10 +21,7 @@ class AIService {
     const response = await client.chat.completions.create({
       model: "anthropic/claude-haiku-4.5",
       messages: [
-        {
-          role: "system",
-          content: systemPrompt,
-        },
+        { role: "system", content: systemPrompt },
         ...messages,
       ],
     });

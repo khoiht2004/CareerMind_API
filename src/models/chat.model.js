@@ -1,5 +1,10 @@
 const prisma = require("@/libs/prisma");
 
+const parseImages = (msg) => ({
+  ...msg,
+  images: msg.images ? JSON.parse(msg.images) : null,
+});
+
 const getSessions = async (userId) => {
   return prisma.chatSession.findMany({
     where: { userId },
@@ -29,11 +34,12 @@ const getSession = async (id, userId) => {
 };
 
 const getMessages = async (sessionId) => {
-  return prisma.chatMessage.findMany({
+  const messages = await prisma.chatMessage.findMany({
     where: { sessionId },
     orderBy: { createdAt: "asc" },
-    select: { id: true, role: true, content: true, createdAt: true },
+    select: { id: true, role: true, content: true, images: true, createdAt: true },
   });
+  return messages.map(parseImages);
 };
 
 const getRecentMessages = async (sessionId, limit = 10) => {
@@ -41,21 +47,26 @@ const getRecentMessages = async (sessionId, limit = 10) => {
     where: { sessionId },
     orderBy: { createdAt: "desc" },
     take: limit,
-    select: { id: true, role: true, content: true, createdAt: true },
+    select: { id: true, role: true, content: true, images: true, createdAt: true },
   });
-  return messages.reverse();
+  return messages.reverse().map(parseImages);
 };
 
-const addMessage = async (sessionId, role, content) => {
+const addMessage = async (sessionId, role, content, images = null) => {
   const msg = await prisma.chatMessage.create({
-    data: { sessionId, role, content },
-    select: { id: true, role: true, content: true, createdAt: true },
+    data: {
+      sessionId,
+      role,
+      content,
+      images: images?.length ? JSON.stringify(images) : null,
+    },
+    select: { id: true, role: true, content: true, images: true, createdAt: true },
   });
   await prisma.chatSession.update({
     where: { id: sessionId },
     data: { updatedAt: new Date() },
   });
-  return msg;
+  return parseImages(msg);
 };
 
 const updateTitle = async (id, title) => {
