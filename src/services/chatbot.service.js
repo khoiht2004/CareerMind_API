@@ -2,11 +2,7 @@ const aiService = require("@/services/ai.service");
 const chatModel = require("@/models/chat.model");
 const profileModel = require("@/models/profile.model");
 const authModel = require("@/models/auth.model");
-const {
-  _getMatchingJobs,
-  _parseSkills,
-  _formatJobs,
-} = require("@/utils/chatbot.helper");
+const { _getMatchingJobs, _formatJobs } = require("@/utils/chatbot.helper");
 
 class ChatBotService {
   async chat(user, sessionId, input) {
@@ -18,7 +14,16 @@ class ChatBotService {
       content: msg.content,
     }));
 
-    const systemPrompt = await this.generateSystemPrompt(user);
+    const loadMoreKeywords = /thêm|nữa|tiếp|khác|more/i;
+    let loadMoreCount = 0;
+    [...history, { role: "USER", content: input }].forEach((msg) => {
+      if ((msg.role === "USER" || msg.role === "user") && loadMoreKeywords.test(msg.content)) {
+        loadMoreCount++;
+      }
+    });
+    const jobLimit = 20 + loadMoreCount * 5;
+
+    const systemPrompt = await this.generateSystemPrompt(user, jobLimit);
     const aiReply = await aiService.completions(systemPrompt, messages);
 
     const assistantMessage = await chatModel.addMessage(
@@ -30,30 +35,54 @@ class ChatBotService {
     return { userMessage, assistantMessage };
   }
 
-  async generateSystemPrompt(user) {
-    const [profile, userInfor, jobs] = await Promise.all([
+  async generateSystemPrompt(user, jobLimit = 20) {
+    const [profile, userInfor] = await Promise.all([
       profileModel.getProfile(user.id),
       authModel.getUserById(user.id),
-      _getMatchingJobs(user.id),
     ]);
-    const skills = _parseSkills(profile?.skills);
+
+    const isCandidate = userInfor?.role === "CANDIDATE";
+    let jobs = [];
+    let companyInfo = null;
+
+    if (isCandidate) {
+      jobs = await _getMatchingJobs(profile, jobLimit);
+    } else {
+      if (userInfor?.companyId) {
+        const companyModel = require("@/models/company.model");
+        const companyData = await companyModel.getCompanyById(userInfor.companyId);
+        if (companyData) {
+          companyInfo = companyData;
+          jobs = (companyData.jobs || []).map((j) => ({
+            ...j,
+            company: { name: companyData.name },
+          }));
+        }
+      }
+    }
+
     const jobList = _formatJobs(jobs);
 
+    let dynamicContext = "";
+    if (isCandidate) {
+      dynamicContext = `DỮ LIỆU CÔNG VIỆC\n════════════════════════════════\n${jobList || "Hiện chưa có dữ liệu công việc."}`;
+    } else {
+      dynamicContext = `THÔNG TIN DOANH NGHIỆP CỦA BẠN\n════════════════════════════════\n- Tên công ty: ${companyInfo?.name || "Chưa cập nhật"}\n- Địa chỉ: ${companyInfo?.address || "Chưa cập nhật"}\n- Tổng job: ${companyInfo?.totalJobs || 0}\n\nCÁC CÔNG VIỆC BẠN ĐÃ ĐĂNG:\n${jobList || "Bạn chưa đăng công việc nào."}`;
+    }
+
     const systemPrompt = `
-Bạn là AI Scout - Trợ lý tuyển dụng thông minh, hỗ trợ ${userInfor?.role === "CANDIDATE" ? "ứng viên tìm kiếm việc làm phù hợp" : "nhà tuyển dụng tìm kiếm ứng viên chất lượng"}.
+Bạn là AI Scout - Trợ lý tuyển dụng thông minh, hỗ trợ ${isCandidate ? "ứng viên tìm kiếm việc làm phù hợp" : "nhà tuyển dụng tìm kiếm ứng viên chất lượng"}.
 ════════════════════════════════
 THÔNG TIN NGƯỜI DÙNG (ĐÃ XÁC THỰC)
 ════════════════════════════════
 - Họ tên   : ${profile?.fullName || "Chưa cập nhật"}
-- Vai trò  : ${userInfor?.role === "CANDIDATE" ? "Ứng viên" : "Nhà tuyển dụng"}
+- Vai trò  : ${isCandidate ? "Ứng viên" : "Nhà tuyển dụng"}
 - Bio      : ${profile?.bio || "Chưa cập nhật"}
-- Kỹ năng  : ${skills.length ? skills.join(", ") : "Chưa cập nhật"}
+- Kỹ năng  : ${profile?.skills?.length ? profile?.skills?.join(", ") : "Chưa cập nhật"}
 - Địa chỉ  : ${profile?.address || "Chưa cập nhật"}
 
 ════════════════════════════════
-DỮ LIỆU CÔNG VIỆC
-════════════════════════════════
-${jobList || "Hiện chưa có dữ liệu công việc."}
+${dynamicContext}
 
 ════════════════════════════════
 NGUYÊN TẮC BẤT BIẾN
@@ -137,7 +166,7 @@ GIỌNG VÀ PHONG CÁCH:
 - Kết thúc bằng câu hỏi hoặc gợi ý hành động tiếp theo khi phù hợp.
 
 ĐỊNH DẠNG VĂN BẢN:
-- Dùng thẻ <b>...</b> để nhấn mạnh: tên vị trí, kỹ năng quan trọng, điểm số, cảnh báo.
+- Dùng thẻ **text** để in đậm: tên vị trí, kỹ năng quan trọng, điểm số, cảnh báo.
 - Dùng icon phù hợp với nội dung:
     👥 người dùng (hiển thị thông tin cá nhân)
     🏢 doanh nghiệp / công ty
@@ -153,10 +182,12 @@ GIỌNG VÀ PHONG CÁCH:
     📞 liên hệ
     📝 yêu cầu / câu hỏi
     💬 hội thoại
-- Icon luôn phải được đặt ở đầu tiên trong dòng (trước thẻ <b>...</b>)
+- Icon luôn phải được đặt ở đầu tiên trong dòng (trước in đậm).
+- Khi muốn gợi ý công việc, CHỈ CẦN ghi mã [ID:xxx] (ví dụ: [ID:123]) trên một dòng riêng biệt. Hệ thống UI sẽ tự động biến nó thành Thẻ Công Việc. TUYỆT ĐỐI KHÔNG tự viết thêm Tên công việc, Công ty, Lương... bên cạnh mã ID để tránh lặp thông tin trên UI.
+- Nếu người dùng yêu cầu "tìm thêm", "gợi ý thêm", hãy thông báo rằng bạn đang tải thêm kết quả và kèm theo từ khóa đặc biệt [LOAD_MORE_JOBS] ở cuối câu trả lời.
 - Không dùng markdown heading (##) hay gạch ngang (---).
 - Nhiều ý → đánh số, mỗi ý một dòng riêng.
-- Danh sách việc làm → mỗi vị trí một dòng, rõ tên vị trí và công ty.
+- Hạn chế dòng trống: chỉ xuống 1 dòng trống để ngăn cách giữa các ý CHÍNH khác nhau. Không để nhiều dòng trống liên tiếp. Không xuống dòng thừa giữa tiêu đề và nội dung của cùng một ý.
 
 ĐỊNH DẠNG HỎI THÊM THÔNG TIN (bắt buộc khi thiếu data):
 Bạn có thể cho tôi biết thêm:
