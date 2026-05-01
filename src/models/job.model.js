@@ -3,7 +3,9 @@ const prisma = require("@/libs/prisma");
 const JOB_SELECT = {
   id: true,
   title: true,
-  company: true,
+  company: {
+    select: { id: true, name: true, logoUrl: true, isVerified: true },
+  },
   location: true,
   salary: true,
   type: true,
@@ -16,6 +18,8 @@ const JOB_SELECT = {
   status: true,
   isHot: true,
   createdAt: true,
+  updatedAt: true,
+  requirements: true,
   postedBy: {
     select: { id: true, email: true, profile: { select: { fullName: true } } },
   },
@@ -33,7 +37,10 @@ const getJobs = async ({
   const where = {
     status,
     ...(search && {
-      OR: [{ title: { contains: search } }, { company: { contains: search } }],
+      OR: [
+        { title: { contains: search } },
+        { company: { name: { contains: search } } },
+      ],
     }),
     ...(type && type !== "ALL" && { type }),
     ...(location && location !== "ALL" && { location: { contains: location } }),
@@ -57,13 +64,14 @@ const getJobById = async (id) => {
   return prisma.job.findUnique({ where: { id }, select: JOB_SELECT });
 };
 
-const createJob = async (data, postedById) => {
-  const { deadline, ...rest } = data;
+const createJob = async (data, postedById, companyId) => {
+  const { deadline, company, ...rest } = data; // strip legacy `company` string
   return prisma.job.create({
     data: {
       ...rest,
       ...(deadline && { deadline: new Date(deadline) }),
       postedById,
+      companyId,
     },
     select: JOB_SELECT,
   });
@@ -120,7 +128,10 @@ const getMyJobs = async (userId, { page = 1, limit = 10, status, search }) => {
     postedById: userId,
     ...(status && status !== "ALL" && { status }),
     ...(search && {
-      OR: [{ title: { contains: search } }, { company: { contains: search } }],
+      OR: [
+        { title: { contains: search } },
+        { company: { name: { contains: search } } },
+      ],
     }),
   };
   const [jobs, total] = await Promise.all([
@@ -137,7 +148,13 @@ const getMyJobs = async (userId, { page = 1, limit = 10, status, search }) => {
 };
 
 const getMyStats = async (userId) => {
-  const [totalJobs, jobsByStatus, totalApplications, appsByStatus] =
+  const now = new Date();
+  const nineMonthsAgo = new Date(now);
+  nineMonthsAgo.setMonth(nineMonthsAgo.getMonth() - 8);
+  nineMonthsAgo.setDate(1);
+  nineMonthsAgo.setHours(0, 0, 0, 0);
+
+  const [totalJobs, jobsByStatus, totalApplications, appsByStatus, rawMonthly] =
     await Promise.all([
       prisma.job.count({ where: { postedById: userId } }),
       prisma.job.groupBy({
@@ -151,6 +168,15 @@ const getMyStats = async (userId) => {
         where: { job: { postedById: userId } },
         _count: { _all: true },
       }),
+      prisma.$queryRaw`
+        SELECT MONTH(a.created_at) AS month, YEAR(a.created_at) AS year, COUNT(*) AS count
+        FROM applications a
+        INNER JOIN jobs j ON a.job_id = j.id
+        WHERE j.posted_by_id = ${userId}
+          AND a.created_at >= ${nineMonthsAgo}
+        GROUP BY YEAR(a.created_at), MONTH(a.created_at)
+        ORDER BY year ASC, month ASC
+      `,
     ]);
 
   const toMap = (arr) =>
@@ -159,11 +185,30 @@ const getMyStats = async (userId) => {
       {},
     );
 
+  // Build a continuous 9-month array (fills 0 for months with no data)
+  const monthlyApplications = [];
+  for (let i = 8; i >= 0; i--) {
+    const d = new Date(now);
+    d.setMonth(d.getMonth() - i);
+    const m = d.getMonth() + 1;
+    const y = d.getFullYear();
+    const found = rawMonthly.find(
+      (r) => Number(r.month) === m && Number(r.year) === y,
+    );
+    monthlyApplications.push({
+      month: m,
+      year: y,
+      label: `Thg ${m}`,
+      count: found ? Number(found.count) : 0,
+    });
+  }
+
   return {
     totalJobs,
     totalApplications,
     jobsByStatus: toMap(jobsByStatus),
     appsByStatus: toMap(appsByStatus),
+    monthlyApplications,
   };
 };
 

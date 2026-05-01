@@ -45,6 +45,8 @@ async function login(req, res) {
     accessToken,
     refreshToken,
     expiredAt: timeExp,
+    companyId: user.companyId,
+    canCompanyManage: user.canCompanyManage,
   });
 }
 

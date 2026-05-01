@@ -6,6 +6,7 @@ const PROFILE_SELECT = {
   phone: true,
   avatarUrl: true,
   bio: true,
+  subBio: true,
   address: true,
   skills: true,
   updatedAt: true,

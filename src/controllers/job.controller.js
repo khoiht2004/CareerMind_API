@@ -21,18 +21,24 @@ async function getJobById(req, res) {
 }
 
 async function createJob(req, res) {
-  const { title, company, location, description } = req.body;
-  if (!title || !company || !location || !description) {
-    return res.error(400, "Tiêu đề, công ty, địa điểm và mô tả là bắt buộc");
+  const { title, location, description } = req.body;
+  const companyId = req.auth.user.companyId;
+
+  if (!title || !location || !description) {
+    return res.error(400, "Tiêu đề, địa điểm và mô tả là bắt buộc");
+  }
+  if (!companyId) {
+    return res.error(400, "Tài khoản của bạn chưa được liên kết với công ty");
   }
 
   const payload = {
     ...req.body,
     tags: req.body.tags,
     benefits: req.body.benefits,
+    requirements: req.body.requirements,
   };
 
-  const job = await model.createJob(payload, req.auth.user.id);
+  const job = await model.createJob(payload, req.auth.user.id, companyId);
   return res.success(201, job);
 }
 
@@ -50,6 +56,7 @@ async function updateJob(req, res) {
     ...req.body,
     tags: req.body.tags,
     benefits: req.body.benefits,
+    requirements: req.body.requirements,
   };
 
   const job = await model.updateJob(id, payload);

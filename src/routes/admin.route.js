@@ -23,4 +23,9 @@ router.get("/chat-sessions", controller.getAdminChatSessions);
 
 router.get("/system-stats", controller.getSystemStats);
 
+router.get("/companies", controller.getAdminCompanies);
+router.post("/companies", controller.createCompany);
+router.put("/companies/:id/verify", controller.verifyCompany);
+router.put("/companies/:id/active", controller.toggleCompanyActive);
+
 module.exports = router;

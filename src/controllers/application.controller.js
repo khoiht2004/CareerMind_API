@@ -26,7 +26,7 @@ async function apply(req, res) {
       email: email,
       applicantName: name,
       jobTitle: job.title,
-      company: job.company,
+      company: job.company.name,
     },
     1,
   );
@@ -117,7 +117,7 @@ async function updateStatus(req, res) {
     const applicantName =
       app.user?.profile?.fullName ?? app.user?.email ?? "Ứng viên";
     const jobTitle = app.job?.title ?? "";
-    const company = app.job?.company ?? "";
+    const company = app.job?.company.name ?? "";
 
     if (status === "INTERVIEW") {
       await queueService.push("sendInterviewEmail", {

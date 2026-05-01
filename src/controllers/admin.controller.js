@@ -1,13 +1,8 @@
-const prisma = require("@/libs/prisma");
+const AdminModel = require("@/models/admin.model");
 
 async function getStats(req, res) {
   const [totalUsers, totalJobs, totalApplications, activeJobs] =
-    await Promise.all([
-      prisma.user.count(),
-      prisma.job.count(),
-      prisma.application.count(),
-      prisma.job.count({ where: { status: "PUBLISHED" } }),
-    ]);
+    await AdminModel.getDashboardStats();
 
   return res.success(200, {
     totalUsers,
@@ -28,9 +23,7 @@ async function getApplicationTrend(req, res) {
     const end = new Date(start);
     end.setDate(end.getDate() + 1);
 
-    const count = await prisma.application.count({
-      where: { createdAt: { gte: start, lt: end } },
-    });
+    const count = await AdminModel.getApplicationCountByDateRange(start, end);
     results.push({
       date: start.toISOString().slice(0, 10),
       applications: count,
@@ -44,7 +37,7 @@ async function getJobsByType(req, res) {
   const results = await Promise.all(
     types.map(async (type) => ({
       type,
-      count: await prisma.job.count({ where: { type } }),
+      count: await AdminModel.getJobCountByType(type),
     })),
   );
   return res.success(200, results);
@@ -52,23 +45,7 @@ async function getJobsByType(req, res) {
 
 async function getRecentApplications(req, res) {
   const { limit = 10 } = req.query;
-  const applications = await prisma.application.findMany({
-    take: Number(limit),
-    orderBy: { createdAt: "desc" },
-    select: {
-      id: true,
-      status: true,
-      createdAt: true,
-      user: {
-        select: {
-          id: true,
-          email: true,
-          profile: { select: { fullName: true, avatarUrl: true } },
-        },
-      },
-      job: { select: { id: true, title: true, company: true } },
-    },
-  });
+  const applications = await AdminModel.getRecentApplications(limit);
   return res.success(200, applications);
 }
 
@@ -85,24 +62,7 @@ async function getUsers(req, res) {
     ...(role && { role }),
   };
 
-  const [data, total] = await Promise.all([
-    prisma.user.findMany({
-      where,
-      skip,
-      take: +limit,
-      orderBy: { createdAt: "desc" },
-      select: {
-        id: true,
-        email: true,
-        role: true,
-        isVerified: true,
-        isActive: true,
-        createdAt: true,
-        profile: { select: { fullName: true, avatarUrl: true } },
-      },
-    }),
-    prisma.user.count({ where }),
-  ]);
+  const [data, total] = await AdminModel.getUsersAndCount(where, skip, +limit);
 
   return res.success(200, {
     data,
@@ -119,27 +79,16 @@ async function updateUserRole(req, res) {
   const validRoles = ["CANDIDATE", "RECRUITER", "ADMIN"];
   if (!validRoles.includes(role)) return res.error(400, "Role không hợp lệ");
 
-  const user = await prisma.user.update({
-    where: { id },
-    data: { role },
-    select: { id: true, email: true, role: true },
-  });
+  const user = await AdminModel.updateUserRole(id, role);
   return res.success(200, user);
 }
 
 async function toggleUserActive(req, res) {
   const { id } = req.params;
-  const user = await prisma.user.findUnique({
-    where: { id },
-    select: { isActive: true },
-  });
+  const user = await AdminModel.findUserById(id, { isActive: true });
   if (!user) return res.error(404, "Không tìm thấy người dùng");
 
-  const updated = await prisma.user.update({
-    where: { id },
-    data: { isActive: !user.isActive },
-    select: { id: true, email: true, isActive: true },
-  });
+  const updated = await AdminModel.toggleUserActive(id, !user.isActive);
   return res.success(200, updated);
 }
 
@@ -150,41 +99,16 @@ async function getAdminJobs(req, res) {
   const skip = (+page - 1) * +limit;
   const where = {
     ...(search && {
-      OR: [{ title: { contains: search } }, { company: { contains: search } }],
+      OR: [
+        { title: { contains: search } },
+        { company: { name: { contains: search } } },
+      ],
     }),
     ...(type && { type }),
     ...(status && { status }),
   };
 
-  const [data, total] = await Promise.all([
-    prisma.job.findMany({
-      where,
-      skip,
-      take: +limit,
-      orderBy: { createdAt: "desc" },
-      select: {
-        id: true,
-        title: true,
-        company: true,
-        location: true,
-        type: true,
-        status: true,
-        isHot: true,
-        deadline: true,
-        slots: true,
-        createdAt: true,
-        postedBy: {
-          select: {
-            id: true,
-            email: true,
-            profile: { select: { fullName: true } },
-          },
-        },
-        _count: { select: { applications: true } },
-      },
-    }),
-    prisma.job.count({ where }),
-  ]);
+  const [data, total] = await AdminModel.getJobsAndCount(where, skip, +limit);
 
   return res.success(200, {
     data,
@@ -202,14 +126,10 @@ async function updateJobStatus(req, res) {
   if (!status || !VALID.includes(status))
     return res.error(400, "Trạng thái không hợp lệ");
 
-  const job = await prisma.job.findUnique({ where: { id } });
+  const job = await AdminModel.findJobById(id);
   if (!job) return res.error(404, "Không tìm thấy công việc");
 
-  const updated = await prisma.job.update({
-    where: { id },
-    data: { status },
-    select: { id: true, title: true, status: true },
-  });
+  const updated = await AdminModel.updateJobStatus(id, status);
   return res.success(200, updated);
 }
 
@@ -230,29 +150,7 @@ async function getAdminApplications(req, res) {
     }),
   };
 
-  const [data, total] = await Promise.all([
-    prisma.application.findMany({
-      where,
-      skip,
-      take: +limit,
-      orderBy: { createdAt: "desc" },
-      select: {
-        id: true,
-        status: true,
-        createdAt: true,
-        note: true,
-        user: {
-          select: {
-            id: true,
-            email: true,
-            profile: { select: { fullName: true, avatarUrl: true } },
-          },
-        },
-        job: { select: { id: true, title: true, company: true } },
-      },
-    }),
-    prisma.application.count({ where }),
-  ]);
+  const [data, total] = await AdminModel.getApplicationsAndCount(where, skip, +limit);
 
   return res.success(200, {
     data,
@@ -270,14 +168,10 @@ async function updateApplicationStatus(req, res) {
   if (!status || !VALID.includes(status))
     return res.error(400, "Trạng thái không hợp lệ");
 
-  const app = await prisma.application.findUnique({ where: { id } });
+  const app = await AdminModel.findApplicationById(id);
   if (!app) return res.error(404, "Không tìm thấy đơn ứng tuyển");
 
-  const updated = await prisma.application.update({
-    where: { id },
-    data: { status, ...(note && { note }) },
-    select: { id: true, status: true, note: true },
-  });
+  const updated = await AdminModel.updateApplicationStatus(id, { status, ...(note && { note }) });
   return res.success(200, updated);
 }
 
@@ -285,11 +179,7 @@ async function updateApplicationStatus(req, res) {
 
 async function getChatStats(req, res) {
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-  const [totalSessions, totalMessages, recentSessions] = await Promise.all([
-    prisma.chatSession.count(),
-    prisma.chatMessage.count(),
-    prisma.chatSession.count({ where: { updatedAt: { gte: sevenDaysAgo } } }),
-  ]);
+  const [totalSessions, totalMessages, recentSessions] = await AdminModel.getChatStats(sevenDaysAgo);
   return res.success(200, { totalSessions, totalMessages, recentSessions });
 }
 
@@ -297,28 +187,7 @@ async function getAdminChatSessions(req, res) {
   const { page = 1, limit = 20 } = req.query;
   const skip = (+page - 1) * +limit;
 
-  const [data, total] = await Promise.all([
-    prisma.chatSession.findMany({
-      skip,
-      take: +limit,
-      orderBy: { updatedAt: "desc" },
-      select: {
-        id: true,
-        title: true,
-        createdAt: true,
-        updatedAt: true,
-        user: {
-          select: {
-            id: true,
-            email: true,
-            profile: { select: { fullName: true } },
-          },
-        },
-        _count: { select: { messages: true } },
-      },
-    }),
-    prisma.chatSession.count(),
-  ]);
+  const [data, total] = await AdminModel.getChatSessionsAndCount(skip, +limit);
 
   return res.success(200, {
     data,
@@ -332,19 +201,71 @@ async function getAdminChatSessions(req, res) {
 // ─── Admin System ─────────────────────────────────────────────────────────────
 
 async function getSystemStats(req, res) {
-  const [totalQueues, pendingQueues, failedQueues, processedQueues] =
-    await Promise.all([
-      prisma.queue.count(),
-      prisma.queue.count({ where: { status: "pending" } }),
-      prisma.queue.count({ where: { status: "failed" } }),
-      prisma.queue.count({ where: { status: "done" } }),
-    ]);
+  const [totalQueues, pendingQueues, failedQueues, processedQueues] = await AdminModel.getSystemStats();
   return res.success(200, {
     totalQueues,
     pendingQueues,
     failedQueues,
     processedQueues,
   });
+}
+
+// ─── Admin Company ─────────────────────────────────────────────────────────────
+
+// [GET] Lấy danh sách công ty cho Admin
+async function getAdminCompanies(req, res) {
+  const { page = 1, limit = 20, search } = req.query;
+  const skip = (+page - 1) * +limit;
+  const where = {
+    ...(search && {
+      OR: [
+        { name: { contains: search } },
+        { email: { contains: search } },
+        { address: { contains: search } },
+      ],
+    }),
+  };
+  const [data, total] = await AdminModel.getCompaniesAndCount(where, skip, +limit);
+  return res.success(200, {
+    data,
+    total,
+    page: +page,
+    limit: +limit,
+    totalPages: Math.ceil(total / +limit),
+  });
+}
+
+// [POST] Admin tạo một công ty mới (Hoặc có thể lúc recruiter signup thì tự tạo)
+async function createCompany(req, res) {
+  const { name, email, description, logoUrl, phone, address, coverImageUrl, socialLinks } = req.body;
+  if (!name || !email || !description || !logoUrl) {
+    return res.error(400, "Thiếu thông tin bắt buộc: name, email, description, logoUrl");
+  }
+
+  const company = await AdminModel.createCompany({
+    name, email, description, logoUrl, phone, address, coverImageUrl, socialLinks
+  });
+  res.success(201, company);
+}
+
+// [PUT] Duyệt công ty (Xác thực chống spam)
+async function verifyCompany(req, res) {
+  const { id } = req.params;
+  const company = await AdminModel.findCompanyById(id);
+  if (!company) return res.error(404, "Không tìm thấy công ty");
+
+  const updated = await AdminModel.verifyCompany(id);
+  res.success(200, updated);
+}
+
+// [PUT] Khóa/Mở khóa công ty
+async function toggleCompanyActive(req, res) {
+  const { id } = req.params;
+  const company = await AdminModel.findCompanyById(id);
+  if (!company) return res.error(404, "Không tìm thấy công ty");
+
+  const updated = await AdminModel.toggleCompanyActive(id, !company.isActive);
+  res.success(200, updated);
 }
 
 module.exports = {
@@ -362,4 +283,8 @@ module.exports = {
   getChatStats,
   getAdminChatSessions,
   getSystemStats,
+  getAdminCompanies,
+  createCompany,
+  verifyCompany,
+  toggleCompanyActive,
 };

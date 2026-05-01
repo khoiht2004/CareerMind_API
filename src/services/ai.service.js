@@ -8,7 +8,7 @@ const client = new OpenAI({
 });
 
 class AIService {
-  async generateText(prompt, model = "openai/gpt-4o-mini") {
+  async generateText(prompt, model = "anthropic/claude-haiku-4.5") {
     const result = await generateText({
       model,
       prompt,
@@ -19,12 +19,9 @@ class AIService {
 
   async completions(systemPrompt, messages = []) {
     const response = await client.chat.completions.create({
-      model: "openai/gpt-4o-mini",
+      model: "anthropic/claude-haiku-4.5",
       messages: [
-        {
-          role: "system",
-          content: systemPrompt,
-        },
+        { role: "system", content: systemPrompt },
         ...messages,
       ],
     });

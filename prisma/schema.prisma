@@ -1,19 +1,271 @@
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
-  // previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
   provider = "mysql"
 }
 
-// ─── Enums ────────────────────────────────────────────────────────────────────
+model User {
+  id                    String         @id @default(uuid())
+  email                 String         @unique @map("email")
+  password              String         @map("password")
+  role                  Role           @default(CANDIDATE) @map("role")
+  canCompanyManage      Boolean        @default(false) @map("can_company_manage")
+  companyId             String?        @map("company_id")
+  isVerified            Boolean        @default(false) @map("is_verified")
+  isActive              Boolean        @default(true) @map("is_active")
+  verificationCode      String?        @map("verification_code") @db.VarChar(6)
+  verificationCodeExpAt DateTime?      @map("verification_code_exp_at")
+  createdAt             DateTime       @default(now()) @map("created_at")
+  updatedAt             DateTime       @updatedAt @map("updated_at")
+  applications          Application[]
+  chatSessions          ChatSession[]
+  coverLetters          CoverLetter[]
+  cvs                   Cv[]
+  postedJobs            Job[]
+  profile               Profile?
+  refreshTokens         RefreshToken[]
+  revokedTokens         RevokedToken[]
+  savedJobs             SavedJob[]
+  company               Company?       @relation(fields: [companyId], references: [id])
 
-enum Role {
-  CANDIDATE
-  RECRUITER
-  ADMIN
+  @@map("users")
+}
+
+model Profile {
+  id        String   @id @default(uuid())
+  fullName  String?  @map("full_name")
+  phone     String?  @map("phone") @db.Text
+  avatarUrl String?  @map("avatar_url")
+  bio       String?  @map("bio") @db.Text
+  subBio    String?  @map("sub_bio") @db.Text
+  address   String?  @map("address")
+  skills    Json?    @map("skills")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  userId    String   @unique @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("profiles")
+}
+
+model Job {
+  id           String        @id @default(uuid())
+  title        String        @map("title")
+  companyId    String        @map("company_id")
+  location     String        @map("location")
+  salary       String?       @map("salary")
+  type         JobType       @default(FULL_TIME) @map("type")
+  level        String?       @map("level")
+  tags         Json?         @map("tags")
+  description  String        @map("description") @db.LongText
+  requirements Json?         @map("requirements")
+  benefits     Json?         @map("benefits")
+  slots        Int           @default(1) @map("slots")
+  deadline     DateTime?     @map("deadline")
+  status       JobStatus     @default(PUBLISHED) @map("status")
+  isHot        Boolean       @default(false) @map("is_hot")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  postedById   String        @map("posted_by_id")
+  applications Application[]
+  cvAnalyses   CvAnalysis[]
+  postedBy     User          @relation(fields: [postedById], references: [id], onDelete: Cascade)
+  savedBy      SavedJob[]
+  company      Company?      @relation(fields: [companyId], references: [id])
+
+  @@index([postedById])
+  @@map("jobs")
+}
+
+model Company {
+  id                String        @id @default(uuid())
+  name              String        @map("name")
+  email             String        @map("email")
+  phone             String?       @map("phone")
+  description       String?       @map("description") @db.Text
+  subDescription    String?       @map("sub_description") @db.Text
+  mapUrl            String?       @map("map_url") @db.Text
+  address           String?       @map("address") @db.VarChar(255)
+  logoUrl           String?       @map("logo_url") @db.Text
+  coverImageUrl     String?       @map("cover_image_url") @db.Text
+  socialLinks       Json?         @map("social_links")
+  isVerified        Boolean       @default(false) @map("is_verified")
+  isActive          Boolean       @default(true) @map("is_active")
+  createdAt         DateTime      @default(now()) @map("created_at")
+  updatedAt         DateTime      @updatedAt @map("updated_at")
+  totalJobs         Int           @default(0) @map("total_jobs")
+  totalApplications Int           @default(0) @map("total_applications")
+  jobs              Job[]
+  user              User[]
+  applications      Application[]
+
+  @@map("companies")
+}
+
+model Application {
+  id                String            @id @default(uuid())
+  coverLetter       String?           @map("cover_letter") @db.Text
+  cvUrl             String?           @map("cv_url")
+  status            ApplicationStatus @default(PENDING) @map("status")
+  note              String?           @map("note") @db.Text
+  createdAt         DateTime          @default(now()) @map("created_at")
+  updatedAt         DateTime          @updatedAt @map("updated_at")
+  userId            String            @map("user_id")
+  jobId             String            @map("job_id")
+  phone             String?           @map("phone")
+  confirmDeadline   DateTime?         @map("confirm_deadline")
+  interviewDate     DateTime?         @map("interview_date")
+  interviewFormat   String?           @map("interview_format") @db.VarChar(20)
+  interviewLocation String?           @map("interview_location") @db.VarChar(500)
+  interviewTime     String?           @map("interview_time") @db.VarChar(10)
+  officeAddress     String?           @map("office_address") @db.VarChar(500)
+  startDate         DateTime?         @map("start_date")
+  startTime         String?           @map("start_time") @db.VarChar(10)
+  cvId              String?           @map("cv_id")
+  cv                Cv?               @relation(fields: [cvId], references: [id])
+  job               Job               @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company           Company?          @relation(fields: [companyId], references: [id])
+  companyId         String?
+
+  @@unique([userId, jobId])
+  @@index([userId])
+  @@index([jobId])
+  @@index([cvId])
+  @@map("applications")
+}
+
+model SavedJob {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  userId    String   @map("user_id")
+  jobId     String   @map("job_id")
+  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, jobId])
+  @@index([userId])
+  @@index([jobId])
+  @@map("saved_jobs")
+}
+
+model Cv {
+  id           String        @id @default(uuid())
+  name         String        @map("name")
+  fileUrl      String        @map("file_url")
+  isDefault    Boolean       @default(false) @map("is_default")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  userId       String        @map("user_id")
+  fileSize     Int?          @map("file_size")
+  fileType     String?       @map("file_type") @db.VarChar(10)
+  applications Application[]
+  cvAnalyses   CvAnalysis[]
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("cvs")
+}
+
+model CoverLetter {
+  id        String   @id @default(uuid())
+  title     String   @map("title")
+  content   String   @map("content") @db.LongText
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("cover_letters")
+}
+
+model ChatSession {
+  id        String        @id @default(uuid())
+  title     String?       @map("title")
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
+  userId    String        @map("user_id")
+  messages  ChatMessage[]
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("chat_sessions")
+}
+
+model ChatMessage {
+  id          String      @id @default(uuid())
+  role        MessageRole @map("role")
+  content     String      @map("content") @db.Text
+  images      String?     @map("images") @db.LongText
+  createdAt   DateTime    @default(now()) @map("created_at")
+  sessionId   String      @map("session_id")
+  messageType MessageType @default(TEXT) @map("message_type")
+  session     ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  cvAnalysis  CvAnalysis?
+
+  @@index([sessionId])
+  @@map("chat_messages")
+}
+
+model CvAnalysis {
+  id           String      @id @default(uuid())
+  score        Int         @map("score")
+  strengths    Json        @map("strengths")
+  weaknesses   Json        @map("weaknesses")
+  improvements Json        @map("improvements")
+  summary      String      @map("summary") @db.Text
+  rawCvText    String?     @map("raw_cv_text") @db.LongText
+  createdAt    DateTime    @default(now()) @map("created_at")
+  messageId    String      @unique @map("message_id")
+  jobId        String?     @map("job_id")
+  cvId         String?     @map("cv_id")
+  cv           Cv?         @relation(fields: [cvId], references: [id])
+  job          Job?        @relation(fields: [jobId], references: [id])
+  message      ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@index([jobId])
+  @@index([cvId])
+  @@map("cv_analyses")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique @map("token")
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model RevokedToken {
+  id        String   @id @default(uuid())
+  token     String   @map("token") @db.Text
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  userId    String?  @map("user_id")
+  user      User?    @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@map("revoked_tokens")
+}
+
+model Queue {
+  id         Int      @id @default(autoincrement())
+  type       String   @map("type") @db.VarChar(255)
+  payload    String   @map("payload") @db.Text
+  status     String   @default("pending") @map("status") @db.VarChar(255)
+  isPriority Int      @default(0) @map("is_priority") @db.SmallInt
+  info       String?  @map("info") @db.Text
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  @@map("queues")
 }
 
 enum JobType {
@@ -45,275 +297,13 @@ enum MessageRole {
 }
 
 enum MessageType {
-  TEXT // chat thường
-  CV_ANALYSIS // message chứa kết quả phân tích CV
-  SYSTEM_NOTE // thông báo hệ thống trong session
+  TEXT
+  CV_ANALYSIS
+  SYSTEM_NOTE
 }
 
-// ─── User ─────────────────────────────────────────────────────────────────────
-
-model User {
-  id                    String    @id @default(uuid())
-  email                 String    @unique @map("email")
-  password              String    @map("password")
-  role                  Role      @default(CANDIDATE) @map("role")
-  isVerified            Boolean   @default(false) @map("is_verified")
-  isActive              Boolean   @default(true) @map("is_active")
-  verificationCode      String?   @map("verification_code") @db.VarChar(6)
-  verificationCodeExpAt DateTime? @map("verification_code_exp_at")
-  createdAt             DateTime  @default(now()) @map("created_at")
-  updatedAt             DateTime  @updatedAt @map("updated_at")
-
-  profile       Profile?
-  chatSessions  ChatSession[]
-  refreshTokens RefreshToken[]
-  revokedTokens RevokedToken[]
-  applications  Application[]
-  cvs           Cv[]
-  coverLetters  CoverLetter[]
-  postedJobs    Job[]
-  savedJobs     SavedJob[]
-
-  @@map("users")
-}
-
-// ─── Profile ──────────────────────────────────────────────────────────────────
-
-model Profile {
-  id        String   @id @default(uuid())
-  fullName  String?  @map("full_name")
-  phone     String?  @map("phone") @db.Text
-  avatarUrl String?  @map("avatar_url")
-  bio       String?  @map("bio") @db.Text
-  address   String?  @map("address")
-  skills    Json?    @map("skills")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  userId String @unique @map("user_id")
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("profiles")
-}
-
-// ─── Job ──────────────────────────────────────────────────────────────────────
-
-model Job {
-  id          String    @id @default(uuid())
-  title       String    @map("title")
-  company     String    @map("company")
-  location    String    @map("location")
-  salary      String?   @map("salary")
-  type        JobType   @default(FULL_TIME) @map("type")
-  level       String?   @map("level")
-  tags        Json?     @map("tags")
-  description String    @map("description") @db.LongText
-  benefits    Json?     @map("benefits")
-  slots       Int       @default(1) @map("slots")
-  deadline    DateTime? @map("deadline")
-  status      JobStatus @default(PUBLISHED) @map("status")
-  isHot       Boolean   @default(false) @map("is_hot")
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
-
-  postedById   String        @map("posted_by_id")
-  postedBy     User          @relation(fields: [postedById], references: [id], onDelete: Cascade)
-  applications Application[]
-  savedBy      SavedJob[]
-  cvAnalyses   CvAnalysis[]
-
-  @@index([postedById])
-  @@map("jobs")
-}
-
-// ─── Application ──────────────────────────────────────────────────────────────
-
-model Application {
-  id                String            @id @default(uuid())
-  coverLetter       String?           @map("cover_letter") @db.Text
-  cvUrl             String?           @map("cv_url")
-  phone             String?           @map("phone")
-  status            ApplicationStatus @default(PENDING) @map("status")
-  note              String?           @map("note") @db.Text
-  // Interview fields
-  interviewDate     DateTime?         @map("interview_date")
-  interviewTime     String?           @map("interview_time") @db.VarChar(10)
-  interviewFormat   String?           @map("interview_format") @db.VarChar(20)
-  interviewLocation String?           @map("interview_location") @db.VarChar(500)
-  confirmDeadline   DateTime?         @map("confirm_deadline")
-  // Accepted fields
-  startDate         DateTime?         @map("start_date")
-  startTime         String?           @map("start_time") @db.VarChar(10)
-  officeAddress     String?           @map("office_address") @db.VarChar(500)
-  createdAt         DateTime          @default(now()) @map("created_at")
-  updatedAt         DateTime          @updatedAt @map("updated_at")
-
-  userId String @map("user_id")
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  jobId String @map("job_id")
-  job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
-
-  cvId String? @map("cv_id")
-  cv   Cv?     @relation(fields: [cvId], references: [id], onDelete: SetNull)
-
-  @@unique([userId, jobId])
-  @@index([userId])
-  @@index([jobId])
-  @@index([cvId])
-  @@map("applications")
-}
-
-// ─── SavedJob ─────────────────────────────────────────────────────────────────
-
-model SavedJob {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now()) @map("created_at")
-
-  userId String @map("user_id")
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  jobId String @map("job_id")
-  job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, jobId])
-  @@index([userId])
-  @@index([jobId])
-  @@map("saved_jobs")
-}
-
-// ─── Cv ───────────────────────────────────────────────────────────────────────
-
-model Cv {
-  id        String   @id @default(uuid())
-  name      String   @map("name")
-  fileUrl   String   @map("file_url")
-  fileType  String?  @map("file_type") @db.VarChar(10) // pdf | doc | docx
-  fileSize  Int?     @map("file_size") // bytes
-  isDefault Boolean  @default(false) @map("is_default")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  userId       String        @map("user_id")
-  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  cvAnalyses   CvAnalysis[]
-  applications Application[]
-
-  @@index([userId])
-  @@map("cvs")
-}
-
-// ─── CoverLetter ──────────────────────────────────────────────────────────────
-
-model CoverLetter {
-  id        String   @id @default(uuid())
-  title     String   @map("title")
-  content   String   @map("content") @db.LongText
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  userId String @map("user_id")
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-  @@map("cover_letters")
-}
-
-// ─── Chat ─────────────────────────────────────────────────────────────────────
-
-model ChatSession {
-  id        String   @id @default(uuid())
-  title     String?  @map("title")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  userId   String        @map("user_id")
-  user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  messages ChatMessage[]
-
-  @@index([userId])
-  @@map("chat_sessions")
-}
-
-model ChatMessage {
-  id          String      @id @default(uuid())
-  role        MessageRole @map("role")
-  content     String      @map("content") @db.Text
-  messageType MessageType @default(TEXT) @map("message_type")
-  createdAt   DateTime    @default(now()) @map("created_at")
-
-  sessionId  String      @map("session_id")
-  session    ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  cvAnalysis CvAnalysis?
-
-  @@index([sessionId])
-  @@map("chat_messages")
-}
-
-model CvAnalysis {
-  id           String   @id @default(uuid())
-  score        Int      @map("score") // 0–100
-  strengths    Json     @map("strengths") // string[]
-  weaknesses   Json     @map("weaknesses") // string[]
-  improvements Json     @map("improvements") // string[]
-  summary      String   @map("summary") @db.Text // nhận xét tổng quan
-  rawCvText    String?  @map("raw_cv_text") @db.LongText // parsed PDF text (optional, debug)
-  createdAt    DateTime @default(now()) @map("created_at")
-
-  messageId String      @unique @map("message_id")
-  message   ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
-
-  // Optional: link tới job nếu phân tích theo JD cụ thể
-  jobId String? @map("job_id")
-  job   Job?    @relation(fields: [jobId], references: [id], onDelete: SetNull)
-
-  // Optional: link tới CV file nếu user chọn từ CV đã upload
-  cvId String? @map("cv_id")
-  cv   Cv?     @relation(fields: [cvId], references: [id], onDelete: SetNull)
-
-  @@index([jobId])
-  @@index([cvId])
-  @@map("cv_analyses")
-}
-
-// ─── Auth tokens ──────────────────────────────────────────────────────────────
-
-model RefreshToken {
-  id        String   @id @default(uuid())
-  token     String   @unique @map("token")
-  expiresAt DateTime @map("expires_at")
-  createdAt DateTime @default(now()) @map("created_at")
-
-  userId String @map("user_id")
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-  @@map("refresh_tokens")
-}
-
-model RevokedToken {
-  id        String   @id @default(uuid())
-  token     String   @map("token") @db.Text
-  expiresAt DateTime @map("expires_at")
-  createdAt DateTime @default(now()) @map("created_at")
-
-  userId String? @map("user_id")
-  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
-
-  @@index([userId])
-  @@map("revoked_tokens")
-}
-
-// ─── System ───────────────────────────────────────────────────────────────────
-
-model Queue {
-  id         Int      @id @default(autoincrement())
-  type       String   @map("type") @db.VarChar(255)
-  payload    String   @map("payload") @db.Text
-  status     String   @default("pending") @map("status") @db.VarChar(255)
-  isPriority Int      @default(0) @map("is_priority") @db.SmallInt
-  info       String?  @map("info") @db.Text
-  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
-
-  @@map("queues")
+enum Role {
+  CANDIDATE
+  RECRUITER
+  ADMIN
 }

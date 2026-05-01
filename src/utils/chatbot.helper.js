@@ -1,31 +1,19 @@
-const profileModel = require("@/models/profile.model");
 const jobModel = require("@/models/job.model");
 
-async function _getMatchingJobs(userId) {
-  const profile = await profileModel.getProfile(userId);
-  const skills = _parseSkills(profile?.skills);
+async function _getMatchingJobs(profile, limit = 20) {
+  if (!profile) return jobModel.getJobsForUser([], limit);
 
   const keywords = [
-    ...skills,
+    ...(profile?.skills || []),
     ...(profile?.bio
       ? profile.bio
-          .split(/[\s,\.]+/)
-          .filter((w) => w.length > 3)
-          .slice(0, 5)
+        .split(/[\s,\.]+/)
+        .filter((w) => w.length > 3)
+        .slice(0, 5)
       : []),
   ];
 
-  return jobModel.getJobsForUser(keywords, 10);
-}
-
-function _parseSkills(raw) {
-  if (!raw) return [];
-  try {
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
+  return jobModel.getJobsForUser(keywords, limit);
 }
 
 function _formatJobs(jobs) {
@@ -40,15 +28,18 @@ function _formatJobs(jobs) {
   };
 
   return jobs
-    .map((job, i) => {
-      const typeLabel = JOB_TYPE_LABELS[job.type];
-      return `${i + 1}. ${job.title} - ${job.company} | ${job.location} | ${job.salary || "Thỏa thuận"} | ${typeLabel}`;
+    .map((job) => {
+      const typeLabel = JOB_TYPE_LABELS[job.type] || job.type;
+      return `[ID:${job.id}] ${job.title}
+      - Công ty: ${job.company?.name || "Ẩn danh"}
+      - Địa điểm: ${job.location}
+      - Mức lương: ${job.salary || "Thỏa thuận"}
+      - Loại hình công việc: ${typeLabel}`;
     })
     .join("\n");
 }
 
 module.exports = {
   _getMatchingJobs,
-  _parseSkills,
   _formatJobs,
 };

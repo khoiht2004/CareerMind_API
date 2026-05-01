@@ -19,6 +19,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@faker-js/faker": "^10.4.0",
     "@prisma/adapter-mariadb": "^7.5.0",
     "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "^7.5.0",
