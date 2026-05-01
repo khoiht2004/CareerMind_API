@@ -22,14 +22,14 @@ async function getMessages(req, res) {
 
 async function sendMessage(req, res) {
   const { id } = req.params;
-  const { content, images } = req.body;
-  if (!content?.trim() && !images?.length)
-    return res.error(400, "Vui lòng nhập nội dung hoặc đính kèm ảnh");
+  const { content, attachments } = req.body;
+  if (!content?.trim() && !attachments?.length)
+    return res.error(400, "Vui lòng nhập nội dung hoặc đính kèm file");
 
   const session = await model.getSession(id, req.auth.user.id);
   if (!session) return res.error(404, "Không tìm thấy cuộc trò chuyện");
 
-  const result = await chatbotService.chat(req.auth.user, id, content ?? "", images);
+  const result = await chatbotService.chat(req.auth.user, id, content || "", attachments);
   return res.success(200, result);
 }
 

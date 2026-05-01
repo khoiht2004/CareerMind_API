@@ -1,10 +1,5 @@
 const prisma = require("@/libs/prisma");
 
-const parseImages = (msg) => ({
-  ...msg,
-  images: msg.images ? JSON.parse(msg.images) : null,
-});
-
 const getSessions = async (userId) => {
   return prisma.chatSession.findMany({
     where: { userId },
@@ -34,39 +29,64 @@ const getSession = async (id, userId) => {
 };
 
 const getMessages = async (sessionId) => {
-  const messages = await prisma.chatMessage.findMany({
+  const allIds = await prisma.chatMessage.findMany({
     where: { sessionId },
     orderBy: { createdAt: "asc" },
-    select: { id: true, role: true, content: true, images: true, createdAt: true },
+    select: { id: true },
   });
-  return messages.map(parseImages);
+
+  if (!allIds.length) return [];
+  const ids = allIds.map((m) => m.id);
+
+  const messages = await prisma.chatMessage.findMany({
+    where: { id: { in: ids } },
+    select: { id: true, role: true, content: true, attachments: true, createdAt: true, cvAnalysis: true },
+  });
+
+  // Sort ở Node.js memory dựa theo thứ tự của mảng ids ban đầu
+  const messageMap = new Map(messages.map(message => [message.id, message]));
+  return ids.map(id => messageMap.get(id)).filter(Boolean);
 };
 
 const getRecentMessages = async (sessionId, limit = 10) => {
-  const messages = await prisma.chatMessage.findMany({
+  // Bước 1: Chỉ lấy danh sách ID của N tin nhắn gần nhất (siêu nhẹ, không kéo theo base64)
+  const recentIds = await prisma.chatMessage.findMany({
     where: { sessionId },
     orderBy: { createdAt: "desc" },
     take: limit,
-    select: { id: true, role: true, content: true, images: true, createdAt: true },
+    select: { id: true },
   });
-  return messages.reverse().map(parseImages);
+
+  if (!recentIds.length) return [];
+
+  const ids = recentIds.map((m) => m.id);
+
+  // Bước 2: Lấy full data của những ID đó (KHÔNG có ORDER BY)
+  const messages = await prisma.chatMessage.findMany({
+    where: { id: { in: ids } },
+    select: { id: true, role: true, content: true, attachments: true, createdAt: true, cvAnalysis: true },
+  });
+
+  // Bước 3: Sort bằng JS và lật ngược thứ tự lại (vì lấy recent là desc, cần trả về asc cho UI)
+  const messageMap = new Map(messages.map(m => [m.id, m]));
+  return ids.map(id => messageMap.get(id)).filter(Boolean).reverse();
 };
 
-const addMessage = async (sessionId, role, content, images = null) => {
+const addMessage = async (sessionId, role, content, attachments = null) => {
   const msg = await prisma.chatMessage.create({
     data: {
       sessionId,
       role,
       content,
-      images: images?.length ? JSON.stringify(images) : null,
+      attachments: attachments?.length ? attachments : null,
     },
-    select: { id: true, role: true, content: true, images: true, createdAt: true },
+    select: { id: true, role: true, content: true, attachments: true, createdAt: true },
   });
   await prisma.chatSession.update({
     where: { id: sessionId },
     data: { updatedAt: new Date() },
   });
-  return parseImages(msg);
+  return msg;
 };
 
 const updateTitle = async (id, title) => {
@@ -75,6 +95,19 @@ const updateTitle = async (id, title) => {
 
 const deleteSession = async (id) => {
   return prisma.chatSession.delete({ where: { id } });
+};
+
+const addCvAnalysis = async (messageId, analysisData) => {
+  return prisma.cvAnalysis.create({
+    data: {
+      messageId,
+      score: analysisData.score,
+      strengths: analysisData.strengths,
+      weaknesses: analysisData.weaknesses,
+      improvements: analysisData.improvements,
+      summary: analysisData.summary,
+    },
+  });
 };
 
 module.exports = {
@@ -86,4 +119,5 @@ module.exports = {
   addMessage,
   updateTitle,
   deleteSession,
+  addCvAnalysis,
 };

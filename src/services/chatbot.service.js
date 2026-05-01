@@ -3,10 +3,28 @@ const chatModel = require("@/models/chat.model");
 const profileModel = require("@/models/profile.model");
 const authModel = require("@/models/auth.model");
 const { _getMatchingJobs, _formatJobs } = require("@/utils/chatbot.helper");
+const { extractFileText } = require("../utils/chatbot.helper");
 
 class ChatBotService {
-  async chat(user, sessionId, input, images = null) {
-    const userMessage = await chatModel.addMessage(sessionId, "USER", input, images);
+  async chat(user, sessionId, input, attachments = []) {
+    const images = attachments.filter((a) => a.category === "image");
+    const files = attachments.filter((a) => a.category !== "image");
+
+    // Extract text from attached files
+    let fileContext = "";
+    if (files.length) {
+      const extracted = await Promise.all(files.map(extractFileText));
+      const parts = files
+        .map((f, i) => (extracted[i] ? `[File: ${f.name}]\n${extracted[i]}` : null))
+        .filter(Boolean);
+      if (parts.length) {
+        fileContext = `\n\n═══════\nNỘI DUNG FILE ĐÍNH KÈM\n═══════\n${parts.join("\n\n---\n\n")}`;
+      }
+    }
+
+    // Always store non-empty content — placeholder for image/file-only messages
+    const storedContent = input.trim() || "[Tệp đính kèm]";
+    const userMessage = await chatModel.addMessage(sessionId, "USER", storedContent, attachments);
 
     const history = await chatModel.getRecentMessages(sessionId, 10);
 
@@ -19,23 +37,45 @@ class ChatBotService {
     });
     const jobLimit = 20 + loadMoreCount * 5;
 
-    // Build AI message array — images only on the most recent user message
-    const messages = history.map((msg, idx) => {
-      const isLastUserMsg = idx === history.length - 1 && msg.role === "USER";
-      const hasImages = isLastUserMsg && images?.length;
-      return {
-        role: msg.role === "USER" ? "user" : "assistant",
-        content: hasImages
-          ? [
-            ...images.map((img) => ({
-              type: "image_url",
-              image_url: { url: `data:${img.mediaType};base64,${img.data}` },
-            })),
-            { type: "text", text: input || "" },
-          ]
-          : msg.content,
-      };
-    });
+    // Build AI message array
+    const messages = history
+      .map((msg, idx) => {
+        const isCurrentMsg = msg.id === userMessage.id;
+
+        // Dựa vào msg.attachments trong history để xử lý ảnh (bỏ file vì file chỉ truyền text 1 lần ở turn hiện tại để tối ưu context)
+        const msgImages = isCurrentMsg ? images : (msg.attachments?.filter(a => a.category === 'image') || []);
+        const hasImages = msgImages.length > 0;
+        const hasFileContext = isCurrentMsg && fileContext;
+
+        // For current turn use original input (not stored placeholder)
+        const baseText = isCurrentMsg ? (input || "") : (msg.content || "");
+        const textContent = (baseText + (hasFileContext ? fileContext : "")).trim();
+        const safeText = textContent || "[Tệp đính kèm]";
+
+        if (hasImages) {
+          // Vision format — images + file text in ONE message
+          return {
+            role: msg.role === "USER" ? "user" : "assistant",
+            content: [
+              ...msgImages.map((img) => ({
+                type: "image_url",
+                image_url: { url: `data:${img.mediaType};base64,${img.data}` },
+              })),
+              { type: "text", text: safeText },
+            ],
+          };
+        }
+
+        if (hasFileContext) {
+          return { role: "user", content: safeText };
+        }
+
+        // Historical / text-only messages — guard against empty content
+        const content = msg.content || (msg.role === "USER" ? "[Tệp đính kèm]" : "");
+        if (!content) return null;
+        return { role: msg.role === "USER" ? "user" : "assistant", content };
+      })
+      .filter(Boolean);
 
     const systemPrompt = await this.generateSystemPrompt(user, jobLimit);
     const aiReply = await aiService.completions(systemPrompt, messages);
@@ -46,7 +86,7 @@ class ChatBotService {
       aiReply,
     );
 
-    return { userMessage, assistantMessage };
+    return { userMessage, assistantMessage: { ...assistantMessage } };
   }
 
   async generateSystemPrompt(user, jobLimit = 20) {
@@ -79,9 +119,9 @@ class ChatBotService {
 
     let dynamicContext = "";
     if (isCandidate) {
-      dynamicContext = `DỮ LIỆU CÔNG VIỆC\n════════════════════════════════\n${jobList || "Hiện chưa có dữ liệu công việc."}`;
+      dynamicContext = `DỮ LIỆU CÔNG VIỆC\n━━━━━━━━━━━━━━━━━━━━\n${jobList || "Hiện chưa có dữ liệu công việc."}`;
     } else {
-      dynamicContext = `THÔNG TIN DOANH NGHIỆP CỦA BẠN\n════════════════════════════════\n- Tên công ty: ${companyInfo?.name || "Chưa cập nhật"}\n- Địa chỉ: ${companyInfo?.address || "Chưa cập nhật"}\n- Tổng job: ${companyInfo?.totalJobs || 0}\n\nCÁC CÔNG VIỆC BẠN ĐÃ ĐĂNG:\n${jobList || "Bạn chưa đăng công việc nào."}`;
+      dynamicContext = `THÔNG TIN DOANH NGHIỆP CỦA BẠN\n━━━━━━━━━━━━━━━━━━━━\n- Tên công ty: ${companyInfo?.name || "Chưa cập nhật"}\n- Địa chỉ: ${companyInfo?.address || "Chưa cập nhật"}\n- Tổng job: ${companyInfo?.totalJobs || 0}\n\nCÁC CÔNG VIỆC BẠN ĐÃ ĐĂNG:\n${jobList || "Bạn chưa đăng công việc nào."}`;
     }
 
     const systemPrompt = `
@@ -168,7 +208,9 @@ Gợi ý: [1-2 hành động cụ thể để cải thiện]
 Nguyên tắc đánh giá:
   - Dựa trên: vị trí, JD, kỹ năng, kinh nghiệm, địa điểm
   - Phản hồi xây dựng, ngắn gọn, không chủ quan
+  - Luôn chấm điểm thẳng thắn, kỹ càng, không thiên vị, trung thực tuyệt đối
   - Nếu thiếu thông tin → hỏi theo format chuẩn trước khi đánh giá
+  - Nếu người dùng yêu cầu "chấm điểm lại, đánh giá lại, ..." thì điểm số không được thay đổi, chỉ thay đổi nếu người dùng cung cấp thêm thông tin hoặc có sự thay đổi về vị trí, JD, kỹ năng, kinh nghiệm, địa điểm
 
 ════════════════════════════════
 ĐỊNH DẠNG PHẢN HỒI
@@ -185,7 +227,7 @@ GIỌNG VÀ PHONG CÁCH:
     💼 việc làm / tuyển dụng
     ✅ phù hợp / xác nhận
     ❌ không phù hợp / từ chối
-    ⚠️ cảnh báo / cần lưu ý
+    ⚠️ cảnh báo / lưu ý
     💡 gợi ý / mẹo
     🔍 tìm kiếm
 - Icon luôn phải được đặt ở đầu tiên trong dòng (trước in đậm).
