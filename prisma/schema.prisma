@@ -12,14 +12,14 @@ model User {
   email                 String         @unique @map("email")
   password              String         @map("password")
   role                  Role           @default(CANDIDATE) @map("role")
-  canCompanyManage      Boolean        @default(false) @map("can_company_manage")
-  companyId             String?        @map("company_id")
   isVerified            Boolean        @default(false) @map("is_verified")
   isActive              Boolean        @default(true) @map("is_active")
   verificationCode      String?        @map("verification_code") @db.VarChar(6)
   verificationCodeExpAt DateTime?      @map("verification_code_exp_at")
   createdAt             DateTime       @default(now()) @map("created_at")
   updatedAt             DateTime       @updatedAt @map("updated_at")
+  companyId             String?        @map("company_id")
+  canCompanyManage      Boolean        @default(false) @map("can_company_manage")
   applications          Application[]
   chatSessions          ChatSession[]
   coverLetters          CoverLetter[]
@@ -31,6 +31,7 @@ model User {
   savedJobs             SavedJob[]
   company               Company?       @relation(fields: [companyId], references: [id])
 
+  @@index([companyId], map: "users_company_id_fkey")
   @@map("users")
 }
 
@@ -53,15 +54,14 @@ model Profile {
 model Job {
   id           String        @id @default(uuid())
   title        String        @map("title")
-  companyId    String        @map("company_id")
   location     String        @map("location")
   salary       String?       @map("salary")
   type         JobType       @default(FULL_TIME) @map("type")
   level        String?       @map("level")
-  tags         Json?         @map("tags")
   description  String        @map("description") @db.LongText
-  requirements Json?         @map("requirements")
+  tags         Json?         @map("tags")
   benefits     Json?         @map("benefits")
+  requirements Json?         @map("requirements")
   slots        Int           @default(1) @map("slots")
   deadline     DateTime?     @map("deadline")
   status       JobStatus     @default(PUBLISHED) @map("status")
@@ -69,13 +69,15 @@ model Job {
   createdAt    DateTime      @default(now()) @map("created_at")
   updatedAt    DateTime      @updatedAt @map("updated_at")
   postedById   String        @map("posted_by_id")
+  companyId    String        @map("company_id")
   applications Application[]
   cvAnalyses   CvAnalysis[]
+  company      Company       @relation(fields: [companyId], references: [id])
   postedBy     User          @relation(fields: [postedById], references: [id], onDelete: Cascade)
   savedBy      SavedJob[]
-  company      Company?      @relation(fields: [companyId], references: [id])
 
   @@index([postedById])
+  @@index([companyId], map: "jobs_company_id_fkey")
   @@map("jobs")
 }
 
@@ -86,8 +88,8 @@ model Company {
   phone             String?       @map("phone")
   description       String?       @map("description") @db.Text
   subDescription    String?       @map("sub_description") @db.Text
-  mapUrl            String?       @map("map_url") @db.Text
   address           String?       @map("address") @db.VarChar(255)
+  mapUrl            String?       @map("map_url") @db.Text
   logoUrl           String?       @map("logo_url") @db.Text
   coverImageUrl     String?       @map("cover_image_url") @db.Text
   socialLinks       Json?         @map("social_links")
@@ -97,9 +99,9 @@ model Company {
   updatedAt         DateTime      @updatedAt @map("updated_at")
   totalJobs         Int           @default(0) @map("total_jobs")
   totalApplications Int           @default(0) @map("total_applications")
+  applications      Application[]
   jobs              Job[]
   user              User[]
-  applications      Application[]
 
   @@map("companies")
 }
@@ -124,16 +126,17 @@ model Application {
   startDate         DateTime?         @map("start_date")
   startTime         String?           @map("start_time") @db.VarChar(10)
   cvId              String?           @map("cv_id")
+  companyId         String?
+  company           Company?          @relation(fields: [companyId], references: [id])
   cv                Cv?               @relation(fields: [cvId], references: [id])
   job               Job               @relation(fields: [jobId], references: [id], onDelete: Cascade)
   user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  company           Company?          @relation(fields: [companyId], references: [id])
-  companyId         String?
 
   @@unique([userId, jobId])
   @@index([userId])
   @@index([jobId])
   @@index([cvId])
+  @@index([companyId], map: "applications_companyId_fkey")
   @@map("applications")
 }
 
@@ -199,10 +202,10 @@ model ChatMessage {
   id          String      @id @default(uuid())
   role        MessageRole @map("role")
   content     String      @map("content") @db.Text
-  attachments Json?       @map("attachments")
   createdAt   DateTime    @default(now()) @map("created_at")
   sessionId   String      @map("session_id")
   messageType MessageType @default(TEXT) @map("message_type")
+  attachments Json?       @map("attachments")
   session     ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   cvAnalysis  CvAnalysis?
 

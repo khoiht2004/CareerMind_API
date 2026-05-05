@@ -15,7 +15,13 @@ class ChatBotService {
     if (files.length) {
       const extracted = await Promise.all(files.map(extractFileText));
       const parts = files
-        .map((f, i) => (extracted[i] ? `[File: ${f.name}]\n${extracted[i]}` : null))
+        .map((f, i) => {
+          if (extracted[i]) {
+            f.extractedText = extracted[i]; // Lưu lại text vào object attachment để DB lưu luôn
+            return `[File: ${f.name}]\n${extracted[i]}`;
+          }
+          return null;
+        })
         .filter(Boolean);
       if (parts.length) {
         fileContext = `\n\n═══════\nNỘI DUNG FILE ĐÍNH KÈM\n═══════\n${parts.join("\n\n---\n\n")}`;
@@ -42,14 +48,26 @@ class ChatBotService {
       .map((msg, idx) => {
         const isCurrentMsg = msg.id === userMessage.id;
 
-        // Dựa vào msg.attachments trong history để xử lý ảnh (bỏ file vì file chỉ truyền text 1 lần ở turn hiện tại để tối ưu context)
+        // Xử lý ảnh: Gửi Base64 ảnh lên AI
         const msgImages = isCurrentMsg ? images : (msg.attachments?.filter(a => a.category === 'image') || []);
         const hasImages = msgImages.length > 0;
-        const hasFileContext = isCurrentMsg && fileContext;
 
-        // For current turn use original input (not stored placeholder)
+        // Xử lý text từ file đính kèm cho cả tin nhắn hiện tại LẪN tin nhắn lịch sử (ĐỂ AI NHỚ ĐƯỢC CV)
+        let historyFileContext = "";
+        const msgFiles = isCurrentMsg ? files : (msg.attachments?.filter(a => a.category !== 'image') || []);
+
+        if (msgFiles.length) {
+          const parts = msgFiles.map(f => f.extractedText ? `[File: ${f.name}]\n${f.extractedText}` : null).filter(Boolean);
+          if (parts.length) {
+            historyFileContext = `\n\n═══════\nNỘI DUNG FILE ĐÍNH KÈM\n═══════\n${parts.join("\n\n---\n\n")}`;
+          }
+        }
+
+        const hasFileContext = historyFileContext.length > 0;
+
+        // Nội dung text gửi lên AI = Nội dung chat + Nội dung file (nếu có)
         const baseText = isCurrentMsg ? (input || "") : (msg.content || "");
-        const textContent = (baseText + (hasFileContext ? fileContext : "")).trim();
+        const textContent = (baseText + (hasFileContext ? historyFileContext : "")).trim();
         const safeText = textContent || "[Tệp đính kèm]";
 
         if (hasImages) {
