@@ -6,6 +6,7 @@ const APP_SELECT = {
   cvUrl: true,
   phone: true,
   status: true,
+  isDraft: true,
   note: true,
   interviewDate: true,
   interviewTime: true,
@@ -49,16 +50,50 @@ const APP_SELECT = {
 };
 
 const apply = async (userId, jobId, data) => {
-  const exists = await prisma.application.count({ where: { userId, jobId } });
-  if (exists) return null;
+  const { isDraft = false, ...rest } = data;
+
+  const existing = await prisma.application.findUnique({
+    where: { userId_jobId: { userId, jobId } },
+    select: { id: true, isDraft: true },
+  });
+
+  if (isDraft) {
+    if (existing) {
+      if (!existing.isDraft) return null; // Already submitted, can't overwrite
+      // Update existing draft
+      return prisma.application.update({
+        where: { id: existing.id },
+        data: { isDraft: true, status: null, ...rest },
+        select: APP_SELECT,
+      });
+    }
+    return prisma.application.create({
+      data: { userId, jobId, isDraft: true, status: null, ...rest },
+      select: APP_SELECT,
+    });
+  }
+
+  // Submit: upgrade existing draft OR create new
+  if (existing) {
+    if (!existing.isDraft) return null; // Already submitted, block duplicate
+    return prisma.application.update({
+      where: { id: existing.id },
+      data: { isDraft: false, status: "PENDING", ...rest },
+      select: APP_SELECT,
+    });
+  }
   return prisma.application.create({
-    data: { userId, jobId, ...data },
+    data: { userId, jobId, isDraft: false, ...rest },
     select: APP_SELECT,
   });
 };
 
-const getMyApplications = async (userId, { page = 1, limit = 10, status }) => {
-  const where = { userId, ...(status && { status }) };
+const getMyApplications = async (userId, { page = 1, limit = 10, status, isDraft }) => {
+  const where = {
+    userId,
+    ...(status && { status }),
+    ...(isDraft !== undefined && { isDraft }),
+  };
   const [applications, total] = await Promise.all([
     prisma.application.findMany({
       where,
@@ -128,10 +163,11 @@ const updateStatus = async (id, status, note, extraFields = {}) => {
 const deleteApplication = async (id, userId) => {
   const app = await prisma.application.findUnique({
     where: { id },
-    select: { userId: true, status: true },
+    select: { userId: true, status: true, isDraft: true },
   });
   if (!app || app.userId !== userId) return null;
-  if (app.status !== "PENDING") return "NOT_PENDING";
+  // Allow deletion for drafts (status=null) or pending submissions
+  if (!app.isDraft && app.status !== "PENDING") return "NOT_PENDING";
   return prisma.application.delete({ where: { id } });
 };
 

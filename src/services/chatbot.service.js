@@ -277,6 +277,41 @@ TỐI ƯU
     `.trim();
     return systemPrompt;
   }
+
+  async generateCoverLetter(job, profile) {
+    const reqs = (() => {
+      if (Array.isArray(job.requirements)) return job.requirements;
+      if (typeof job.requirements === "string") {
+        try { return JSON.parse(job.requirements); } catch { return []; }
+      }
+      return [];
+    })();
+
+    const jobInfo = [
+      `Vị trí: ${job.title}`,
+      `Công ty: ${job.company?.name || "Chưa rõ"}`,
+      job.description ? `Mô tả công việc:\n${job.description.slice(0, 1000)}` : null,
+    ].filter(Boolean).join("\n");
+
+    const userInfo = profile
+      ? [
+        profile.fullName ? `Họ tên: ${profile.fullName}` : null,
+        profile.bio ? `Giới thiệu: ${profile.bio}` : null,
+      ].filter(Boolean).join("\n")
+      : "Chưa có thông tin profile.";
+
+    const systemPrompt =
+      "Bạn là chuyên gia viết cover letter chuyên nghiệp. Hãy viết một cover letter ngắn gọn, thuyết phục bằng tiếng Việt (khoảng 200-300 từ). Chỉ trả về nội dung cover letter, không cần tiêu đề hay chú thích thêm.";
+
+    const messages = [
+      {
+        role: "user",
+        content: `THÔNG TIN CÔNG VIỆC:\n${jobInfo}\n\nTHÔNG TIN ỨNG VIÊN:\n${userInfo}\n\nHãy viết cover letter phù hợp cho ứng viên này.`,
+      },
+    ];
+
+    return aiService.completions(systemPrompt, messages);
+  }
 }
 
 module.exports = new ChatBotService();

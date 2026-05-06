@@ -110,7 +110,7 @@ model Application {
   id                String            @id @default(uuid())
   coverLetter       String?           @map("cover_letter") @db.Text
   cvUrl             String?           @map("cv_url")
-  status            ApplicationStatus @default(PENDING) @map("status")
+  status            ApplicationStatus? @default(PENDING) @map("status")
   note              String?           @map("note") @db.Text
   createdAt         DateTime          @default(now()) @map("created_at")
   updatedAt         DateTime          @updatedAt @map("updated_at")
@@ -127,6 +127,7 @@ model Application {
   startTime         String?           @map("start_time") @db.VarChar(10)
   cvId              String?           @map("cv_id")
   companyId         String?
+  isDraft           Boolean           @default(false) @map("is_draft")
   company           Company?          @relation(fields: [companyId], references: [id])
   cv                Cv?               @relation(fields: [cvId], references: [id])
   job               Job               @relation(fields: [jobId], references: [id], onDelete: Cascade)

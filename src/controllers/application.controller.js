@@ -3,7 +3,7 @@ const jobModel = require("@/models/job.model");
 const queueService = require("@/services/queue.service");
 
 async function apply(req, res) {
-  const { jobId, coverLetter, cvUrl, cvId, phone, email, name } = req.body;
+  const { jobId, coverLetter, cvUrl, cvId, phone, email, name, isDraft = false } = req.body;
   if (!jobId) return res.error(400, "jobId là bắt buộc");
 
   const job = await jobModel.getJobById(jobId);
@@ -15,31 +15,42 @@ async function apply(req, res) {
     cvUrl,
     cvId: cvId || undefined,
     phone,
+    isDraft: Boolean(isDraft),
   });
 
-  if (!application) return res.error(409, "Bạn đã ứng tuyển vị trí này rồi");
+  if (!application)
+    return res.error(
+      409,
+      isDraft
+        ? "Bạn đã có đơn ứng tuyển hoặc bản nháp cho vị trí này"
+        : "Bạn đã ứng tuyển vị trí này rồi",
+    );
 
-  // Gửi email thông báo
-  await queueService.push(
-    "sendApplyEmail",
-    {
-      email: email,
-      applicantName: name,
-      jobTitle: job.title,
-      company: job.company.name,
-    },
-    1,
-  );
+  if (!isDraft) {
+    await queueService.push(
+      "sendApplyEmail",
+      {
+        email: email,
+        applicantName: name,
+        jobTitle: job.title,
+        company: job.company.name,
+      },
+      1,
+    );
+  }
 
   return res.success(201, application);
 }
 
 async function getMyApplications(req, res) {
-  const { page = 1, limit = 10, status } = req.query;
+  const { page = 1, limit = 10, status, isDraft } = req.query;
+  const parsedIsDraft =
+    isDraft === "true" ? true : isDraft === "false" ? false : undefined;
   const result = await model.getMyApplications(req.auth.user.id, {
     page: +page,
     limit: +limit,
     status,
+    isDraft: parsedIsDraft,
   });
   return res.success(200, result);
 }

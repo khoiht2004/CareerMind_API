@@ -1,5 +1,7 @@
 const model = require("@/models/chat.model");
 const chatbotService = require("@/services/chatbot.service");
+const jobModel = require("@/models/job.model");
+const profileModel = require("@/models/profile.model");
 
 async function getSessions(req, res) {
   const sessions = await model.getSessions(req.auth.user.id);
@@ -54,6 +56,24 @@ async function deleteSession(req, res) {
   return res.success(200, "Xóa cuộc trò chuyện thành công");
 }
 
+async function generateCoverLetter(req, res) {
+  const { jobId, title } = req.body;
+  if (!jobId && !title?.trim()) return res.error(400, "jobId hoặc title là bắt buộc");
+
+  let job;
+  if (jobId) {
+    job = await jobModel.getJobById(jobId);
+    if (!job) return res.error(404, "Không tìm thấy công việc");
+  } else {
+    // No specific job — AI will infer from title + user profile
+    job = { title: title.trim() };
+  }
+
+  const profile = await profileModel.getProfile(req.auth.user.id);
+  const coverLetter = await chatbotService.generateCoverLetter(job, profile);
+  return res.success(200, { coverLetter });
+}
+
 module.exports = {
   getSessions,
   createSession,
@@ -61,4 +81,5 @@ module.exports = {
   sendMessage,
   updateTitle,
   deleteSession,
+  generateCoverLetter,
 };
