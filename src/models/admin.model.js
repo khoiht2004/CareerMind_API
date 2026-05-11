@@ -258,6 +258,64 @@ class AdminModel {
       data: { isActive },
     });
   }
+
+  // ─── Permission Management ───────────────────────────────────────────────────
+
+  static async getAllPermissions() {
+    return prisma.permission.findMany({
+      orderBy: [{ group: "asc" }, { name: "asc" }],
+      include: { rolePermissions: { select: { role: true } } },
+    });
+  }
+
+  static async getQueuesAndCount(where, skip, limit) {
+    return Promise.all([
+      prisma.queue.findMany({ where, skip, take: limit, orderBy: { id: "desc" } }),
+      prisma.queue.count({ where }),
+    ]);
+  }
+
+  static async findUserById(id) {
+    return prisma.user.findUnique({ where: { id }, select: { id: true, role: true, email: true } });
+  }
+
+  static async getRolePermissions(role) {
+    return prisma.rolePermission.findMany({
+      where: { role },
+      include: { permission: true },
+    });
+  }
+
+  static async getUserPermissions(userId) {
+    return prisma.userPermission.findMany({
+      where: { userId },
+      include: { permission: true },
+    });
+  }
+
+  static async upsertUserPermission(userId, permissionId, isGranted) {
+    return prisma.userPermission.upsert({
+      where: { userId_permissionId: { userId, permissionId } },
+      update: { isGranted },
+      create: { userId, permissionId, isGranted },
+    });
+  }
+
+  static async createPermission(data) {
+    return prisma.permission.create({ data });
+  }
+
+  static async findPermissionById(id) {
+    return prisma.permission.findUnique({ where: { id } });
+  }
+
+  static async findPermissionByName(name) {
+    return prisma.permission.findUnique({ where: { name } });
+  }
+
+  static async deletePermission(id) {
+    return prisma.permission.delete({ where: { id } });
+  }
 }
 
 module.exports = AdminModel;

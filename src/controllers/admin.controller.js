@@ -210,6 +210,23 @@ async function getSystemStats(req, res) {
   });
 }
 
+async function getAdminQueues(req, res) {
+  const { page = 1, limit = 20, status, type } = req.query;
+  const skip = (+page - 1) * +limit;
+  const where = {
+    ...(status && status !== "ALL" && { status }),
+    ...(type && { type }),
+  };
+  const [data, total] = await AdminModel.getQueuesAndCount(where, skip, +limit);
+  return res.success(200, {
+    data,
+    total,
+    page: +page,
+    limit: +limit,
+    totalPages: Math.ceil(total / +limit),
+  });
+}
+
 // ─── Admin Company ─────────────────────────────────────────────────────────────
 
 // [GET] Lấy danh sách công ty cho Admin
@@ -268,6 +285,56 @@ async function toggleCompanyActive(req, res) {
   res.success(200, updated);
 }
 
+// ─── Admin Permission Management ──────────────────────────────────────────────
+
+async function getAllPermissions(req, res) {
+  const permissions = await AdminModel.getAllPermissions();
+  return res.success(200, permissions);
+}
+
+async function getUserPermissionDetails(req, res) {
+  const { userId } = req.params;
+  const user = await AdminModel.findUserById(userId);
+  if (!user) return res.error(404, "Không tìm thấy người dùng");
+
+  const [rolePerms, userPerms] = await Promise.all([
+    AdminModel.getRolePermissions(user.role),
+    AdminModel.getUserPermissions(userId),
+  ]);
+  return res.success(200, { rolePerms, userPerms });
+}
+
+async function updateUserPermissions(req, res) {
+  const { userId } = req.params;
+  const { permissionId, isGranted } = req.body;
+  if (!permissionId || isGranted === undefined) {
+    return res.error(400, "permissionId và isGranted là bắt buộc");
+  }
+
+  const user = await AdminModel.findUserById(userId);
+  if (!user) return res.error(404, "Không tìm thấy người dùng");
+
+  await AdminModel.upsertUserPermission(userId, permissionId, isGranted);
+  return res.success(200, { message: "Cập nhật quyền thành công" });
+}
+
+async function createPermission(req, res) {
+  const { name, description, group } = req.body;
+  if (!name || !group) return res.error(400, "name và group là bắt buộc");
+  const existing = await AdminModel.findPermissionByName(name);
+  if (existing) return res.error(409, "Tên quyền đã tồn tại");
+  const permission = await AdminModel.createPermission({ name, description, group });
+  return res.success(201, permission);
+}
+
+async function deletePermission(req, res) {
+  const { id } = req.params;
+  const perm = await AdminModel.findPermissionById(id);
+  if (!perm) return res.error(404, "Không tìm thấy quyền");
+  await AdminModel.deletePermission(id);
+  return res.success(200, { message: "Đã xóa quyền thành công" });
+}
+
 module.exports = {
   getStats,
   getApplicationTrend,
@@ -283,8 +350,14 @@ module.exports = {
   getChatStats,
   getAdminChatSessions,
   getSystemStats,
+  getAdminQueues,
   getAdminCompanies,
   createCompany,
   verifyCompany,
   toggleCompanyActive,
+  getAllPermissions,
+  getUserPermissionDetails,
+  updateUserPermissions,
+  createPermission,
+  deletePermission,
 };

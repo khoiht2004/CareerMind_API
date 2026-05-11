@@ -44,12 +44,13 @@ async function apply(req, res) {
 
 async function getMyApplications(req, res) {
   const { page = 1, limit = 10, status, isDraft } = req.query;
+  // Support both legacy isDraft filter and new status-based filter
   const parsedIsDraft =
     isDraft === "true" ? true : isDraft === "false" ? false : undefined;
   const result = await model.getMyApplications(req.auth.user.id, {
     page: +page,
     limit: +limit,
-    status,
+    status: status || undefined,
     isDraft: parsedIsDraft,
   });
   return res.success(200, result);
@@ -96,7 +97,7 @@ async function updateStatus(req, res) {
 
   const VALID = ["PENDING", "REVIEWING", "INTERVIEW", "ACCEPTED", "REJECTED"];
   if (!status || !VALID.includes(status))
-    return res.error(400, "Trạng thái không hợp lệ");
+    return res.error(400, "Trạng thái không hợp lệ. Recruiter không thể đặt trạng thái DRAFT");
 
   const app = await model.getApplicationById(req.params.id);
   if (!app) return res.error(404, "Không tìm thấy đơn ứng tuyển");

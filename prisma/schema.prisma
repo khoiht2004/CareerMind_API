@@ -8,18 +8,18 @@ datasource db {
 }
 
 model User {
-  id                    String         @id @default(uuid())
-  email                 String         @unique @map("email")
-  password              String         @map("password")
-  role                  Role           @default(CANDIDATE) @map("role")
-  isVerified            Boolean        @default(false) @map("is_verified")
-  isActive              Boolean        @default(true) @map("is_active")
-  verificationCode      String?        @map("verification_code") @db.VarChar(6)
-  verificationCodeExpAt DateTime?      @map("verification_code_exp_at")
-  createdAt             DateTime       @default(now()) @map("created_at")
-  updatedAt             DateTime       @updatedAt @map("updated_at")
-  companyId             String?        @map("company_id")
-  canCompanyManage      Boolean        @default(false) @map("can_company_manage")
+  id                    String           @id @default(uuid())
+  email                 String           @unique @map("email")
+  password              String           @map("password")
+  role                  Role             @default(CANDIDATE) @map("role")
+  isVerified            Boolean          @default(false) @map("is_verified")
+  isActive              Boolean          @default(true) @map("is_active")
+  verificationCode      String?          @map("verification_code") @db.VarChar(6)
+  verificationCodeExpAt DateTime?        @map("verification_code_exp_at")
+  createdAt             DateTime         @default(now()) @map("created_at")
+  updatedAt             DateTime         @updatedAt @map("updated_at")
+  companyId             String?          @map("company_id")
+  canCompanyManage      Boolean          @default(false) @map("can_company_manage")
   applications          Application[]
   chatSessions          ChatSession[]
   coverLetters          CoverLetter[]
@@ -29,7 +29,8 @@ model User {
   refreshTokens         RefreshToken[]
   revokedTokens         RevokedToken[]
   savedJobs             SavedJob[]
-  company               Company?       @relation(fields: [companyId], references: [id])
+  company               Company?         @relation(fields: [companyId], references: [id])
+  userPermissions       UserPermission[]
 
   @@index([companyId], map: "users_company_id_fkey")
   @@map("users")
@@ -288,6 +289,7 @@ enum JobStatus {
 }
 
 enum ApplicationStatus {
+  DRAFT
   PENDING
   REVIEWING
   INTERVIEW
@@ -311,4 +313,40 @@ enum Role {
   CANDIDATE
   RECRUITER
   ADMIN
+}
+
+// ─── Permission Module ────────────────────────────────────────────────────────
+
+model Permission {
+  id              String           @id @default(uuid())
+  name            String           @unique
+  description     String?
+  group           String
+  createdAt       DateTime         @default(now()) @map("created_at")
+  rolePermissions RolePermission[]
+  userPermissions UserPermission[]
+
+  @@map("permissions")
+}
+
+model RolePermission {
+  id           String     @id @default(uuid())
+  role         Role
+  permissionId String     @map("permission_id")
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([role, permissionId])
+  @@map("role_permissions")
+}
+
+model UserPermission {
+  id           String     @id @default(uuid())
+  userId       String     @map("user_id")
+  permissionId String     @map("permission_id")
+  isGranted    Boolean    @default(true) @map("is_granted") // 
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, permissionId])
+  @@map("user_permissions")
 }

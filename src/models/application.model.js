@@ -60,15 +60,14 @@ const apply = async (userId, jobId, data) => {
   if (isDraft) {
     if (existing) {
       if (!existing.isDraft) return null; // Already submitted, can't overwrite
-      // Update existing draft
       return prisma.application.update({
         where: { id: existing.id },
-        data: { isDraft: true, status: null, ...rest },
+        data: { isDraft: true, status: "DRAFT", ...rest },
         select: APP_SELECT,
       });
     }
     return prisma.application.create({
-      data: { userId, jobId, isDraft: true, status: null, ...rest },
+      data: { userId, jobId, isDraft: true, status: "DRAFT", ...rest },
       select: APP_SELECT,
     });
   }
@@ -83,7 +82,7 @@ const apply = async (userId, jobId, data) => {
     });
   }
   return prisma.application.create({
-    data: { userId, jobId, isDraft: false, ...rest },
+    data: { userId, jobId, isDraft: false, status: "PENDING", ...rest },
     select: APP_SELECT,
   });
 };
@@ -166,8 +165,7 @@ const deleteApplication = async (id, userId) => {
     select: { userId: true, status: true, isDraft: true },
   });
   if (!app || app.userId !== userId) return null;
-  // Allow deletion for drafts (status=null) or pending submissions
-  if (!app.isDraft && app.status !== "PENDING") return "NOT_PENDING";
+  if (app.status !== "DRAFT" && app.status !== "PENDING") return "NOT_PENDING";
   return prisma.application.delete({ where: { id } });
 };
 
