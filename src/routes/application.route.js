@@ -8,6 +8,7 @@ router.use(authRequired);
 // Candidate
 router.post("/", roleRequired("CANDIDATE"), controller.apply);
 router.get("/me", controller.getMyApplications);
+router.get("/my/insights", controller.getMyInsights);
 router.get("/check", controller.checkApplied);
 router.delete("/:id", roleRequired("CANDIDATE"), controller.deleteApplication);
 router.get("/:id", controller.getApplicationById);

@@ -1,5 +1,4 @@
 const model = require("@/models/job.model");
-const { toJsonString } = require("../utils/helper");
 
 async function getJobs(req, res) {
   const { page = 1, limit = 12, search, type, location } = req.query;
