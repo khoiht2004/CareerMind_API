@@ -17,6 +17,7 @@ const JOB_SELECT = {
   deadline: true,
   status: true,
   isHot: true,
+  viewCount: true,
   createdAt: true,
   updatedAt: true,
   requirements: true,
@@ -32,7 +33,11 @@ const getJobs = async ({
   search,
   type,
   location,
+  level,
+  industry,
+  salary,
   status = "PUBLISHED",
+  sort = "newest",
 }) => {
   const where = {
     status,
@@ -44,13 +49,25 @@ const getJobs = async ({
     }),
     ...(type && type !== "ALL" && { type }),
     ...(location && location !== "ALL" && { location: { contains: location } }),
+    ...(level && level !== "ALL" && { level }),
+    ...(industry && industry !== "ALL" && {
+      tags: { array_contains: industry },
+    }),
+    ...(salary && salary !== "ALL" && { salary: { contains: salary } }),
   };
+
+  const orderBy =
+    sort === "oldest"
+      ? [{ createdAt: "asc" }]
+      : sort === "views_desc"
+        ? [{ viewCount: "desc" }, { createdAt: "desc" }]
+        : [{ isHot: "desc" }, { createdAt: "desc" }];
 
   const [jobs, total] = await Promise.all([
     prisma.job.findMany({
       where,
       select: JOB_SELECT,
-      orderBy: [{ isHot: "desc" }, { createdAt: "desc" }],
+      orderBy,
       skip: (page - 1) * limit,
       take: limit,
     }),
@@ -61,7 +78,16 @@ const getJobs = async ({
 };
 
 const getJobById = async (id) => {
-  return prisma.job.findUnique({ where: { id }, select: JOB_SELECT });
+  const exists = await prisma.job.findUnique({
+    where: { id },
+    select: { id: true },
+  });
+  if (!exists) return null;
+  return prisma.job.update({
+    where: { id },
+    data: { viewCount: { increment: 1 } },
+    select: JOB_SELECT,
+  });
 };
 
 const createJob = async (data, postedById, companyId) => {

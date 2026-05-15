@@ -29,6 +29,7 @@ model User {
   refreshTokens         RefreshToken[]
   revokedTokens         RevokedToken[]
   savedJobs             SavedJob[]
+  companyReviews        CompanyReview[]
   company               Company?         @relation(fields: [companyId], references: [id])
   userPermissions       UserPermission[]
 
@@ -67,6 +68,7 @@ model Job {
   deadline     DateTime?     @map("deadline")
   status       JobStatus     @default(PUBLISHED) @map("status")
   isHot        Boolean       @default(false) @map("is_hot")
+  viewCount    Int           @default(0) @map("view_count")
   createdAt    DateTime      @default(now()) @map("created_at")
   updatedAt    DateTime      @updatedAt @map("updated_at")
   postedById   String        @map("posted_by_id")
@@ -90,6 +92,8 @@ model Company {
   description       String?       @map("description") @db.Text
   subDescription    String?       @map("sub_description") @db.Text
   address           String?       @map("address") @db.VarChar(255)
+  industry          String?       @map("industry") @db.VarChar(100)
+  size              String?       @map("size") @db.VarChar(100)
   mapUrl            String?       @map("map_url") @db.Text
   logoUrl           String?       @map("logo_url") @db.Text
   coverImageUrl     String?       @map("cover_image_url") @db.Text
@@ -101,10 +105,28 @@ model Company {
   totalJobs         Int           @default(0) @map("total_jobs")
   totalApplications Int           @default(0) @map("total_applications")
   applications      Application[]
+  reviews           CompanyReview[]
   jobs              Job[]
   user              User[]
 
   @@map("companies")
+}
+
+model CompanyReview {
+  id        String   @id @default(uuid())
+  rating    Int      @map("rating")
+  comment   String?  @map("comment") @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  userId    String   @map("user_id")
+  companyId String   @map("company_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, companyId])
+  @@index([companyId])
+  @@index([userId])
+  @@map("company_reviews")
 }
 
 model Application {
@@ -185,6 +207,51 @@ model CoverLetter {
 
   @@index([userId])
   @@map("cover_letters")
+}
+
+model CvTemplate {
+  id          String   @id @default(uuid())
+  title       String   @map("title")
+  industry    String?  @map("industry") @db.VarChar(100)
+  level       String?  @map("level") @db.VarChar(50)
+  content     String   @map("content") @db.LongText
+  previewUrl  String?  @map("preview_url") @db.Text
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("cv_templates")
+}
+
+model CoverLetterTemplate {
+  id          String   @id @default(uuid())
+  title       String   @map("title")
+  industry    String?  @map("industry") @db.VarChar(100)
+  level       String?  @map("level") @db.VarChar(50)
+  content     String   @map("content") @db.LongText
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("cover_letter_templates")
+}
+
+model Post {
+  id          String   @id @default(uuid())
+  title       String   @map("title")
+  slug        String?  @unique @map("slug")
+  excerpt     String?  @map("excerpt") @db.Text
+  content     String   @map("content") @db.LongText
+  coverUrl    String?  @map("cover_url") @db.Text
+  category    String?  @map("category") @db.VarChar(100)
+  authorName  String?  @map("author_name") @db.VarChar(120)
+  isPublished Boolean  @default(true) @map("is_published")
+  viewCount   Int      @default(0) @map("view_count")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([category])
+  @@map("posts")
 }
 
 model ChatSession {

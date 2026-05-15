@@ -4,7 +4,6 @@ const { authRequired, roleRequired } = require("@/middlewares");
 const permissionRequired = require("@/middlewares/permissionRequired");
 
 router.get("/", controller.getCompanies);
-router.get("/:id", controller.getCompanyById);
 
 router.get("/my/profile", authRequired, roleRequired("RECRUITER"), controller.getMyCompanyProfile);
 router.put(
@@ -24,5 +23,8 @@ router.get(
   permissionRequired("application:read:company"),
   controller.getMyCompanyApplications,
 );
+
+router.get("/:id", controller.getCompanyById);
+router.post("/:id/reviews", authRequired, roleRequired("CANDIDATE"), controller.upsertCompanyReview);
 
 module.exports = router;

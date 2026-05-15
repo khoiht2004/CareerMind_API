@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const model = require("@/models/auth.model");
 const AuthService = require("@/services/auth.service");
-const { getUserPermissions } = require("@/utils/permission.util");
+const { getUserPermissions, groupPermissions } = require("@/utils/permission.util");
 
 async function register(req, res) {
   const { name, email, password } = req.body;
@@ -77,10 +77,14 @@ async function resendVerification(req, res) {
 async function getMe(req, res) {
   const { user } = req.auth;
   if (user.role === "ADMIN") {
-    return res.success(200, { ...user, permissions: ["*"] });
+    return res.success(200, { ...user, permissions: { system: ["*"] }, permissionList: ["*"] });
   }
   const permSet = await getUserPermissions(user.id, user.role);
-  return res.success(200, { ...user, permissions: [...permSet] });
+  return res.success(200, {
+    ...user,
+    permissions: groupPermissions(permSet),
+    permissionList: [...permSet],
+  });
 }
 
 async function logout(req, res) {

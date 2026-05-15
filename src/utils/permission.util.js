@@ -22,4 +22,17 @@ async function getUserPermissions(userId, role) {
   return perms;
 }
 
-module.exports = { getUserPermissions };
+function groupPermissions(permissions) {
+  return [...permissions].reduce((acc, permission) => {
+    if (permission === "*") {
+      acc.system = ["*"];
+      return acc;
+    }
+    const [group = "other"] = permission.split(":");
+    if (!acc[group]) acc[group] = [];
+    acc[group].push(permission);
+    return acc;
+  }, {});
+}
+
+module.exports = { getUserPermissions, groupPermissions };

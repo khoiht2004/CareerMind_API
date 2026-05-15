@@ -9,6 +9,8 @@ const COMPANY_PUBLIC_SELECT = {
       subDescription: true,
       mapUrl: true,
       address: true,
+      industry: true,
+      size: true,
       logoUrl: true,
       coverImageUrl: true,
       socialLinks: true,
@@ -19,14 +21,18 @@ const COMPANY_PUBLIC_SELECT = {
 // ==========================================
 // PUBLIC
 // ==========================================
-const getCompanies = async ({ page = 1, limit = 10, search }) => {
+const getCompanies = async ({ page = 1, limit = 10, search, industry, size }) => {
       const skip = (+page - 1) * +limit;
       const where = {
+            isActive: true,
+            ...(industry && industry !== "ALL" && { industry }),
+            ...(size && size !== "ALL" && { size }),
             ...(search && {
                   OR: [
                         { name: { contains: search } },
                         { description: { contains: search } },
                         { address: { contains: search } },
+                        { industry: { contains: search } },
                         { email: { contains: search } },
                         { phone: { contains: search } },
                   ],
@@ -49,6 +55,18 @@ const getCompanyById = async (id) => {
             where: { id },
             select: {
                   ...COMPANY_PUBLIC_SELECT,
+                  _count: { select: { reviews: true, jobs: true } },
+                  reviews: {
+                        take: 5,
+                        orderBy: { createdAt: "desc" },
+                        select: {
+                              id: true,
+                              rating: true,
+                              comment: true,
+                              createdAt: true,
+                              user: { select: { profile: { select: { fullName: true, avatarUrl: true } } } },
+                        },
+                  },
                   jobs: {
                         orderBy: { createdAt: "desc" },
                         where: { status: "PUBLISHED" },
@@ -62,6 +80,27 @@ const getCompanyById = async (id) => {
                         },
                   },
             },
+      });
+};
+
+const getCompanyReviewSummary = async (companyId) => {
+      const aggregate = await prisma.companyReview.aggregate({
+            where: { companyId },
+            _avg: { rating: true },
+            _count: { rating: true },
+      });
+
+      return {
+            avgRating: aggregate._avg.rating ? Number(aggregate._avg.rating.toFixed(1)) : 0,
+            totalReviews: aggregate._count.rating,
+      };
+};
+
+const upsertCompanyReview = async (companyId, userId, { rating, comment }) => {
+      return prisma.companyReview.upsert({
+            where: { userId_companyId: { userId, companyId } },
+            update: { rating: +rating, comment },
+            create: { userId, companyId, rating: +rating, comment },
       });
 };
 
@@ -141,7 +180,7 @@ const getMyApplications = async (companyId, { page = 1, limit = 10, status, jobI
 };
 
 const updateCompany = async (id, data) => {
-      const { name, email, phone, description, address, logoUrl, coverImageUrl, socialLinks } = data;
+      const { name, email, phone, description, subDescription, address, industry, size, mapUrl, logoUrl, coverImageUrl, socialLinks } = data;
       return prisma.company.update({
             where: { id },
             data: {
@@ -149,7 +188,11 @@ const updateCompany = async (id, data) => {
                   ...(email !== undefined && { email }),
                   ...(phone !== undefined && { phone }),
                   ...(description !== undefined && { description }),
+                  ...(subDescription !== undefined && { subDescription }),
                   ...(address !== undefined && { address }),
+                  ...(industry !== undefined && { industry }),
+                  ...(size !== undefined && { size }),
+                  ...(mapUrl !== undefined && { mapUrl }),
                   ...(logoUrl !== undefined && { logoUrl }),
                   ...(coverImageUrl !== undefined && { coverImageUrl }),
                   ...(socialLinks !== undefined && { socialLinks }),
@@ -223,6 +266,8 @@ const updateCompanyStatus = async (id, { isVerified, isActive }) => {
 module.exports = {
       getCompanies,
       getCompanyById,
+      getCompanyReviewSummary,
+      upsertCompanyReview,
       getMyJobs,
       getMyApplications,
       updateCompany,

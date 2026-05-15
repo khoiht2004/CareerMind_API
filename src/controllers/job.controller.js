@@ -1,13 +1,27 @@
 const model = require("@/models/job.model");
 
 async function getJobs(req, res) {
-  const { page = 1, limit = 12, search, type, location } = req.query;
+  const {
+    page = 1,
+    limit = 12,
+    search,
+    type,
+    location,
+    level,
+    industry,
+    salary,
+    sort,
+  } = req.query;
   const result = await model.getJobs({
     page: +page,
     limit: +limit,
     search,
     type,
     location,
+    level,
+    industry,
+    salary,
+    sort,
   });
   return res.success(200, result);
 }
