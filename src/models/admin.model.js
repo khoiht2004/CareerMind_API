@@ -263,7 +263,7 @@ class AdminModel {
 
   static async getAllPermissions() {
     return prisma.permission.findMany({
-      orderBy: [{ group: "asc" }, { name: "asc" }],
+      orderBy: { name: "asc" },
       include: { rolePermissions: { select: { role: true } } },
     });
   }
@@ -315,6 +315,21 @@ class AdminModel {
 
   static async deletePermission(id) {
     return prisma.permission.delete({ where: { id } });
+  }
+
+  static async updatePermission(id, { name, description, group }) {
+    return prisma.permission.update({
+      where: { id },
+      data: { name, description, group },
+    });
+  }
+
+  static async syncRolePermissions(permissionId, roles) {
+    await prisma.rolePermission.deleteMany({ where: { permissionId } });
+    if (roles.length === 0) return;
+    await prisma.rolePermission.createMany({
+      data: roles.map((role) => ({ role, permissionId })),
+    });
   }
 }
 

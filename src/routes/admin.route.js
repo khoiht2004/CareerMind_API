@@ -32,6 +32,7 @@ router.put("/companies/:id/active", controller.toggleCompanyActive);
 // Permission management
 router.get("/permissions", controller.getAllPermissions);
 router.post("/permissions", controller.createPermission);
+router.patch("/permissions/:id", controller.updatePermission);
 router.delete("/permissions/:id", controller.deletePermission);
 router.get("/users/:userId/permissions", controller.getUserPermissionDetails);
 router.post("/users/:userId/permissions", controller.updateUserPermissions);

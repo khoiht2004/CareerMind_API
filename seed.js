@@ -2988,72 +2988,72 @@ async function main() {
     // Job permissions
     {
       name: "job:create",
-      group: "job",
+      group: { value: "job", label: "Quản lý công việc" },
       description: "Cho phép tạo tin tuyển dụng mới. Recruiter cần có quyền này để đăng việc làm lên hệ thống và tiếp cận ứng viên phù hợp với vị trí đang tuyển dụng của công ty.",
     },
     {
       name: "job:read:company",
-      group: "job",
+      group: { value: "job", label: "Quản lý công việc" },
       description: "Cho phép xem toàn bộ tin tuyển dụng của công ty, bao gồm cả tin do recruiter khác đăng. Thường dành cho quản lý hoặc trưởng nhóm tuyển dụng cần nắm bắt tổng thể hoạt động.",
     },
     {
       name: "job:update:own",
-      group: "job",
+      group: { value: "job", label: "Quản lý công việc" },
       description: "Cho phép chỉnh sửa tin tuyển dụng do chính recruiter đó đăng tải. Quyền này đảm bảo mỗi recruiter chỉ có thể cập nhật nội dung mà họ chịu trách nhiệm quản lý.",
     },
     {
       name: "job:update:company",
-      group: "job",
+      group: { value: "job", label: "Quản lý công việc" },
       description: "Cho phép chỉnh sửa tin tuyển dụng của bất kỳ recruiter nào trong cùng công ty. Quyền này phù hợp cho trưởng nhóm tuyển dụng cần can thiệp hoặc hỗ trợ đồng nghiệp.",
     },
     {
       name: "job:delete:own",
-      group: "job",
+      group: { value: "job", label: "Quản lý công việc" },
       description: "Cho phép xóa tin tuyển dụng do chính recruiter đó tạo ra. Việc xóa sẽ ảnh hưởng đến các đơn ứng tuyển liên quan, cần thận trọng khi sử dụng quyền này.",
     },
     // Application permissions
     {
       name: "application:read:company",
-      group: "application",
+      group: { value: "application", label: "Quản lý đơn ứng tuyển" },
       description: "Cho phép xem toàn bộ đơn ứng tuyển thuộc công ty, kể cả đơn gửi cho tin của recruiter khác. Phù hợp cho nhà quản lý cần có cái nhìn toàn diện về pipeline tuyển dụng.",
     },
     {
       name: "application:update:status",
-      group: "application",
+      group: { value: "application", label: "Quản lý đơn ứng tuyển" },
       description: "Cho phép thay đổi trạng thái đơn ứng tuyển như chuyển sang Đang xem xét, Phỏng vấn, Đã nhận hoặc Từ chối. Đây là quyền cốt lõi trong quy trình xét duyệt hồ sơ ứng viên.",
     },
     // Company permissions
     {
       name: "company:manage",
-      group: "company",
+      group: { value: "company", label: "Quản lý công ty" },
       description: "Cho phép chỉnh sửa thông tin công ty như mô tả, logo, địa chỉ và các liên kết mạng xã hội. Quyền này nên được cấp cho người phụ trách thương hiệu nhà tuyển dụng.",
     },
     // Candidate — Application permissions
     {
       name: "application:create",
-      group: "application",
+      group: { value: "application", label: "Quản lý đơn ứng tuyển" },
       description: "Cho phép ứng viên nộp đơn ứng tuyển vào vị trí tuyển dụng. Đây là quyền cơ bản nhất của ứng viên trên hệ thống.",
     },
     {
       name: "application:read:own",
-      group: "application",
+      group: { value: "application", label: "Quản lý đơn ứng tuyển" },
       description: "Cho phép ứng viên xem lịch sử toàn bộ đơn ứng tuyển của chính mình, bao gồm trạng thái, ghi chú HR và lịch phỏng vấn nếu có.",
     },
     {
       name: "application:delete:own",
-      group: "application",
+      group: { value: "application", label: "Quản lý đơn ứng tuyển" },
       description: "Cho phép ứng viên rút lại đơn ứng tuyển đã nộp. Chỉ áp dụng với đơn còn đang ở trạng thái chờ xét duyệt hoặc đang xem xét.",
     },
     // Candidate — Job permissions
     {
       name: "job:save",
-      group: "job",
+      group: { value: "job", label: "Quản lý công việc" },
       description: "Cho phép ứng viên lưu tin tuyển dụng yêu thích để xem lại sau. Danh sách việc làm đã lưu được quản lý riêng trong tài khoản của ứng viên.",
     },
     // Candidate — Profile permissions
     {
       name: "profile:manage",
-      group: "profile",
+      group: { value: "profile", label: "Hồ sơ cá nhân" },
       description: "Cho phép ứng viên chỉnh sửa hồ sơ cá nhân bao gồm ảnh đại diện, thông tin liên hệ, học vấn, kinh nghiệm làm việc và kỹ năng.",
     },
   ];

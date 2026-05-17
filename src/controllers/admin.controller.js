@@ -335,6 +335,30 @@ async function deletePermission(req, res) {
   return res.success(200, { message: "Đã xóa quyền thành công" });
 }
 
+async function updatePermission(req, res) {
+  const { id } = req.params;
+  const { name, description, group, roles = [] } = req.body;
+
+  if (!name || !group) return res.error(400, "name và group là bắt buộc");
+  if (!group.label || !group.value) return res.error(400, "group phải có label và value");
+
+  const perm = await AdminModel.findPermissionById(id);
+  if (!perm) return res.error(404, "Không tìm thấy quyền");
+
+  const conflict = await AdminModel.findPermissionByName(name);
+  if (conflict && conflict.id !== id) return res.error(409, "Tên quyền đã tồn tại");
+
+  const validRoles = ["ADMIN", "RECRUITER", "CANDIDATE"];
+  const sanitizedRoles = roles.filter((r) => validRoles.includes(r));
+
+  const [updated] = await Promise.all([
+    AdminModel.updatePermission(id, { name, description, group }),
+    AdminModel.syncRolePermissions(id, sanitizedRoles),
+  ]);
+
+  return res.success(200, updated);
+}
+
 module.exports = {
   getStats,
   getApplicationTrend,
@@ -360,4 +384,5 @@ module.exports = {
   updateUserPermissions,
   createPermission,
   deletePermission,
+  updatePermission,
 };
