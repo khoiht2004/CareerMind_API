@@ -649,6 +649,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Senior",
     tags: ["Node.js", "NestJS", "PostgreSQL", "Microservices", "Docker", "AWS", "TypeScript", "Redis"],
+    industry: ["Finance"],
     description: "FPT Software tìm kiếm Kỹ sư Backend Senior có kinh nghiệm xây dựng hệ thống microservices quy mô lớn. Bạn sẽ thiết kế và phát triển các API hiệu suất cao, tối ưu cơ sở dữ liệu và mentoring cho junior developer.\n\nYêu cầu:\n- 4+ năm kinh nghiệm với Node.js/NestJS\n- Thành thạo PostgreSQL, Redis\n- Kinh nghiệm với Docker, Kubernetes\n- Hiểu biết về Clean Architecture và SOLID\n- Thành thạo TypeScript",
     benefits: [
       { label: "Lương cạnh tranh", content: "Mức lương được xây dựng cạnh tranh so với thị trường quốc tế, review 2 lần/năm dựa trên hiệu suất thực tế. Ứng viên xuất sắc có thể thương lượng vượt khung." },
@@ -677,6 +678,7 @@ const JOBS_TEMPLATES = [
     type: "REMOTE",
     level: "Middle",
     tags: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Redux", "Figma", "Jest", "Performance Optimization"],
+    industry: ["Sales"],
     description: "Vị trí Frontend Developer remote, tham gia phát triển sản phẩm web cho khách hàng quốc tế. Bạn sẽ làm việc chặt chẽ với đội design và backend để xây dựng giao diện chất lượng cao.\n\nYêu cầu:\n- 2+ năm với React, Next.js\n- Thành thạo TypeScript, Tailwind CSS\n- Kinh nghiệm với state management\n- Khả năng đọc hiểu Figma\n- Tiếng Anh giao tiếp tốt",
     benefits: [
       { label: "Hoàn toàn remote", content: "Vị trí này cho phép làm việc 100% từ xa, không giới hạn địa điểm trong lãnh thổ Việt Nam. Đội ngũ giao tiếp qua Slack và họp online định kỳ để duy trì sự kết nối." },
@@ -705,6 +707,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Senior",
     tags: ["AWS", "Kubernetes", "Terraform", "CI/CD", "Docker", "Linux", "Monitoring", "Ansible"],
+    industry: ["Finance"],
     description: "Tìm kiếm DevOps Engineer có kinh nghiệm vận hành và tối ưu hóa hạ tầng cloud cho các dự án outsourcing quy mô lớn.\n\nYêu cầu:\n- 3+ năm kinh nghiệm DevOps/SRE\n- Thành thạo AWS hoặc GCP\n- Kinh nghiệm với Kubernetes, Terraform\n- Hiểu biết về bảo mật hệ thống\n- Kỹ năng scripting (Bash, Python)",
     benefits: [
       { label: "Lương hấp dẫn", content: "Mức lương được xây dựng hấp dẫn so với mặt bằng chung thị trường DevOps tại Việt Nam, phù hợp với kinh nghiệm và kỹ năng thực tế của từng ứng viên. Được review định kỳ 6 tháng một lần." },
@@ -732,6 +735,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Manager",
     tags: ["Project Management", "PMP", "Agile", "Scrum", "Budget Management", "Client Communication", "IT Outsourcing"],
+    industry: ["IT"],
     description: "FPT Software tìm IT Project Manager để quản lý các dự án outsourcing quy mô lớn cho khách hàng Nhật Bản và Mỹ. Bạn sẽ chịu trách nhiệm về tiến độ, chất lượng và ngân sách dự án.\n\nYêu cầu:\n- 5+ năm kinh nghiệm quản lý dự án IT\n- Chứng chỉ PMP hoặc PMI-ACP\n- Tiếng Anh thành thạo\n- Tiếng Nhật N2 là lợi thế",
     benefits: [
       { label: "Lương cao theo năng lực", content: "Mức lương được xây dựng linh hoạt và cạnh tranh dựa trên kinh nghiệm thực tế, chứng chỉ chuyên môn và kết quả công việc. Không có trần cứng – ứng viên giỏi sẽ được trả tương xứng." },
@@ -758,6 +762,7 @@ const JOBS_TEMPLATES = [
     type: "INTERNSHIP",
     level: "Intern",
     tags: ["Java", "Python", "Git", "Agile", "REST API", "Problem Solving", "Teamwork"],
+    industry: ["Sales"],
     description: "Chương trình thực tập 6 tháng dành cho sinh viên CNTT năm 3-4. Bạn sẽ tham gia các dự án thực tế với mentor support đầy đủ.\n\nYêu cầu:\n- Sinh viên năm 3-4 ngành CNTT\n- Biết lập trình Java hoặc Python cơ bản\n- Ham học hỏi và chịu khó",
     benefits: [
       { label: "Thực tập có lương", content: "Thực tập sinh nhận mức lương hàng tháng cạnh tranh so với thị trường, không làm việc miễn phí. Mức lương được xem xét tăng nếu thực tập sinh thể hiện xuất sắc trong quá trình làm việc." },
@@ -785,6 +790,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Senior",
     tags: ["Corporate Banking", "Relationship Management", "Credit Analysis", "Trade Finance", "Cross-selling"],
+    industry: ["Sales"],
     description: "Vietcombank tìm Chuyên viên QHKH Doanh nghiệp phụ trách quản lý và phát triển danh mục khách hàng doanh nghiệp vừa và lớn.\n\nYêu cầu:\n- 3+ năm kinh nghiệm corporate banking\n- Hiểu biết sâu về phân tích tín dụng\n- Kinh nghiệm với trade finance, cash management\n- Kỹ năng thuyết trình và đàm phán tốt",
     benefits: [
       { label: "Lương cơ bản cao", content: "Mức lương cơ bản thuộc top đầu hệ thống ngân hàng thương mại nhà nước, cạnh tranh với khối tư nhân. Được điều chỉnh hàng năm theo hiệu suất cá nhân và kết quả kinh doanh của chi nhánh." },
@@ -811,6 +817,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Middle",
     tags: ["Credit Analysis", "Financial Statement Analysis", "Risk Assessment", "Loan Structuring", "Excel"],
+    industry: ["Marketing"],
     description: "Tìm Chuyên viên Phân tích Tín dụng để thẩm định hồ sơ vay vốn của khách hàng cá nhân và doanh nghiệp nhỏ.\n\nYêu cầu:\n- 2+ năm kinh nghiệm phân tích tín dụng\n- Thành thạo phân tích báo cáo tài chính\n- Kỹ năng Excel tốt",
     benefits: [
       { label: "Lương hấp dẫn", content: "Mức lương cạnh tranh trong hệ thống ngân hàng, được xây dựng dựa trên năng lực và kinh nghiệm thực tế của ứng viên. Được xem xét điều chỉnh tăng theo kết quả đánh giá hàng năm." },
@@ -836,6 +843,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Junior",
     tags: ["Teller", "Banking Products", "Cash Management", "Customer Service", "KYC"],
+    industry: ["IT"],
     description: "Tuyển Giao dịch viên tại các chi nhánh Vietcombank khu vực Hà Nội. Phù hợp cho người mới ra trường muốn xây dựng sự nghiệp ngân hàng.\n\nYêu cầu:\n- Tốt nghiệp Đại học (ưu tiên Kinh tế, Tài chính)\n- Ngoại hình sáng sủa, giao tiếp tốt\n- Cẩn thận và có trách nhiệm cao",
     benefits: [
       { label: "Lương cơ bản + thưởng", content: "Mức lương cơ bản ổn định cộng thêm thưởng theo KPI dịch vụ hàng quý, giúp thu nhập thực tế cao hơn mức khởi điểm. Thưởng được tính rõ ràng dựa trên chỉ tiêu chất lượng và số lượng giao dịch." },
@@ -862,6 +870,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Senior",
     tags: ["React Native", "iOS", "Android", "TypeScript", "Redux", "Performance Optimization", "Fastlane"],
+    industry: ["IT"],
     description: "Shopee tìm Mobile Developer tài năng để phát triển ứng dụng di động phục vụ hàng triệu người dùng Đông Nam Á.\n\nYêu cầu:\n- 3+ năm kinh nghiệm React Native\n- Kinh nghiệm tối ưu hiệu suất ứng dụng\n- Hiểu biết về native iOS và Android\n- Thành thạo TypeScript",
     benefits: [
       { label: "Mức lương top thị trường", content: "Shopee trả lương ở mức top 20% thị trường để thu hút và giữ chân những kỹ sư mobile giỏi nhất. Mức lương được benchmark định kỳ với dữ liệu thị trường để đảm bảo luôn cạnh tranh." },
@@ -888,6 +897,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Senior",
     tags: ["Product Management", "Agile", "User Research", "Data Analysis", "A/B Testing", "E-commerce"],
+    industry: ["Operations"],
     description: "Tìm kiếm Product Manager có kinh nghiệm trong mảng e-commerce để dẫn dắt phát triển các tính năng người dùng cuối.\n\nYêu cầu:\n- 4+ năm kinh nghiệm Product Management\n- Hiểu biết sâu về e-commerce\n- Thành thạo data analysis, A/B testing\n- Tiếng Anh thành thạo",
     benefits: [
       { label: "Competitive salary", content: "Mức lương cạnh tranh được định vị so với các công ty công nghệ hàng đầu khu vực Đông Nam Á. Shopee cam kết trả lương xứng đáng để thu hút Product Manager tài năng nhất thị trường." },
@@ -914,6 +924,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Senior",
     tags: ["UI Design", "UX Research", "Figma", "Prototyping", "Design System", "User Testing", "Mobile Design"],
+    industry: ["IT"],
     description: "Shopee tìm UX/UI Designer cấp Senior để dẫn dắt thiết kế trải nghiệm người dùng cho các tính năng mới.\n\nYêu cầu:\n- 4+ năm kinh nghiệm UX/UI design\n- Portfolio mạnh\n- Thành thạo Figma\n- Kinh nghiệm thiết kế cho mobile app",
     benefits: [
       { label: "Competitive salary", content: "Mức lương cạnh tranh được xây dựng phù hợp với kinh nghiệm và độ phức tạp của sản phẩm thiết kế. Shopee định vị mức lương designer ở top đầu để đảm bảo thu hút người giỏi nhất." },
@@ -941,6 +952,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Senior",
     tags: ["Python", "Spark", "Kafka", "Airflow", "Data Warehouse", "ETL", "SQL", "dbt"],
+    industry: ["Operations"],
     description: "Shopee tìm Data Engineer để xây dựng và vận hành hạ tầng dữ liệu phục vụ hàng chục team analyst.\n\nYêu cầu:\n- 3+ năm kinh nghiệm data engineering\n- Thành thạo Python, SQL, Spark, Kafka\n- Kinh nghiệm cloud data warehouse\n- Hiểu biết về data modeling",
     benefits: [
       { label: "Lương top market", content: "Mức lương Data Engineer tại Shopee được định vị ở top thị trường, phản ánh độ khan hiếm và giá trị của kỹ năng data engineering trong lĩnh vực e-commerce quy mô lớn. Được review định kỳ theo benchmark thị trường." },
@@ -970,6 +982,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Senior",
     tags: ["Business Analysis", "Banking Systems", "BPMN", "Requirements Gathering", "Agile", "SQL", "Core Banking"],
+    industry: ["Finance"],
     description: "Techcombank tìm BA có kinh nghiệm ngân hàng để tham gia các dự án chuyển đổi số.\n\nYêu cầu:\n- 4+ năm kinh nghiệm BA trong ngân hàng/tài chính\n- Am hiểu quy trình nghiệp vụ ngân hàng\n- Thành thạo BPMN, UML\n- Tiếng Anh đọc hiểu tốt",
     benefits: [
       { label: "Lương cơ bản cao", content: "Mức lương cơ bản cho BA ngân hàng tại Techcombank thuộc top đầu trong ngành, cạnh tranh với cả các công ty fintech và Big Tech. Được xem xét tăng theo hiệu suất thực tế hàng năm." },
@@ -996,6 +1009,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Senior",
     tags: ["Java", "Spring Boot", "Microservices", "Kafka", "Oracle", "Docker", "REST API", "Core Banking"],
+    industry: ["HR"],
     description: "Techcombank Technology tìm Senior Backend Developer để phát triển hệ thống ngân hàng lõi và các ứng dụng fintech.\n\nYêu cầu:\n- 4+ năm kinh nghiệm Java Spring Boot\n- Kinh nghiệm với Kafka, Redis\n- Hiểu biết về bảo mật ứng dụng ngân hàng\n- Kinh nghiệm TDD và Clean Code",
     benefits: [
       { label: "Lương cạnh tranh với Big Tech", content: "Techcombank định vị lương kỹ sư backend ngang bằng với các công ty công nghệ lớn để cạnh tranh thu hút nhân tài. Mức lương được benchmark với thị trường tech định kỳ và điều chỉnh linh hoạt." },
@@ -1022,6 +1036,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Senior",
     tags: ["Risk Management", "Basel III", "Market Risk", "Credit Risk", "Stress Testing", "VaR", "FRM"],
+    industry: ["Marketing"],
     description: "Techcombank tìm Chuyên viên Quản lý Rủi ro tham gia nhóm Enterprise Risk Management.\n\nYêu cầu:\n- 3+ năm kinh nghiệm quản lý rủi ro ngân hàng\n- Hiểu biết sâu về Basel II/III\n- FRM là lợi thế lớn\n- Tiếng Anh thành thạo",
     benefits: [
       { label: "Lương cạnh tranh", content: "Mức lương được xây dựng cạnh tranh so với các ngân hàng thương mại cổ phần hàng đầu và các tổ chức tài chính quốc tế tại Việt Nam. Ứng viên có chứng chỉ FRM sẽ được ưu đãi thêm trong quá trình đàm phán lương." },
@@ -1050,6 +1065,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Middle",
     tags: ["C/C++", "Embedded Systems", "RTOS", "CAN Bus", "AUTOSAR", "Linux Embedded", "Firmware"],
+    industry: ["Finance"],
     description: "VinAI tìm kỹ sư phần mềm nhúng để phát triển hệ thống điều khiển xe ô tô điện VinFast.\n\nYêu cầu:\n- 3+ năm kinh nghiệm C/C++ nhúng\n- Kinh nghiệm với RTOS\n- Hiểu biết về giao thức CAN Bus, SPI, I2C\n- AUTOSAR là lợi thế",
     benefits: [
       { label: "Lương tương đương thị trường quốc tế", content: "Mức lương được định vị ngang bằng với các hãng xe và công ty công nghệ ô tô quốc tế, thu hút kỹ sư nhúng giỏi nhất Việt Nam. Được benchmark với thị trường toàn cầu và điều chỉnh cạnh tranh hàng năm." },
@@ -1075,6 +1091,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Manager",
     tags: ["PR Strategy", "Media Relations", "Crisis Management", "Corporate Communication", "Brand Reputation"],
+    industry: ["Marketing"],
     description: "Vingroup tìm PR & Communications Manager để quản lý hình ảnh và truyền thông tập đoàn.\n\nYêu cầu:\n- 6+ năm kinh nghiệm PR/Corporate Communications\n- Mạng lưới quan hệ báo chí rộng\n- Kinh nghiệm xử lý khủng hoảng\n- Kỹ năng viết lách xuất sắc",
     benefits: [
       { label: "Lương thỏa thuận", content: "Mức lương được thương lượng linh hoạt dựa trên kinh nghiệm, mạng lưới quan hệ và năng lực thực tế của ứng viên. Vingroup sẵn sàng trả mức cao nhất thị trường cho ứng viên phù hợp với văn hóa và tầm nhìn tập đoàn." },
@@ -1101,6 +1118,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Senior",
     tags: ["Learning & Development", "Curriculum Design", "E-learning", "Facilitation", "LMS", "Leadership Development"],
+    industry: ["HR"],
     description: "Vingroup tìm Chuyên viên L&D để thiết kế và triển khai chương trình học tập cho hàng nghìn nhân viên.\n\nYêu cầu:\n- 3+ năm kinh nghiệm L&D hoặc đào tạo doanh nghiệp\n- Kinh nghiệm thiết kế chương trình và e-learning\n- Kỹ năng facilitation và presentation xuất sắc",
     benefits: [
       { label: "Lương cạnh tranh", content: "Mức lương phù hợp với kinh nghiệm và năng lực trong lĩnh vực L&D, cạnh tranh với các tập đoàn đa quốc gia cùng quy mô. Được xem xét điều chỉnh hàng năm theo đóng góp thực tế vào chất lượng đào tạo nội bộ." },
@@ -1125,6 +1143,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Senior",
     tags: ["Real Estate", "Business Development", "Sales", "Negotiation", "Market Research", "Investment Analysis"],
+    industry: ["Operations"],
     description: "VinHomes tìm Chuyên viên Phát triển Kinh doanh để mở rộng thị phần và phát triển các dự án bất động sản cao cấp.\n\nYêu cầu:\n- 5+ năm kinh nghiệm bán hàng bất động sản\n- Mạng lưới khách hàng tốt\n- Kỹ năng đàm phán xuất sắc",
     benefits: [
       { label: "Lương cơ bản + hoa hồng không giới hạn", content: "Thu nhập gồm lương cơ bản ổn định cộng hoa hồng không giới hạn dựa trên giá trị hợp đồng ký kết. Nhân viên xuất sắc có thể đạt thu nhập hàng trăm triệu đồng mỗi tháng trong mùa cao điểm mở bán." },
@@ -1151,6 +1170,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Team Lead",
     tags: ["FMCG Sales", "Team Leadership", "Distribution Management", "Key Account", "Route to Market"],
+    industry: ["HR"],
     description: "Masan tìm Sales Team Leader phụ trách khu vực TP.HCM, dẫn dắt đội nhóm 8-10 nhân viên bán hàng.\n\nYêu cầu:\n- 4+ năm kinh nghiệm FMCG sales\n- 1 năm quản lý\n- Am hiểu thị trường bán lẻ truyền thống và hiện đại",
     benefits: [
       { label: "Lương cơ bản + thưởng doanh số", content: "Thu nhập bao gồm lương cơ bản ổn định cộng thưởng doanh số hàng tháng khi đội nhóm đạt và vượt chỉ tiêu. Cơ chế thưởng rõ ràng theo từng mức doanh số, giúp Team Leader kiểm soát được thu nhập kỳ vọng." },
@@ -1175,6 +1195,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Junior",
     tags: ["Content Writing", "SEO", "Social Media", "Copywriting", "Brand Storytelling", "Canva", "Analytics"],
+    industry: ["Operations"],
     description: "Masan tìm Content Marketing Specialist cho các thương hiệu tiêu dùng hàng đầu. Sản xuất nội dung đa kênh từ social media, website đến email marketing.\n\nYêu cầu:\n- 1-2 năm kinh nghiệm content marketing\n- Khả năng viết lách sáng tạo\n- Hiểu biết về SEO cơ bản",
     benefits: [
       { label: "Lương thưởng cạnh tranh", content: "Mức lương cơ bản cạnh tranh kết hợp với thưởng hiệu suất quý khi content đạt các chỉ số engagement và traffic tốt. Masan đánh giá cao sự sáng tạo và chất lượng nội dung, không chỉ số lượng bài đăng." },
@@ -1199,6 +1220,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Middle",
     tags: ["General Accounting", "MISA", "VAS", "Tax Declaration", "Financial Reporting", "Month-end Close"],
+    industry: ["Finance"],
     description: "Masan tìm Kế toán Tổng hợp để xử lý nghiệp vụ kế toán hàng ngày và hỗ trợ lập báo cáo tài chính.\n\nYêu cầu:\n- 3+ năm kinh nghiệm kế toán tổng hợp\n- Thành thạo MISA\n- Hiểu biết vững về VAS và luật thuế",
     benefits: [
       { label: "Lương cơ bản tốt", content: "Mức lương cơ bản cạnh tranh trong ngành FMCG, phù hợp với kinh nghiệm và trình độ chuyên môn của từng ứng viên. Được review hàng năm có tính đến lạm phát và mức tăng trưởng của công ty." },
@@ -1223,6 +1245,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Middle",
     tags: ["Supply Chain", "Demand Planning", "Inventory Management", "SAP", "Data Analysis", "Forecasting", "S&OP"],
+    industry: ["Marketing"],
     description: "Masan tìm Supply Chain Analyst để tối ưu hoạt động chuỗi cung ứng từ nhà máy đến điểm bán lẻ.\n\nYêu cầu:\n- 2+ năm kinh nghiệm supply chain\n- Thành thạo Excel, SAP\n- Kỹ năng phân tích dữ liệu tốt",
     benefits: [
       { label: "Lương cạnh tranh", content: "Mức lương cạnh tranh cho vị trí Supply Chain Analyst trong ngành FMCG, phản ánh mức độ phức tạp của chuỗi cung ứng đa nhà máy, đa sản phẩm của Masan. Được tăng lương theo hiệu suất và mức độ phát triển kỹ năng." },
@@ -1249,6 +1272,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Senior",
     tags: ["External Audit", "IFRS", "VAS", "Financial Reporting", "Risk-based Audit", "Client Management", "Big 4"],
+    industry: ["Marketing"],
     description: "KPMG tìm Senior Auditor để thực hiện kiểm toán báo cáo tài chính cho khách hàng lớn.\n\nYêu cầu:\n- 3+ năm kinh nghiệm kiểm toán (ưu tiên Big 4)\n- ACCA/CPA là bắt buộc hoặc đang học\n- Thành thạo IFRS và VAS\n- Tiếng Anh thành thạo",
     benefits: [
       { label: "Lương cạnh tranh", content: "Mức lương Senior Auditor tại KPMG được định vị cạnh tranh trong nhóm Big 4, phản ánh đúng giá trị của kỹ năng kiểm toán chuyên nghiệp trong thị trường. Được review và điều chỉnh theo hiệu suất và tiến trình học ACCA." },
@@ -1275,6 +1299,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Middle",
     tags: ["Tax Advisory", "CIT", "VAT", "Transfer Pricing", "Tax Due Diligence", "International Tax", "BEPS"],
+    industry: ["HR"],
     description: "KPMG tìm Tax Consultant để cung cấp dịch vụ tư vấn thuế cho khách hàng doanh nghiệp và FDI.\n\nYêu cầu:\n- 2+ năm kinh nghiệm tư vấn thuế\n- Kiến thức sâu về CIT, VAT\n- Tiếng Anh thành thạo",
     benefits: [
       { label: "Lương theo năng lực", content: "Mức lương được xây dựng dựa trên kiến thức chuyên môn thuế, kinh nghiệm tư vấn và hiệu quả phục vụ khách hàng. KPMG sẵn sàng trả cao hơn thị trường cho ứng viên có nền tảng thuế vững và tiếng Anh tốt." },
@@ -1300,6 +1325,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Junior",
     tags: ["External Audit", "Financial Statements", "VAS", "Excel", "Teamwork", "ACCA", "Big 4"],
+    industry: ["HR"],
     description: "KPMG tuyển Associate cho bộ phận Kiểm toán, chào đón sinh viên mới tốt nghiệp.\n\nYêu cầu:\n- Tốt nghiệp loại Khá, ngành Kế toán/Kiểm toán\n- TOEIC 700+\n- Chăm chỉ, cẩn thận",
     benefits: [
       { label: "Lương cơ bản + overtime pay", content: "Ngoài lương cơ bản, KPMG trả thêm phụ cấp làm ngoài giờ minh bạch và đúng quy định, đặc biệt trong mùa kiểm toán cao điểm. Đây là sự ghi nhận công bằng cho những giờ làm thêm không thể tránh khỏi trong Big 4." },
@@ -1325,6 +1351,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Senior",
     tags: ["Management Consulting", "Strategy", "Process Improvement", "Change Management", "Stakeholder Engagement"],
+    industry: ["Operations"],
     description: "KPMG Advisory tìm Senior Management Consultant cho các dự án tư vấn chiến lược.\n\nYêu cầu:\n- 4+ năm kinh nghiệm consulting\n- Tư duy phân tích xuất sắc\n- Tiếng Anh thành thạo\n- MBA là lợi thế",
     benefits: [
       { label: "Lương cạnh tranh Big 4", content: "Mức lương Management Consultant tại KPMG được định vị cạnh tranh trong nhóm Big 4, phản ánh đúng độ phức tạp và giá trị của dịch vụ tư vấn chiến lược. Ứng viên xuất sắc có thể thương lượng mức lương vượt khung thông thường." },
@@ -1352,6 +1379,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Senior",
     tags: ["Python", "TensorFlow", "PyTorch", "NLP", "MLOps", "Recommendation System", "Deep Learning"],
+    industry: ["Sales"],
     description: "Grab tìm AI/ML Engineer tài năng để xây dựng mô hình recommendation và fraud detection cho hàng triệu người dùng Đông Nam Á.\n\nYêu cầu:\n- 3+ năm kinh nghiệm ML/AI trong production\n- Thành thạo Python, TensorFlow/PyTorch\n- Kinh nghiệm MLOps pipeline\n- Tiếng Anh thành thạo",
     benefits: [
       { label: "Gói lương top thị trường", content: "Grab định vị lương AI/ML Engineer ở top 10% thị trường để cạnh tranh thu hút nhân tài với các tập đoàn công nghệ toàn cầu. Mức lương bao gồm base salary hấp dẫn và được benchmark định kỳ với thị trường quốc tế." },
@@ -1379,6 +1407,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Middle",
     tags: ["SQL", "Python", "Power BI", "Tableau", "A/B Testing", "Statistics", "Business Intelligence"],
+    industry: ["Operations"],
     description: "Grab tìm Data Analyst để hỗ trợ đội ngũ Product và Business. Phân tích hành vi người dùng, đo lường hiệu quả tính năng.\n\nYêu cầu:\n- 2+ năm kinh nghiệm Data Analyst\n- Thành thạo SQL, Python\n- Kinh nghiệm BI tools\n- Khả năng thiết kế A/B test",
     benefits: [
       { label: "Competitive salary", content: "Mức lương cạnh tranh theo chuẩn công ty công nghệ khu vực Đông Nam Á, được xây dựng để thu hút Data Analyst có tư duy phân tích sắc bén. Review lương hàng năm dựa trên đóng góp thực tế và benchmark thị trường." },
@@ -1406,6 +1435,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Middle",
     tags: ["Swift", "iOS", "Xcode", "UIKit", "SwiftUI", "CocoaPods", "REST API", "Performance Optimization"],
+    industry: ["Marketing"],
     description: "Grab tuyển iOS Developer để phát triển ứng dụng Grab trên nền tảng iOS.\n\nYêu cầu:\n- 3+ năm kinh nghiệm iOS Swift\n- Kinh nghiệm với UIKit và SwiftUI\n- Hiểu biết về app performance optimization\n- Kinh nghiệm publish app lên App Store",
     benefits: [
       { label: "Competitive salary", content: "Mức lương cạnh tranh theo chuẩn công ty công nghệ Đông Nam Á, được định vị để cạnh tranh với Apple, Google và các startup unicorn trong khu vực. Được review định kỳ theo benchmark thị trường iOS developer." },
@@ -1433,6 +1463,7 @@ const JOBS_TEMPLATES = [
     type: "INTERNSHIP",
     level: "Intern",
     tags: ["React Native", "JavaScript", "TypeScript", "Git", "Mobile Development", "Teamwork"],
+    industry: ["Finance"],
     description: "Grab tuyển thực tập sinh Mobile Developer (chương trình 6 tháng, có lương).\n\nYêu cầu:\n- Sinh viên năm 3-4 hoặc mới tốt nghiệp\n- Biết React Native hoặc React.js\n- Tiếng Anh đọc hiểu tốt",
     benefits: [
       { label: "Thực tập có lương", content: "Thực tập sinh nhận mức lương hàng tháng cạnh tranh so với thị trường, được công nhận là thành viên thực sự của đội phát triển chứ không phải lao động miễn phí. Mức lương được tính toán công bằng dựa trên thời gian và đóng góp thực tế." },
@@ -1459,6 +1490,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Senior",
     tags: ["C++", "Go", "Game Server", "Networking", "Distributed Systems", "Redis", "MySQL", "Performance"],
+    industry: ["Operations"],
     description: "VNG tìm Kỹ sư Backend Game để phát triển hệ thống server cho các sản phẩm game online với hàng triệu người chơi đồng thời.\n\nYêu cầu:\n- 4+ năm kinh nghiệm backend C++ hoặc Go\n- Kinh nghiệm với distributed systems\n- Hiểu biết về networking và game server architecture\n- Khả năng tối ưu hiệu suất hệ thống",
     benefits: [
       { label: "Lương hấp dẫn theo năng lực", content: "Mức lương được xây dựng không theo thang bảng cứng mà linh hoạt dựa trên kinh nghiệm thực tế và kỹ năng kỹ thuật. Kỹ sư C++ hoặc Go giỏi có thể đàm phán mức lương vượt xa mặt bằng chung ngành game Việt Nam." },
@@ -1485,6 +1517,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Middle",
     tags: ["Node.js", "Python", "Microservices", "Kafka", "Redis", "Elasticsearch", "Docker", "Kubernetes"],
+    industry: ["Finance"],
     description: "VNG tìm kỹ sư phần mềm để phát triển nền tảng Zalo – ứng dụng nhắn tin lớn nhất Việt Nam với hơn 74 triệu người dùng.\n\nYêu cầu:\n- 3+ năm kinh nghiệm backend\n- Thành thạo Node.js hoặc Python\n- Kinh nghiệm với large-scale systems",
     benefits: [
       { label: "Lương cạnh tranh", content: "Mức lương cạnh tranh trong ngành công nghệ Việt Nam, được xây dựng để thu hút kỹ sư giỏi muốn làm việc trên sản phẩm phục vụ hàng chục triệu người Việt Nam. Được review hàng năm theo hiệu suất cá nhân và thị trường." },
@@ -1511,6 +1544,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Middle",
     tags: ["SQL", "Python", "Data Analysis", "Fintech", "Payment Analytics", "Power BI", "A/B Testing"],
+    industry: ["Sales"],
     description: "ZaloPay cần Data Analyst để phân tích hành vi giao dịch và tối ưu trải nghiệm người dùng ví điện tử.\n\nYêu cầu:\n- 2+ năm kinh nghiệm phân tích dữ liệu\n- Thành thạo SQL, Python\n- Kinh nghiệm fintech là lợi thế",
     benefits: [
       { label: "Lương cạnh tranh", content: "Mức lương cạnh tranh trong lĩnh vực fintech Việt Nam, được xây dựng phù hợp với kinh nghiệm phân tích dữ liệu thanh toán và ví điện tử. Được review theo hiệu suất và phạm vi trách nhiệm ngày càng mở rộng." },
@@ -1537,6 +1571,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Senior",
     tags: ["Java", "Spring Boot", "Microservices", "Kafka", "Redis", "Payment Gateway", "Security", "Fintech"],
+    industry: ["Operations"],
     description: "MoMo tìm Senior Backend Engineer để xây dựng và tối ưu hệ thống thanh toán phục vụ hơn 31 triệu người dùng.\n\nYêu cầu:\n- 5+ năm kinh nghiệm backend\n- Thành thạo Java Spring Boot\n- Kinh nghiệm với hệ thống payment và bảo mật\n- Hiểu biết về PCI DSS",
     benefits: [
       { label: "Lương top fintech market", content: "Mức lương được định vị ở top thị trường fintech Việt Nam, phản ánh độ phức tạp và trách nhiệm cao của hệ thống thanh toán phục vụ hàng chục triệu người dùng. Benchmark định kỳ để đảm bảo luôn cạnh tranh với các ví điện tử khác." },
@@ -1564,6 +1599,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Middle",
     tags: ["Kotlin", "Android", "Jetpack Compose", "MVVM", "REST API", "Coroutines", "Unit Testing"],
+    industry: ["Marketing"],
     description: "MoMo tìm Android Developer để phát triển ứng dụng với hàng chục triệu lượt tải và hàng nghìn lượt update.\n\nYêu cầu:\n- 3+ năm kinh nghiệm Android Kotlin\n- Kinh nghiệm với Jetpack Compose\n- Hiểu biết về MVVM/Clean Architecture",
     benefits: [
       { label: "Lương cạnh tranh", content: "Mức lương Android Developer tại MoMo được định vị cạnh tranh với các ứng dụng fintech và super app hàng đầu Việt Nam. Được review theo hiệu suất và benchmark thị trường Android development hàng năm." },
@@ -1589,6 +1625,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Middle",
     tags: ["Business Development", "Partnership", "B2B Sales", "Negotiation", "Fintech", "Digital Payment"],
+    industry: ["IT"],
     description: "MoMo tìm Partnership Executive để phát triển và duy trì quan hệ với các đối tác thương mại trên nền tảng.\n\nYêu cầu:\n- 3+ năm kinh nghiệm business development hoặc account management\n- Kỹ năng đàm phán tốt\n- Hiểu biết về fintech/e-payment",
     benefits: [
       { label: "Lương + hoa hồng", content: "Thu nhập gồm lương cơ bản ổn định và hoa hồng dựa trên số lượng và chất lượng đối tác mới ký kết thành công. Cơ chế hoa hồng minh bạch và không giới hạn trần, khuyến khích phát triển danh mục đối tác bền vững." },
@@ -1615,6 +1652,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Senior",
     tags: ["Go", "Microservices", "gRPC", "Kafka", "PostgreSQL", "Redis", "Docker", "Kubernetes"],
+    industry: ["Finance"],
     description: "Tiki tìm Senior Backend Engineer (Golang) để xây dựng nền tảng e-commerce phục vụ hàng triệu khách hàng Việt Nam.\n\nYêu cầu:\n- 4+ năm kinh nghiệm backend\n- Thành thạo Go\n- Kinh nghiệm microservices quy mô lớn\n- Thành thạo thiết kế database",
     benefits: [
       { label: "Lương cạnh tranh", content: "Mức lương Go developer tại Tiki được định vị cạnh tranh, phản ánh độ khan hiếm của kỹ sư Golang giỏi tại thị trường Việt Nam. Được benchmark với các công ty e-commerce và fintech trong khu vực để luôn ở mức hấp dẫn." },
@@ -1641,6 +1679,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Manager",
     tags: ["Product Analytics", "SQL", "Python", "A/B Testing", "Data-driven Product", "Team Management"],
+    industry: ["HR"],
     description: "Tiki tìm Product Analytics Manager để dẫn dắt đội ngũ phân tích sản phẩm và cung cấp insight chiến lược cho C-level.\n\nYêu cầu:\n- 6+ năm kinh nghiệm data/product analytics\n- Kinh nghiệm quản lý team\n- Thành thạo SQL, Python\n- Tiếng Anh thành thạo",
     benefits: [
       { label: "Gói lương hấp dẫn", content: "Mức lương cấp Manager trong lĩnh vực product analytics được xây dựng hấp dẫn, phản ánh trách nhiệm dẫn dắt team và cung cấp insight chiến lược cho ban lãnh đạo. Thương lượng linh hoạt dựa trên kinh nghiệm và phạm vi quản lý." },
@@ -1667,6 +1706,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Junior",
     tags: ["B2B Sales", "E-commerce", "Merchant Onboarding", "Negotiation", "CRM", "Cold Calling"],
+    industry: ["HR"],
     description: "Tiki tìm Chuyên viên Merchant Acquisition để phát triển số lượng nhà bán hàng trên sàn.\n\nYêu cầu:\n- 1-2 năm kinh nghiệm sales B2B\n- Kỹ năng giao tiếp và thuyết phục tốt\n- Chịu áp lực KPI",
     benefits: [
       { label: "Lương cơ bản + hoa hồng", content: "Thu nhập gồm lương cơ bản ổn định cộng hoa hồng dựa trên số lượng merchant mới thành công onboard lên sàn Tiki. Cơ chế hoa hồng rõ ràng giúp nhân viên tự tính toán được thu nhập kỳ vọng theo kết quả thực tế." },
@@ -1693,6 +1733,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Manager",
     tags: ["Warehouse Management", "WMS", "Inventory Control", "Team Supervision", "Process Improvement", "ERP", "Logistics"],
+    industry: ["Sales"],
     description: "Lazada tìm Warehouse Operations Manager để lãnh đạo đội ngũ 100+ nhân viên kho tại trung tâm phân phối TP.HCM.\n\nYêu cầu:\n- 5+ năm kinh nghiệm quản lý kho e-commerce\n- Thành thạo WMS\n- Kinh nghiệm quản lý nhóm lớn\n- Hiểu biết về lean warehouse",
     benefits: [
       { label: "Gói lương hấp dẫn", content: "Mức lương Manager chuỗi cung ứng được xây dựng hấp dẫn, phản ánh trách nhiệm vận hành kho lớn với hàng trăm nhân viên và hàng triệu đơn hàng mỗi năm. Được review theo kết quả KPI vận hành thực tế hàng năm." },
@@ -1719,6 +1760,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Middle",
     tags: ["Performance Marketing", "Facebook Ads", "Google Ads", "A/B Testing", "Analytics", "Attribution", "Budget Optimization"],
+    industry: ["HR"],
     description: "Lazada tìm Performance Marketing Specialist để tối ưu chi phí acquisition và phát triển user base.\n\nYêu cầu:\n- 3+ năm kinh nghiệm performance marketing\n- Kinh nghiệm quản lý Facebook/Google Ads\n- Tư duy data-driven",
     benefits: [
       { label: "Lương cạnh tranh", content: "Mức lương Performance Marketing Specialist được định vị cạnh tranh trong ngành e-commerce, phản ánh kỹ năng tối ưu chi phí quảng cáo và đo lường ROI. Được review theo kết quả campaign thực tế hàng năm." },
@@ -1744,6 +1786,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Junior",
     tags: ["Customer Service", "CRM", "Problem Solving", "Communication", "Email Support", "Live Chat"],
+    industry: ["Marketing"],
     description: "Lazada tuyển Customer Service Agent để hỗ trợ người mua và người bán trên nền tảng.\n\nYêu cầu:\n- Tốt nghiệp đại học\n- Kỹ năng giao tiếp và xử lý tình huống tốt\n- Sẵn sàng làm ca",
     benefits: [
       { label: "Lương cơ bản + KPI bonus", content: "Lương cơ bản ổn định cộng thêm KPI bonus hàng tháng khi đạt các chỉ tiêu về chất lượng xử lý ticket, CSAT và thời gian phản hồi. Cơ chế KPI minh bạch giúp nhân viên biết chính xác cần làm gì để tăng thu nhập." },
@@ -1770,6 +1813,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Senior",
     tags: ["Digital Transformation", "IT Strategy", "Change Management", "ERP", "Cloud Advisory", "Project Management"],
+    industry: ["HR"],
     description: "Deloitte Consulting tìm Senior Consultant để tư vấn chuyển đổi số cho các tập đoàn lớn.\n\nYêu cầu:\n- 4+ năm kinh nghiệm tư vấn CNTT hoặc chuyển đổi số\n- Kinh nghiệm triển khai ERP (SAP/Oracle)\n- Kỹ năng quản lý dự án\n- Tiếng Anh thành thạo",
     benefits: [
       { label: "Lương cạnh tranh Big 4", content: "Mức lương Senior Consultant tại Deloitte được định vị cạnh tranh trong nhóm Big 4, thu hút những nhân tài muốn làm việc trên các dự án chuyển đổi số quy mô lớn nhất Việt Nam. Được review theo hiệu suất và market rate hàng năm." },
@@ -1796,6 +1840,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Manager",
     tags: ["Audit Management", "IFRS", "Team Leadership", "Client Management", "Financial Services", "Big 4"],
+    industry: ["IT"],
     description: "Deloitte tìm Audit Manager để lãnh đạo nhóm kiểm toán và quản lý quan hệ khách hàng cấp cao.\n\nYêu cầu:\n- 7+ năm kinh nghiệm kiểm toán (Big 4)\n- ACCA/CPA/CFA\n- Kinh nghiệm quản lý nhóm 5+ người\n- Tiếng Anh thành thạo",
     benefits: [
       { label: "Gói lương Manager Big 4", content: "Mức lương Audit Manager tại Deloitte thuộc top thị trường kiểm toán và tài chính, phản ánh trách nhiệm quản lý nhiều engagement cùng lúc và quan hệ với khách hàng cấp C-level. Được benchmark với thị trường và điều chỉnh cạnh tranh hàng năm." },
@@ -1822,6 +1867,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Junior",
     tags: ["Risk Advisory", "Compliance", "Internal Control", "AML/KYC", "Regulatory", "Financial Services"],
+    industry: ["Marketing"],
     description: "Deloitte Risk Advisory tuyển Analyst để hỗ trợ các dự án tư vấn quản lý rủi ro cho ngân hàng và tổ chức tài chính.\n\nYêu cầu:\n- Tốt nghiệp chuyên ngành Tài chính/Kế toán/Luật\n- Tiếng Anh IELTS 6.5+\n- Có chứng chỉ FRM là lợi thế",
     benefits: [
       { label: "Lương cạnh tranh", content: "Mức lương Analyst tại Deloitte Risk Advisory cạnh tranh so với các vị trí tương đương trong ngành tư vấn và tài chính. Được xem xét tăng nhanh khi nhân viên hoàn thành chứng chỉ chuyên môn và chứng minh được năng lực trong dự án." },
@@ -1849,6 +1895,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Middle",
     tags: ["Flutter", "Dart", "iOS", "Android", "REST API", "Firebase", "Git", "Agile"],
+    industry: ["Marketing"],
     description: "Be Group tìm Mobile Developer (Flutter) để phát triển ứng dụng gọi xe hàng đầu Việt Nam.\n\nYêu cầu:\n- 2+ năm kinh nghiệm Flutter\n- Hiểu biết về native iOS và Android\n- Kinh nghiệm publish app\n- Tiếng Anh đọc hiểu tốt",
     benefits: [
       { label: "Lương cạnh tranh", content: "Mức lương Flutter developer tại Be Group được định vị cạnh tranh trong thị trường ride-hailing và công nghệ Việt Nam. Được review hàng năm với mức tăng phụ thuộc vào hiệu suất cá nhân và tầm ảnh hưởng của công việc đến sản phẩm." },
@@ -1875,6 +1922,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Junior",
     tags: ["Operations", "Driver Management", "KPI Monitoring", "Problem Solving", "Data Analysis", "Communication"],
+    industry: ["Finance"],
     description: "Be Group tìm Operations Specialist để quản lý và phát triển mạng lưới tài xế Be trên địa bàn Hà Nội.\n\nYêu cầu:\n- 2+ năm kinh nghiệm operations hoặc field management\n- Kỹ năng phân tích dữ liệu cơ bản\n- Năng động và chịu áp lực tốt",
     benefits: [
       { label: "Lương cơ bản + KPI bonus", content: "Lương cơ bản ổn định cộng thêm KPI bonus hàng tháng khi đạt chỉ tiêu về số lượng tài xế hoạt động và tỷ lệ hoàn thành chuyến. Cơ chế thưởng rõ ràng giúp chuyên viên vận hành tối đa hóa thu nhập dựa trên kết quả thực tế." },
@@ -1899,6 +1947,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Manager",
     tags: ["Growth Marketing", "User Acquisition", "Performance Marketing", "Budget Management", "Analytics", "A/B Testing"],
+    industry: ["Operations"],
     description: "Be tìm Growth Marketing Manager để dẫn dắt chiến lược mở rộng tệp người dùng Be tại Việt Nam.\n\nYêu cầu:\n- 5+ năm kinh nghiệm marketing\n- 2 năm kinh nghiệm quản lý\n- Kinh nghiệm app marketing và ASO",
     benefits: [
       { label: "Lương cạnh tranh", content: "Mức lương Growth Marketing Manager được định vị cạnh tranh trong lĩnh vực ride-hailing và super app, phản ánh trách nhiệm dẫn dắt chiến lược tăng trưởng người dùng quy mô lớn. Thương lượng dựa trên kinh nghiệm và kết quả growth đã đạt được." },
@@ -1926,6 +1975,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Middle",
     tags: ["Agricultural Credit", "Loan Appraisal", "Risk Assessment", "Financial Analysis", "Rural Banking"],
+    industry: ["Sales"],
     description: "Agribank tìm Chuyên viên Tín dụng để thẩm định và quản lý danh mục cho vay lĩnh vực nông nghiệp, nông thôn.\n\nYêu cầu:\n- 2+ năm kinh nghiệm tín dụng ngân hàng\n- Hiểu biết về lĩnh vực nông nghiệp là lợi thế\n- Am hiểu pháp lý về đất đai, tài sản đảm bảo",
     benefits: [
       { label: "Lương theo thang bảng lương nhà nước", content: "Mức lương theo thang bảng lương ngân hàng nhà nước, ổn định và được điều chỉnh theo quy định chung của ngành ngân hàng. Tuy không cao bằng ngân hàng tư nhân nhưng đảm bảo sự ổn định và dự đoán được trong dài hạn." },
@@ -1950,6 +2000,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Junior",
     tags: ["Teller", "Cash Management", "Customer Service", "Banking Products", "KYC/AML"],
+    industry: ["Marketing"],
     description: "Agribank tuyển Giao dịch viên tại các chi nhánh TP.HCM.\n\nYêu cầu:\n- Tốt nghiệp đại học\n- Ngoại hình tốt, giao tiếp linh hoạt\n- Cẩn thận và chịu khó",
     benefits: [
       { label: "Lương ổn định", content: "Mức lương cơ bản ổn định và đều đặn theo tháng, không phụ thuộc nhiều vào biến động thị trường hay doanh số kinh doanh. Đây là sự ổn định tài chính quý giá cho nhân viên mới bắt đầu xây dựng sự nghiệp ngân hàng." },
@@ -1974,6 +2025,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Middle",
     tags: ["Java", "Spring Boot", "Banking System", "Oracle", "Core Banking", "Security", "IT Support"],
+    industry: ["Marketing"],
     description: "Agribank tìm Chuyên viên CNTT để phát triển và vận hành hệ thống ngân hàng lõi.\n\nYêu cầu:\n- 3+ năm kinh nghiệm phát triển phần mềm Java\n- Kinh nghiệm với hệ thống ngân hàng\n- Hiểu biết về bảo mật thông tin",
     benefits: [
       { label: "Lương cạnh tranh", content: "Mức lương IT trong ngân hàng nhà nước được cải thiện đáng kể trong những năm gần đây để cạnh tranh thu hút kỹ sư giỏi. Agribank đang nâng cấp chính sách lương CNTT để giữ chân nhân tài trong bối cảnh cạnh tranh từ ngân hàng tư nhân và fintech." },
@@ -2001,6 +2053,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Manager",
     tags: ["Brand Management", "FMCG", "P&L Management", "Consumer Insights", "Campaign Planning", "Agency Management"],
+    industry: ["Marketing"],
     description: "Unilever tìm Brand Manager cho một thương hiệu chăm sóc cá nhân đang tăng trưởng mạnh tại Việt Nam.\n\nYêu cầu:\n- 5+ năm kinh nghiệm brand management trong FMCG đa quốc gia\n- Kinh nghiệm P&L management\n- Tiếng Anh thành thạo",
     benefits: [
       { label: "Gói lương top FMCG", content: "Unilever trả lương Brand Manager ở mức top thị trường FMCG Việt Nam, cạnh tranh với Procter & Gamble, Nestlé và các tập đoàn đa quốc gia hàng đầu. Mức lương phản ánh trách nhiệm quản lý thương hiệu có doanh thu hàng trăm tỷ đồng mỗi năm." },
@@ -2026,6 +2079,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Middle",
     tags: ["Key Account", "FMCG Sales", "Modern Trade", "Negotiation", "Distribution", "Trade Marketing"],
+    industry: ["Marketing"],
     description: "Unilever tìm Key Account Executive phụ trách kênh Modern Trade (siêu thị, chuỗi bán lẻ).\n\nYêu cầu:\n- 2+ năm kinh nghiệm key account hoặc FMCG sales\n- Kinh nghiệm với Modern Trade\n- Kỹ năng đàm phán tốt",
     benefits: [
       { label: "Lương + hoa hồng", content: "Thu nhập gồm lương cơ bản ổn định cộng hoa hồng dựa trên doanh số thực hiện tại các tài khoản Modern Trade phụ trách. Cơ chế hoa hồng khuyến khích tăng trưởng bền vững không chỉ về doanh số mà còn về chất lượng trưng bày và thực thi." },
@@ -2051,6 +2105,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Middle",
     tags: ["R&D", "Product Development", "Food Technology", "Consumer Insights", "Innovation", "Sensory Evaluation"],
+    industry: ["Finance"],
     description: "Unilever tìm R&D Specialist để nghiên cứu và phát triển công thức sản phẩm mới.\n\nYêu cầu:\n- Bằng Kỹ sư Hóa học, Công nghệ Thực phẩm\n- 3+ năm kinh nghiệm R&D trong FMCG\n- Tiếng Anh thành thạo",
     benefits: [
       { label: "Lương cạnh tranh đa quốc gia", content: "Mức lương R&D Specialist được định vị theo chuẩn đa quốc gia của Unilever, cạnh tranh với các tập đoàn FMCG toàn cầu tại Việt Nam. Phản ánh giá trị của kỹ năng nghiên cứu và phát triển sản phẩm chuyên biệt trong ngành chăm sóc cá nhân." },
@@ -2075,6 +2130,7 @@ const JOBS_TEMPLATES = [
     type: "INTERNSHIP",
     level: "Intern",
     tags: ["Management Trainee", "Leadership Development", "FMCG", "Rotation Program", "Business Strategy"],
+    industry: ["Marketing"],
     description: "Chương trình Management Trainee 12 tháng của Unilever cho sinh viên xuất sắc mới tốt nghiệp.\n\nYêu cầu:\n- GPA 3.4+, tốt nghiệp trường top\n- IELTS 7.0+\n- Không quá 26 tuổi",
     benefits: [
       { label: "Lương MT cạnh tranh", content: "Chương trình MT của Unilever trả lương cạnh tranh so với các tập đoàn đa quốc gia khác, ghi nhận rằng MT là nhân lực chiến lược tương lai. Mức lương được thiết kế để thu hút những sinh viên xuất sắc nhất từ các trường hàng đầu." },
@@ -2102,6 +2158,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Manager",
     tags: ["Retail Management", "Team Leadership", "Sales Management", "Inventory Control", "Customer Experience", "KPI"],
+    industry: ["Sales"],
     description: "TGDĐ tìm Store Manager để quản lý cửa hàng điện máy với doanh thu 2-5 tỷ/tháng.\n\nYêu cầu:\n- 3+ năm kinh nghiệm quản lý bán lẻ\n- Kinh nghiệm quản lý team 10-20 người\n- Chịu áp lực doanh số cao\n- Sẵn sàng làm việc cuối tuần",
     benefits: [
       { label: "Lương cơ bản + thưởng doanh số", content: "Thu nhập gồm lương cơ bản ổn định cộng thưởng doanh số trực tiếp khi cửa hàng đạt và vượt chỉ tiêu doanh thu hàng tháng. Store Manager dẫn dắt cửa hàng tăng trưởng mạnh có thể đạt tổng thu nhập rất hấp dẫn trong ngành bán lẻ." },
@@ -2127,6 +2184,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Junior",
     tags: ["Retail Sales", "Product Knowledge", "Customer Service", "Communication", "Upselling"],
+    industry: ["HR"],
     description: "TGDĐ tuyển Nhân viên Bán hàng cho các cửa hàng tại Hà Nội. Không yêu cầu kinh nghiệm, được đào tạo hoàn toàn.\n\nYêu cầu:\n- Tốt nghiệp THPT trở lên\n- Ngoại hình gọn gàng\n- Nhiệt tình và chăm chỉ",
     benefits: [
       { label: "Lương cơ bản + hoa hồng", content: "Lương cơ bản được đảm bảo hàng tháng kể cả khi không đạt hoa hồng, cộng thêm hoa hồng bán hàng theo từng sản phẩm đã chốt thành công. Mức hoa hồng được tính minh bạch và chi trả đúng hạn cùng kỳ lương hàng tháng." },
@@ -2151,6 +2209,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Middle",
     tags: ["Java", "Spring Boot", "ERP", "SQL", "Microservices", "React", "Retail Tech"],
+    industry: ["Operations"],
     description: "TGDĐ tìm Kỹ sư Phần mềm để phát triển hệ thống ERP nội bộ phục vụ 2.200+ cửa hàng trên toàn quốc.\n\nYêu cầu:\n- 3+ năm kinh nghiệm phần mềm\n- Thành thạo Java Spring Boot\n- Kinh nghiệm với hệ thống ERP/POS là lợi thế",
     benefits: [
       { label: "Lương cạnh tranh", content: "Mức lương kỹ sư phần mềm tại TGDĐ được xây dựng cạnh tranh so với thị trường tech trong ngành bán lẻ, phản ánh tầm quan trọng của hệ thống IT với quy mô 2.200+ cửa hàng. Được review hàng năm theo hiệu suất và đóng góp thực tế vào hệ thống." },
@@ -2175,6 +2234,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Middle",
     tags: ["SQL", "Python", "Power BI", "Retail Analytics", "Inventory Analysis", "Sales Forecasting", "Excel"],
+    industry: ["IT"],
     description: "TGDĐ tìm Data Analyst để phân tích dữ liệu bán hàng và tối ưu hóa hoạt động chuỗi bán lẻ.\n\nYêu cầu:\n- 2+ năm kinh nghiệm phân tích dữ liệu\n- Thành thạo SQL, Excel\n- Hiểu biết về retail analytics",
     benefits: [
       { label: "Lương cạnh tranh", content: "Mức lương Data Analyst trong chuỗi bán lẻ lớn nhất Việt Nam, có cơ hội làm việc với dữ liệu thực tế từ hàng triệu giao dịch mỗi ngày. Được xem xét tăng lương theo mức độ phức tạp của phân tích và giá trị insight tạo ra cho doanh nghiệp." },
@@ -2201,6 +2261,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Senior",
     tags: ["Assurance", "IFRS", "VAS", "External Audit", "Financial Reporting", "Big 4", "ACCA"],
+    industry: ["Marketing"],
     description: "PwC tìm Senior Associate cho dịch vụ Assurance để kiểm toán các tập đoàn và doanh nghiệp niêm yết.\n\nYêu cầu:\n- 3+ năm kinh nghiệm kiểm toán (ưu tiên Big 4)\n- ACCA/CPA đang học hoặc đã có\n- Tiếng Anh thành thạo",
     benefits: [
       { label: "Lương cạnh tranh", content: "Mức lương Senior Associate tại PwC được định vị cạnh tranh trong nhóm Big 4, phản ánh kinh nghiệm và chứng chỉ chuyên môn của ứng viên. Được review định kỳ theo hiệu suất và tiến độ học ACCA/CPA." },
@@ -2226,6 +2287,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Junior",
     tags: ["M&A", "Due Diligence", "Financial Modeling", "Valuation", "Investment Advisory", "Excel", "CFA"],
+    industry: ["Marketing"],
     description: "PwC Deals Advisory tuyển Associate để hỗ trợ các giao dịch M&A và đầu tư.\n\nYêu cầu:\n- Tốt nghiệp Tài chính/Kế toán\n- Hiểu biết về tài chính doanh nghiệp\n- Excel nâng cao\n- IELTS 7.0+",
     benefits: [
       { label: "Lương cơ bản tốt", content: "Mức lương Associate Deals Advisory tốt hơn mức bình quân ngân hàng và tư vấn tài chính, phản ánh tính chuyên biệt và áp lực cao của công việc M&A. Được tăng nhanh theo hiệu suất và mức độ phức tạp của các giao dịch tham gia." },
@@ -2252,6 +2314,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Manager",
     tags: ["Tax Management", "Transfer Pricing", "CIT", "VAT", "International Tax", "Client Management", "BEPS"],
+    industry: ["Marketing"],
     description: "PwC Tax tìm Tax Manager để lãnh đạo nhóm tư vấn thuế doanh nghiệp và FDI.\n\nYêu cầu:\n- 7+ năm kinh nghiệm tư vấn thuế (Big 4)\n- Chuyên sâu về Transfer Pricing\n- Kinh nghiệm quản lý nhóm\n- Tiếng Anh thành thạo",
     benefits: [
       { label: "Gói lương Manager Big 4", content: "Mức lương Tax Manager tại PwC thuộc top thị trường tư vấn thuế Việt Nam, phản ánh kinh nghiệm 7+ năm và trách nhiệm lãnh đạo đội ngũ tư vấn thuế cho các tập đoàn lớn. Được benchmark với thị trường và điều chỉnh cạnh tranh định kỳ." },
@@ -2280,6 +2343,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Middle",
     tags: ["Metallurgy", "Process Engineering", "Steel Production", "Quality Control", "AutoCAD", "ISO 9001", "Lean Manufacturing"],
+    industry: ["Finance"],
     description: "Hòa Phát tìm Kỹ sư Quy trình để tối ưu hóa dây chuyền sản xuất thép tại nhà máy.\n\nYêu cầu:\n- Bằng Kỹ sư Vật liệu, Cơ khí hoặc Luyện kim\n- 3+ năm kinh nghiệm sản xuất công nghiệp\n- Kiến thức về quy trình luyện thép\n- Sẵn sàng công tác tại nhà máy",
     benefits: [
       { label: "Lương cạnh tranh ngành sản xuất", content: "Mức lương kỹ sư quy trình tại Hòa Phát được định vị cạnh tranh trong ngành sản xuất thép và công nghiệp nặng Việt Nam. Phụ cấp chuyên môn và thâm niên được cộng thêm vào lương cơ bản, tăng theo từng năm làm việc." },
@@ -2305,6 +2369,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Middle",
     tags: ["Steel Sales", "B2B Sales", "Construction Industry", "Account Management", "Negotiation", "Technical Sales"],
+    industry: ["Marketing"],
     description: "Hòa Phát tìm Chuyên viên Kinh doanh để phát triển thị trường thép xây dựng trên địa bàn Hà Nội và các tỉnh lân cận.\n\nYêu cầu:\n- 2+ năm kinh nghiệm bán hàng B2B\n- Kinh nghiệm ngành vật liệu xây dựng là lợi thế\n- Có xe máy và bằng lái",
     benefits: [
       { label: "Lương cơ bản + hoa hồng", content: "Thu nhập gồm lương cơ bản ổn định cộng hoa hồng theo doanh số bán thép tại khu vực phụ trách. Chuyên viên có mạng lưới khách hàng tốt và chủ động phát triển thị trường mới có thể đạt thu nhập hấp dẫn trong ngành vật liệu xây dựng." },
@@ -2330,6 +2395,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Middle",
     tags: ["Cost Accounting", "Manufacturing Accounting", "VAS", "SAP", "Financial Reporting", "Budget Control"],
+    industry: ["Finance"],
     description: "Hòa Phát tìm Kế toán Giá thành để tính toán và kiểm soát chi phí sản xuất tại các nhà máy.\n\nYêu cầu:\n- 3+ năm kinh nghiệm kế toán giá thành trong sản xuất\n- Thành thạo SAP hoặc phần mềm kế toán ERP\n- Hiểu biết về quy trình sản xuất",
     benefits: [
       { label: "Lương theo năng lực", content: "Mức lương linh hoạt được xây dựng dựa trên kinh nghiệm thực tế và trình độ chuyên môn kế toán giá thành sản xuất. Hòa Phát sẵn sàng trả mức cạnh tranh cho ứng viên có kinh nghiệm SAP và ngành sản xuất công nghiệp nặng." },
@@ -2354,6 +2420,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Middle",
     tags: ["Health & Safety", "Risk Assessment", "ISO 45001", "Incident Investigation", "Safety Training", "Industrial Safety"],
+    industry: ["Sales"],
     description: "Hòa Phát tìm Kỹ sư HSE để đảm bảo an toàn lao động tại môi trường sản xuất thép.\n\nYêu cầu:\n- Chứng chỉ an toàn lao động theo quy định\n- 3+ năm kinh nghiệm HSE trong sản xuất nặng\n- Hiểu biết về ISO 45001",
     benefits: [
       { label: "Lương cạnh tranh", content: "Mức lương HSE Engineer cạnh tranh trong ngành sản xuất công nghiệp nặng, phản ánh tầm quan trọng của công việc an toàn lao động trong môi trường sản xuất có nhiều rủi ro. Được tăng lương theo thâm niên và kết quả kiểm soát an toàn thực tế." },
@@ -2380,6 +2447,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Middle",
     tags: ["Retail Banking", "Financial Planning", "Wealth Management", "Insurance Cross-sell", "KYC", "Client Acquisition"],
+    industry: ["Operations"],
     description: "Sacombank tuyển Personal Banker tại các chi nhánh TP.HCM. Tư vấn toàn diện sản phẩm tài chính từ tài khoản, thẻ, vay, bảo hiểm đến đầu tư.\n\nYêu cầu:\n- 2+ năm kinh nghiệm ngân hàng bán lẻ\n- Kỹ năng tư vấn và chốt sale\n- CFP là lợi thế",
     benefits: [
       { label: "Lương cơ bản + hoa hồng", content: "Thu nhập gồm lương cơ bản ổn định cộng hoa hồng dựa trên doanh số tư vấn sản phẩm và số lượng khách hàng mới mở tài khoản trong tháng. Cơ chế hoa hồng đa sản phẩm cho phép Personal Banker tối đa hóa thu nhập khi biết cross-sell hiệu quả." },
@@ -2405,6 +2473,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Senior",
     tags: ["SME Banking", "Credit Analysis", "Relationship Management", "Loan Structuring", "Due Diligence"],
+    industry: ["HR"],
     description: "Sacombank tìm Chuyên viên Tín dụng SME để phát triển danh mục khách hàng doanh nghiệp nhỏ và vừa.\n\nYêu cầu:\n- 3+ năm kinh nghiệm tín dụng doanh nghiệp\n- Kỹ năng phân tích tài chính tốt\n- Mạng lưới khách hàng SME",
     benefits: [
       { label: "Lương cơ bản cao", content: "Mức lương cơ bản cạnh tranh trong ngành ngân hàng tư nhân, phản ánh trách nhiệm quản lý danh mục tín dụng SME với rủi ro đa dạng. Được điều chỉnh tăng theo kết quả tăng trưởng danh mục và chất lượng nợ hàng năm." },
@@ -2430,6 +2499,7 @@ const JOBS_TEMPLATES = [
     type: "FULL_TIME",
     level: "Middle",
     tags: ["React Native", "Mobile Banking", "iOS", "Android", "REST API", "Banking Security", "Agile"],
+    industry: ["Sales"],
     description: "Sacombank tìm Mobile Developer để phát triển ứng dụng ngân hàng số Sacombank Pay.\n\nYêu cầu:\n- 3+ năm kinh nghiệm mobile (React Native)\n- Hiểu biết về bảo mật ứng dụng ngân hàng\n- Kinh nghiệm với biometric authentication",
     benefits: [
       { label: "Lương cạnh tranh ngân hàng", content: "Mức lương IT trong ngân hàng tư nhân được cải thiện đáng kể, cạnh tranh với các fintech và công ty công nghệ để thu hút developer giỏi. Sacombank đang tăng tốc đầu tư vào ngân hàng số nên lương IT được ưu tiên nâng cao." },
@@ -2455,6 +2525,7 @@ const JOBS_TEMPLATES = [
     type: "INTERNSHIP",
     level: "Intern",
     tags: ["Banking", "Finance", "Customer Service", "Data Entry", "Learning", "Teamwork"],
+    industry: ["IT"],
     description: "Sacombank tuyển thực tập sinh ngân hàng, phù hợp sinh viên năm 3-4 ngành Tài chính, Kinh tế.\n\nYêu cầu:\n- Sinh viên năm 3-4 ngành Tài chính/Kế toán\n- Năng động, cầu tiến\n- Tiếng Anh cơ bản",
     benefits: [
       { label: "Thực tập có lương", content: "Thực tập sinh nhận trợ cấp hàng tháng thể hiện sự tôn trọng thời gian và công sức của sinh viên khi cống hiến cho ngân hàng. Mức trợ cấp hợp lý, giúp sinh viên trang trải một phần chi phí sinh hoạt trong thời gian thực tập." },
@@ -2482,6 +2553,7 @@ const JOBS_TEMPLATES = [
     type: "CONTRACT",
     level: "Junior",
     tags: ["Accounting", "VAS", "IFRS", "Tax", "Excel", "Audit Support", "Financial Reporting"],
+    industry: ["Operations"],
     description: "KPMG tuyển Kế toán hợp đồng 6 tháng để hỗ trợ mùa kiểm toán cao điểm.\n\nYêu cầu:\n- Tốt nghiệp Kế toán/Kiểm toán\n- Excel thành thạo\n- Cẩn thận, chịu khó",
     benefits: [
       { label: "Lương hấp dẫn cho hợp đồng", content: "Mức lương hợp đồng 6 tháng tại KPMG được tính cao hơn mức thị trường thông thường để bù đắp cho tính tạm thời của hợp đồng. Đây là cơ hội kiếm thu nhập tốt trong thời gian ngắn đồng thời tích lũy kinh nghiệm Big 4 quý giá." },
@@ -2507,6 +2579,7 @@ const JOBS_TEMPLATES = [
     type: "PART_TIME",
     level: "Junior",
     tags: ["Social Media", "Content Creation", "TikTok", "Facebook", "Canva", "Community Management", "Copywriting"],
+    industry: ["HR"],
     description: "MoMo tuyển Part-time Social Media Specialist. Làm việc 4 tiếng/ngày, linh hoạt giờ giấc.\n\nYêu cầu:\n- Đam mê mạng xã hội, hiểu trend\n- Biết Canva, chỉnh ảnh/video cơ bản\n- Cam kết 4 tiếng/ngày",
     benefits: [
       { label: "Lương theo giờ cạnh tranh", content: "Mức lương theo giờ cạnh tranh so với thị trường freelance social media, được tính và chi trả minh bạch dựa trên số giờ làm việc thực tế. Phù hợp với sinh viên hoặc người muốn có thu nhập phụ trong khi vẫn duy trì lịch học hoặc công việc chính." },

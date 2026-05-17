@@ -47,6 +47,7 @@ async function createJob(req, res) {
   const payload = {
     ...req.body,
     tags: req.body.tags,
+    industry: req.body.industry,
     benefits: req.body.benefits,
     requirements: req.body.requirements,
   };
@@ -68,6 +69,7 @@ async function updateJob(req, res) {
   const payload = {
     ...req.body,
     tags: req.body.tags,
+    industry: req.body.industry,
     benefits: req.body.benefits,
     requirements: req.body.requirements,
   };

@@ -11,6 +11,7 @@ const JOB_SELECT = {
   type: true,
   level: true,
   tags: true,
+  industry: true,
   description: true,
   benefits: true,
   slots: true,
@@ -51,7 +52,7 @@ const getJobs = async ({
     ...(location && location !== "ALL" && { location: { contains: location } }),
     ...(level && level !== "ALL" && { level }),
     ...(industry && industry !== "ALL" && {
-      tags: { array_contains: industry },
+      industry: { array_contains: industry },
     }),
     ...(salary && salary !== "ALL" && { salary: { contains: salary } }),
   };
