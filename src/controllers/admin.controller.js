@@ -85,7 +85,7 @@ async function updateUserRole(req, res) {
 
 async function toggleUserActive(req, res) {
   const { id } = req.params;
-  const user = await AdminModel.findUserById(id, { isActive: true });
+  const user = await AdminModel.findUserByIdAndSelectFields(id, { isActive: true });
   if (!user) return res.error(404, "Không tìm thấy người dùng");
 
   const updated = await AdminModel.toggleUserActive(id, !user.isActive);

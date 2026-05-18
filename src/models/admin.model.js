@@ -69,7 +69,7 @@ class AdminModel {
     });
   }
 
-  static async findUserById(id, selectFields) {
+  static async findUserByIdAndSelectFields(id, selectFields) {
     return prisma.user.findUnique({
       where: { id },
       select: selectFields,
