@@ -83,7 +83,7 @@ async function getMe(req, res) {
   return res.success(200, {
     ...user,
     permissions: groupPermissions(permSet),
-    permissionList: [...permSet],
+    // permissionList: [...permSet],
   });
 }
 
