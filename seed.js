@@ -2644,6 +2644,79 @@ const COVER_LETTERS = [
 ];
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
+const POST_SEED_DATA = [
+  {
+    title: "Cách xây dựng CV nổi bật cho sinh viên mới ra trường",
+    slug: "cach-xay-dung-cv-noi-bat-cho-sinh-vien-moi-ra-truong",
+    category: "Hành trang nghề nghiệp",
+    excerpt: "Những phần quan trọng cần có trong CV entry-level và cách trình bày kinh nghiệm học tập, dự án, hoạt động ngoại khóa.",
+    content: "<h2>CV entry-level cần thể hiện điều gì?</h2><p>Nhà tuyển dụng không kỳ vọng ứng viên mới ra trường có lịch sử làm việc dài. Điều họ cần thấy là khả năng học nhanh, tư duy có cấu trúc và mức độ phù hợp với vị trí.</p><h2>Cấu trúc nên dùng</h2><p>Hãy ưu tiên thông tin liên hệ, mục tiêu nghề nghiệp ngắn gọn, học vấn, dự án, kỹ năng và hoạt động nổi bật.</p><h3>Cách viết dự án</h3><p>Mỗi dự án nên có bối cảnh, vai trò của bạn, công cụ sử dụng và kết quả đo được.</p>",
+  },
+  {
+    title: "Checklist chuẩn bị phỏng vấn trong 24 giờ",
+    slug: "checklist-chuan-bi-phong-van-trong-24-gio",
+    category: "Bí kíp tìm việc",
+    excerpt: "Một checklist thực tế giúp ứng viên chuẩn bị nhanh trước buổi phỏng vấn mà không bị lan man.",
+    content: "<h2>Trước buổi phỏng vấn</h2><p>Đọc lại JD, nghiên cứu sản phẩm, chuẩn bị ví dụ theo phương pháp STAR và kiểm tra thiết bị nếu phỏng vấn online.</p><h2>Trong buổi phỏng vấn</h2><p>Trả lời ngắn gọn, đi vào kết quả và chủ động hỏi lại khi câu hỏi chưa rõ.</p><h3>Sau buổi phỏng vấn</h3><p>Gửi email cảm ơn, nhắc lại điểm phù hợp và bổ sung tài liệu nếu được yêu cầu.</p>",
+  },
+  {
+    title: "Deal lương là gì và cách chuẩn bị mức kỳ vọng hợp lý",
+    slug: "deal-luong-la-gi-va-cach-chuan-bi-muc-ky-vong-hop-ly",
+    category: "Chế độ lương thưởng",
+    excerpt: "Cách xác định khoảng lương, nói về kỳ vọng thu nhập và đánh giá tổng đãi ngộ khi nhận offer.",
+    content: "<h2>Deal lương không chỉ là con số</h2><p>Ứng viên nên đánh giá cả lương cứng, thưởng, bảo hiểm, thời gian làm việc, cơ hội học tập và lộ trình tăng trưởng.</p><h2>Cách xác định khoảng lương</h2><p>So sánh mặt bằng thị trường, kinh nghiệm thực tế, độ khó vị trí và ngân sách ngành.</p><h3>Khi nhận offer</h3><p>Hãy phản hồi chuyên nghiệp, nêu cơ sở cho kỳ vọng và để lại khoảng mở để hai bên trao đổi.</p>",
+  },
+  {
+    title: "Ngành IT gồm những vị trí phổ biến nào?",
+    slug: "nganh-it-gom-nhung-vi-tri-pho-bien-nao",
+    category: "Kiến thức chuyên ngành",
+    excerpt: "Tổng quan các nhóm vị trí trong ngành IT để ứng viên định hướng lộ trình học tập và ứng tuyển.",
+    content: "<h2>Nhóm phát triển phần mềm</h2><p>Frontend, Backend, Mobile và Fullstack là các nhóm phổ biến, yêu cầu năng lực lập trình và tư duy giải quyết vấn đề.</p><h2>Nhóm vận hành và dữ liệu</h2><p>DevOps, Data Analyst, Data Engineer và QA giúp sản phẩm ổn định, đo lường được và cải tiến liên tục.</p><h3>Chọn hướng đi</h3><p>Hãy bắt đầu từ điểm mạnh cá nhân, sau đó thử dự án nhỏ để kiểm chứng sự phù hợp.</p>",
+  },
+  {
+    title: "Lộ trình chuyển ngành sang Marketing cho người mới",
+    slug: "lo-trinh-chuyen-nganh-sang-marketing-cho-nguoi-moi",
+    category: "Định hướng nghề nghiệp",
+    excerpt: "Các kỹ năng nền tảng và bước thực hành giúp người mới chuyển ngành sang Marketing có định hướng rõ hơn.",
+    content: "<h2>Hiểu đúng về Marketing</h2><p>Marketing không chỉ là chạy quảng cáo. Công việc còn bao gồm nghiên cứu khách hàng, định vị, nội dung, phân phối và đo lường.</p><h2>Kỹ năng cần ưu tiên</h2><p>Hãy bắt đầu với phân tích khách hàng, viết nội dung, đọc số liệu và tư duy thử nghiệm.</p><h3>Dự án portfolio</h3><p>Một case study nhỏ có mục tiêu, cách làm và kết quả rõ ràng sẽ thuyết phục hơn danh sách khóa học.</p>",
+  },
+  {
+    title: "Xu hướng tuyển dụng hybrid và remote năm 2026",
+    slug: "xu-huong-tuyen-dung-hybrid-va-remote-nam-2026",
+    category: "Thị trường và xu hướng tuyển dụng",
+    excerpt: "Các tiêu chí nhà tuyển dụng thường dùng khi đánh giá ứng viên cho môi trường hybrid và remote.",
+    content: "<h2>Hybrid trở thành tiêu chuẩn mới</h2><p>Nhiều doanh nghiệp duy trì mô hình linh hoạt nhưng yêu cầu khả năng tự quản trị, giao tiếp rõ ràng và trách nhiệm với kết quả.</p><h2>Ứng viên cần chuẩn bị gì?</h2><p>Hãy chứng minh năng lực làm việc độc lập, quản lý thời gian và cập nhật tiến độ minh bạch.</p><h3>Phỏng vấn remote</h3><p>Kiểm tra đường truyền, ánh sáng, micro và chuẩn bị tài liệu trước buổi phỏng vấn.</p>",
+  },
+  {
+    title: "Cách đọc JD để biết công việc có phù hợp không",
+    slug: "cach-doc-jd-de-biet-cong-viec-co-phu-hop-khong",
+    category: "Bí kíp tìm việc",
+    excerpt: "Phân tích mô tả công việc theo trách nhiệm, yêu cầu, mức độ ưu tiên và tín hiệu văn hóa.",
+    content: "<h2>Đừng chỉ đọc tiêu đề</h2><p>Cùng một chức danh có thể khác nhau rất nhiều giữa các công ty. Hãy đọc kỹ phạm vi công việc và kết quả kỳ vọng.</p><h2>Phân loại yêu cầu</h2><p>Tách yêu cầu bắt buộc, yêu cầu cộng điểm và kỹ năng có thể học sau khi vào việc.</p><h3>Tín hiệu cần lưu ý</h3><p>JD quá mơ hồ hoặc gom quá nhiều vai trò có thể là dấu hiệu phạm vi công việc chưa rõ.</p>",
+  },
+  {
+    title: "Những câu hỏi nên hỏi nhà tuyển dụng cuối buổi phỏng vấn",
+    slug: "nhung-cau-hoi-nen-hoi-nha-tuyen-dung-cuoi-buoi-phong-van",
+    category: "Hành trang nghề nghiệp",
+    excerpt: "Danh sách câu hỏi giúp ứng viên hiểu rõ kỳ vọng, đội nhóm và cách đánh giá thành công.",
+    content: "<h2>Hỏi về kỳ vọng</h2><p>Ứng viên nên hỏi ba tháng đầu cần đạt điều gì và tiêu chí đánh giá hiệu quả công việc.</p><h2>Hỏi về đội nhóm</h2><p>Tìm hiểu quy trình phối hợp, phong cách quản lý và các bên liên quan thường làm việc cùng.</p><h3>Hỏi về bước tiếp theo</h3><p>Câu hỏi về timeline tuyển dụng giúp bạn chủ động theo dõi mà không gây áp lực.</p>",
+  },
+  {
+    title: "Phân biệt Gross và Net khi xem offer",
+    slug: "phan-biet-gross-va-net-khi-xem-offer",
+    category: "Chế độ lương thưởng",
+    excerpt: "Cách hiểu lương Gross, Net và các khoản khấu trừ cơ bản để tránh nhầm lẫn khi nhận offer.",
+    content: "<h2>Lương Gross là gì?</h2><p>Gross là tổng thu nhập trước khi trừ các khoản bảo hiểm bắt buộc và thuế thu nhập cá nhân nếu có.</p><h2>Lương Net là gì?</h2><p>Net là số tiền thực nhận sau các khoản khấu trừ. Khi so sánh offer, hãy hỏi rõ công ty đang nói theo Gross hay Net.</p><h3>Điểm cần kiểm tra</h3><p>Đọc kỹ phụ cấp, thưởng, thử việc và các khoản đóng bảo hiểm để tính đúng tổng đãi ngộ.</p>",
+  },
+  {
+    title: "Cách xây dựng thương hiệu cá nhân trên LinkedIn",
+    slug: "cach-xay-dung-thuong-hieu-ca-nhan-tren-linkedin",
+    category: "Định hướng nghề nghiệp",
+    excerpt: "Những bước đơn giản để hồ sơ LinkedIn thể hiện năng lực và giúp ứng viên tăng cơ hội được tiếp cận.",
+    content: "<h2>Hoàn thiện hồ sơ nền tảng</h2><p>Ảnh đại diện, headline, phần giới thiệu và kinh nghiệm nên nhất quán với vị trí bạn đang nhắm tới.</p><h2>Chia sẻ có chọn lọc</h2><p>Đăng case study, bài học nghề nghiệp hoặc góc nhìn chuyên môn giúp nhà tuyển dụng hiểu cách bạn tư duy.</p><h3>Kết nối đúng người</h3><p>Ưu tiên kết nối với recruiter, chuyên gia trong ngành và cộng đồng liên quan tới hướng đi của bạn.</p>",
+  },
+];
+
 async function main() {
   console.log("🌱 Bắt đầu seed dữ liệu...");
 
@@ -2656,6 +2729,7 @@ async function main() {
     prisma.savedJob.deleteMany(),
     prisma.coverLetter.deleteMany(),
     prisma.cv.deleteMany(),
+    prisma.post.deleteMany(),
     prisma.job.deleteMany(),
     prisma.profile.deleteMany(),
     prisma.refreshToken.deleteMany(),
@@ -2812,6 +2886,24 @@ async function main() {
     createdJobs.push(job);
   }
   console.log(`✅ Đã tạo ${createdJobs.length} việc làm`);
+
+  const createdPosts = [];
+  for (const [index, post] of POST_SEED_DATA.entries()) {
+    const recruiterData = recruiters[index % recruiters.length];
+    const createdPost = await prisma.post.create({
+      data: {
+        ...post,
+        coverUrl: post.coverUrl || null,
+        authorId: recruiterData.user.id,
+        authorName: recruiterData.company.name,
+        contentFormat: "HTML",
+        isPublished: true,
+        createdAt: randDate(90, 1),
+      },
+    });
+    createdPosts.push(createdPost);
+  }
+  console.log(`✅ Đã tạo ${createdPosts.length} bài viết`);
 
   // Cập nhật totalJobs cho mỗi company
   for (const company of companies) {
@@ -3328,6 +3420,7 @@ async function main() {
   console.log(`   👔 Nhà tuyển dụng  : ${recruiters.length}`);
   console.log(`   👤 Ứng viên        : ${candidates.length}`);
   console.log(`   💼 Việc làm        : ${createdJobs.length}`);
+  console.log(`   📝 Bài viết        : ${createdPosts.length}`);
   console.log(`   📝 Đơn ứng tuyển   : ${appCount}`);
   console.log(`   🔖 Việc làm đã lưu : ${savedCount}`);
   console.log(`   🔐 Permissions     : ${PERMISSIONS_DATA.length} (${RECRUITER_DEFAULT_PERMISSIONS.length} recruiter / ${CANDIDATE_DEFAULT_PERMISSIONS.length} candidate defaults)`);

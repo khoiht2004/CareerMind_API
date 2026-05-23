@@ -25,6 +25,7 @@ model User {
   coverLetters          CoverLetter[]
   cvs                   Cv[]
   postedJobs            Job[]
+  posts                 Post[]
   profile               Profile?
   refreshTokens         RefreshToken[]
   revokedTokens         RevokedToken[]
@@ -86,25 +87,25 @@ model Job {
 }
 
 model Company {
-  id                String        @id @default(uuid())
-  name              String        @map("name")
-  email             String        @map("email")
-  phone             String?       @map("phone")
-  description       String?       @map("description") @db.Text
-  subDescription    String?       @map("sub_description") @db.Text
-  address           String?       @map("address") @db.VarChar(255)
-  industry          String?       @map("industry") @db.VarChar(100)
-  size              String?       @map("size") @db.VarChar(100)
-  mapUrl            String?       @map("map_url") @db.Text
-  logoUrl           String?       @map("logo_url") @db.Text
-  coverImageUrl     String?       @map("cover_image_url") @db.Text
-  socialLinks       Json?         @map("social_links")
-  isVerified        Boolean       @default(false) @map("is_verified")
-  isActive          Boolean       @default(true) @map("is_active")
-  createdAt         DateTime      @default(now()) @map("created_at")
-  updatedAt         DateTime      @updatedAt @map("updated_at")
-  totalJobs         Int           @default(0) @map("total_jobs")
-  totalApplications Int           @default(0) @map("total_applications")
+  id                String          @id @default(uuid())
+  name              String          @map("name")
+  email             String          @map("email")
+  phone             String?         @map("phone")
+  description       String?         @map("description") @db.Text
+  subDescription    String?         @map("sub_description") @db.Text
+  address           String?         @map("address") @db.VarChar(255)
+  industry          String?         @map("industry") @db.VarChar(100)
+  size              String?         @map("size") @db.VarChar(100)
+  mapUrl            String?         @map("map_url") @db.Text
+  logoUrl           String?         @map("logo_url") @db.Text
+  coverImageUrl     String?         @map("cover_image_url") @db.Text
+  socialLinks       Json?           @map("social_links")
+  isVerified        Boolean         @default(false) @map("is_verified")
+  isActive          Boolean         @default(true) @map("is_active")
+  createdAt         DateTime        @default(now()) @map("created_at")
+  updatedAt         DateTime        @updatedAt @map("updated_at")
+  totalJobs         Int             @default(0) @map("total_jobs")
+  totalApplications Int             @default(0) @map("total_applications")
   applications      Application[]
   reviews           CompanyReview[]
   jobs              Job[]
@@ -131,31 +132,31 @@ model CompanyReview {
 }
 
 model Application {
-  id                String            @id @default(uuid())
-  coverLetter       String?           @map("cover_letter") @db.Text
-  cvUrl             String?           @map("cv_url")
+  id                String             @id @default(uuid())
+  coverLetter       String?            @map("cover_letter") @db.Text
+  cvUrl             String?            @map("cv_url")
   status            ApplicationStatus? @default(PENDING) @map("status")
-  note              String?           @map("note") @db.Text
-  createdAt         DateTime          @default(now()) @map("created_at")
-  updatedAt         DateTime          @updatedAt @map("updated_at")
-  userId            String            @map("user_id")
-  jobId             String            @map("job_id")
-  phone             String?           @map("phone")
-  confirmDeadline   DateTime?         @map("confirm_deadline")
-  interviewDate     DateTime?         @map("interview_date")
-  interviewFormat   String?           @map("interview_format") @db.VarChar(20)
-  interviewLocation String?           @map("interview_location") @db.VarChar(500)
-  interviewTime     String?           @map("interview_time") @db.VarChar(10)
-  officeAddress     String?           @map("office_address") @db.VarChar(500)
-  startDate         DateTime?         @map("start_date")
-  startTime         String?           @map("start_time") @db.VarChar(10)
-  cvId              String?           @map("cv_id")
+  note              String?            @map("note") @db.Text
+  createdAt         DateTime           @default(now()) @map("created_at")
+  updatedAt         DateTime           @updatedAt @map("updated_at")
+  userId            String             @map("user_id")
+  jobId             String             @map("job_id")
+  phone             String?            @map("phone")
+  confirmDeadline   DateTime?          @map("confirm_deadline")
+  interviewDate     DateTime?          @map("interview_date")
+  interviewFormat   String?            @map("interview_format") @db.VarChar(20)
+  interviewLocation String?            @map("interview_location") @db.VarChar(500)
+  interviewTime     String?            @map("interview_time") @db.VarChar(10)
+  officeAddress     String?            @map("office_address") @db.VarChar(500)
+  startDate         DateTime?          @map("start_date")
+  startTime         String?            @map("start_time") @db.VarChar(10)
+  cvId              String?            @map("cv_id")
   companyId         String?
-  isDraft           Boolean           @default(false) @map("is_draft")
-  company           Company?          @relation(fields: [companyId], references: [id])
-  cv                Cv?               @relation(fields: [cvId], references: [id])
-  job               Job               @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isDraft           Boolean            @default(false) @map("is_draft")
+  company           Company?           @relation(fields: [companyId], references: [id])
+  cv                Cv?                @relation(fields: [cvId], references: [id])
+  job               Job                @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, jobId])
   @@index([userId])
@@ -211,47 +212,51 @@ model CoverLetter {
 }
 
 model CvTemplate {
-  id          String   @id @default(uuid())
-  title       String   @map("title")
-  industry    String?  @map("industry") @db.VarChar(100)
-  level       String?  @map("level") @db.VarChar(50)
-  content     String   @map("content") @db.LongText
-  previewUrl  String?  @map("preview_url") @db.Text
-  isActive    Boolean  @default(true) @map("is_active")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id         String   @id @default(uuid())
+  title      String   @map("title")
+  industry   String?  @map("industry") @db.VarChar(100)
+  level      String?  @map("level") @db.VarChar(50)
+  content    String   @map("content") @db.LongText
+  previewUrl String?  @map("preview_url") @db.Text
+  isActive   Boolean  @default(true) @map("is_active")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
 
   @@map("cv_templates")
 }
 
 model CoverLetterTemplate {
-  id          String   @id @default(uuid())
-  title       String   @map("title")
-  industry    String?  @map("industry") @db.VarChar(100)
-  level       String?  @map("level") @db.VarChar(50)
-  content     String   @map("content") @db.LongText
-  isActive    Boolean  @default(true) @map("is_active")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id        String   @id @default(uuid())
+  title     String   @map("title")
+  industry  String?  @map("industry") @db.VarChar(100)
+  level     String?  @map("level") @db.VarChar(50)
+  content   String   @map("content") @db.LongText
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("cover_letter_templates")
 }
 
 model Post {
-  id          String   @id @default(uuid())
-  title       String   @map("title")
-  slug        String?  @unique @map("slug")
-  excerpt     String?  @map("excerpt") @db.Text
-  content     String   @map("content") @db.LongText
-  coverUrl    String?  @map("cover_url") @db.Text
-  category    String?  @map("category") @db.VarChar(100)
-  authorName  String?  @map("author_name") @db.VarChar(120)
-  isPublished Boolean  @default(true) @map("is_published")
-  viewCount   Int      @default(0) @map("view_count")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id            String   @id @default(uuid())
+  title         String   @map("title")
+  slug          String?  @unique @map("slug")
+  excerpt       String?  @map("excerpt") @db.Text // Mô tả ngắn 
+  content       String   @map("content") @db.LongText // Nội dung chi tiết 
+  contentFormat String   @default("HTML") @map("content_format") @db.VarChar(20)
+  coverUrl      String?  @map("cover_url") @db.Text
+  category      String?  @map("category") @db.VarChar(100)
+  authorName    String?  @map("author_name") @db.VarChar(120)
+  isPublished   Boolean  @default(true) @map("is_published")
+  viewCount     Int      @default(0) @map("view_count")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  authorId      String?  @map("author_id")
+  author        User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
 
   @@index([category])
+  @@index([authorId])
   @@map("posts")
 }
 
