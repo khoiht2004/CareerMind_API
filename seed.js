@@ -49,8 +49,11 @@ const COMPANIES_DATA = [
     name: "FPT Software",
     email: "contact@fpt-software.com",
     phone: "02873006600",
-    description:
-      "FPT Software là một trong những công ty phần mềm và dịch vụ CNTT hàng đầu Việt Nam, cung cấp giải pháp chuyển đổi số toàn diện cho khách hàng toàn cầu.",
+    description: `FPT Software là công ty thành viên chủ lực của Tập đoàn FPT, hoạt động trong lĩnh vực phát triển phần mềm và dịch vụ công nghệ thông tin. Được thành lập năm 1999, doanh nghiệp đã phát triển thành một trong những công ty công nghệ lớn nhất Việt Nam với mạng lưới văn phòng trải rộng tại nhiều quốc gia như Nhật Bản, Mỹ, Hàn Quốc, Singapore và châu Âu. FPT Software cung cấp đa dạng dịch vụ như phát triển phần mềm, chuyển đổi số, trí tuệ nhân tạo, điện toán đám mây, dữ liệu lớn và tự động hóa quy trình doanh nghiệp.
+
+Công ty nổi bật nhờ khả năng triển khai các dự án công nghệ quy mô lớn cho nhiều tập đoàn quốc tế trong các lĩnh vực tài chính, sản xuất, ô tô, y tế, bán lẻ và viễn thông. FPT Software đầu tư mạnh vào nghiên cứu công nghệ mới như AI, Blockchain, IoT và Cloud nhằm đáp ứng nhu cầu chuyển đổi số toàn cầu. Ngoài ra, doanh nghiệp còn xây dựng hệ sinh thái đào tạo và phát triển nhân lực công nghệ thông qua hợp tác với các trường đại học và tổ chức quốc tế.
+
+Môi trường làm việc tại FPT Software được đánh giá năng động, sáng tạo và có cơ hội phát triển nghề nghiệp rộng mở. Công ty thường xuyên tuyển dụng kỹ sư phần mềm, chuyên gia công nghệ và sinh viên thực tập với nhiều chương trình đào tạo chuyên môn bài bản. Với tốc độ tăng trưởng mạnh, định hướng toàn cầu hóa và nền tảng công nghệ vững chắc, FPT Software hiện là một trong những doanh nghiệp công nghệ có sức ảnh hưởng lớn nhất Việt Nam.`,
     address: "Lô E2a-7, Đường D1, Khu Công nghệ cao, Quận 9, TP. Hồ Chí Minh",
     mapUrl:
       "https://www.google.com/maps?q=FPT%20Software%20L%C3%B4%20E2a-7%20%C4%90%C6%B0%E1%BB%9Dng%20D1%2C%20Khu%20C%C3%B4ng%20ngh%E1%BB%87%20cao%2C%20Qu%E1%BA%ADn%209%2C%20TP.%20H%E1%BB%93%20Ch%C3%AD%20Minh&output=embed",
@@ -68,8 +71,11 @@ const COMPANIES_DATA = [
     name: "Vietcombank",
     email: "hr@vietcombank.com.vn",
     phone: "02438343137",
-    description:
-      "Ngân hàng TMCP Ngoại thương Việt Nam – một trong những ngân hàng thương mại lớn nhất Việt Nam với hơn 60 năm kinh nghiệm trong lĩnh vực tài chính ngân hàng.",
+    description: `Vietcombank là một trong những ngân hàng thương mại cổ phần lớn và uy tín nhất Việt Nam, được thành lập từ năm 1963 với tiền thân là Ngân hàng Ngoại thương Việt Nam. Trong nhiều năm hoạt động, Vietcombank luôn giữ vai trò tiên phong trong lĩnh vực tài chính – ngân hàng, đặc biệt ở mảng thanh toán quốc tế, ngoại hối và dịch vụ ngân hàng hiện đại. Ngân hàng hiện sở hữu mạng lưới chi nhánh rộng khắp cả nước cùng hệ thống đối tác quốc tế trải dài trên nhiều quốc gia và vùng lãnh thổ.
+
+Vietcombank cung cấp đa dạng sản phẩm và dịch vụ tài chính dành cho khách hàng cá nhân, doanh nghiệp và tổ chức tài chính như huy động vốn, cho vay, thẻ tín dụng, ngân hàng số, bảo hiểm, đầu tư và quản lý tài sản. Trong lĩnh vực chuyển đổi số, ngân hàng liên tục đầu tư mạnh vào nền tảng ngân hàng điện tử, mobile banking và các giải pháp thanh toán không tiền mặt nhằm nâng cao trải nghiệm khách hàng.
+
+Không chỉ nổi bật về hiệu quả kinh doanh, Vietcombank còn được đánh giá cao về năng lực quản trị rủi ro, chất lượng tài sản và tính ổn định tài chính. Đây cũng là ngân hàng thường xuyên nằm trong nhóm dẫn đầu về lợi nhuận, vốn hóa thị trường và uy tín thương hiệu tại Việt Nam. Với môi trường làm việc chuyên nghiệp, chính sách đào tạo bài bản và định hướng phát triển bền vững, Vietcombank luôn là một trong những doanh nghiệp được nhiều sinh viên và người lao động mong muốn gia nhập trong lĩnh vực tài chính – ngân hàng.`,
     address: "198 Trần Quang Khải, Hoàn Kiếm, Hà Nội",
     mapUrl:
       "https://www.google.com/maps?q=Vietcombank%20198%20Tr%E1%BA%A7n%20Quang%20Kh%E1%BA%A3i%2C%20Ho%C3%A0n%20Ki%E1%BA%BFm%2C%20H%C3%A0%20N%E1%BB%99i&output=embed",
@@ -84,8 +90,11 @@ const COMPANIES_DATA = [
     name: "Shopee Việt Nam",
     email: "careers@shopee.com",
     phone: "02839007788",
-    description:
-      "Shopee là nền tảng thương mại điện tử hàng đầu Đông Nam Á, kết nối hàng triệu người mua và người bán trong một hệ sinh thái mua sắm hiện đại.",
+    description: `Shopee Việt Nam là một trong những nền tảng thương mại điện tử lớn nhất tại Việt Nam, thuộc tập đoàn công nghệ Sea Limited của Singapore. Ra mắt tại Việt Nam vào năm 2016, Shopee nhanh chóng mở rộng thị phần nhờ mô hình thương mại điện tử tích hợp giữa người bán, người mua và hệ sinh thái logistics – thanh toán trực tuyến hiện đại. Nền tảng này cung cấp đa dạng ngành hàng như điện tử, thời trang, mỹ phẩm, thực phẩm, đồ gia dụng và hàng tiêu dùng.
+
+Shopee nổi bật với chiến lược tập trung mạnh vào trải nghiệm người dùng, các chiến dịch marketing quy mô lớn và hệ thống khuyến mãi thường xuyên. Công ty đầu tư mạnh vào công nghệ AI, dữ liệu lớn và hệ thống logistics nhằm tối ưu quá trình vận hành, giao hàng và cá nhân hóa trải nghiệm mua sắm. Bên cạnh đó, ShopeePay và hệ thống vận chuyển nội bộ giúp nền tảng tăng khả năng cạnh tranh trong thị trường thương mại điện tử đang phát triển mạnh tại Việt Nam.
+
+Không chỉ hỗ trợ doanh nghiệp lớn, Shopee còn tạo điều kiện cho hàng triệu hộ kinh doanh nhỏ và cá nhân tiếp cận khách hàng trên toàn quốc thông qua nền tảng số. Với tốc độ tăng trưởng nhanh, văn hóa doanh nghiệp năng động và môi trường công nghệ hiện đại, Shopee Việt Nam hiện là một trong những công ty công nghệ – thương mại điện tử thu hút nhiều nhân sự trẻ trong lĩnh vực kinh doanh, marketing và phát triển sản phẩm.`,
     address: "Tầng 17, WeWork, 364 Cộng Hòa, Tân Bình, TP. Hồ Chí Minh",
     mapUrl:
       "https://www.google.com/maps?q=Shopee%20Vi%E1%BB%87t%20Nam%20364%20C%E1%BB%99ng%20H%C3%B2a%2C%20T%C3%A2n%20B%C3%ACnh%2C%20TP.%20H%E1%BB%93%20Ch%C3%AD%20Minh&output=embed",
@@ -103,8 +112,11 @@ const COMPANIES_DATA = [
     name: "Techcombank",
     email: "tuyen.dung@techcombank.com.vn",
     phone: "02439447699",
-    description:
-      "Techcombank – Ngân hàng TMCP Kỹ thương Việt Nam – một trong những ngân hàng tư nhân lớn nhất Việt Nam với chiến lược số hóa mạnh mẽ.",
+    description: `Techcombank là một trong những ngân hàng thương mại cổ phần tư nhân lớn và phát triển nhanh tại Việt Nam. Được thành lập vào năm 1993, ngân hàng hiện cung cấp đa dạng sản phẩm và dịch vụ tài chính cho khách hàng cá nhân, doanh nghiệp và nhà đầu tư như tín dụng, tiết kiệm, thẻ thanh toán, ngân hàng số, quản lý tài sản và bảo hiểm.
+
+Techcombank nổi bật với chiến lược chuyển đổi số mạnh mẽ và định hướng lấy khách hàng làm trung tâm. Ngân hàng đầu tư lớn vào công nghệ, dữ liệu và AI nhằm tối ưu hóa trải nghiệm người dùng, tự động hóa quy trình vận hành và phát triển các giải pháp tài chính hiện đại. Ngoài ra, Techcombank còn hợp tác với nhiều tập đoàn lớn trong các lĩnh vực bất động sản, hàng không và tiêu dùng nhằm mở rộng hệ sinh thái dịch vụ tài chính.
+
+Trong nhiều năm liên tiếp, Techcombank luôn nằm trong nhóm ngân hàng có lợi nhuận cao và hiệu quả hoạt động tốt tại Việt Nam. Ngân hàng cũng được đánh giá cao về môi trường làm việc hiện đại, chế độ đãi ngộ cạnh tranh và chương trình phát triển nhân tài chuyên nghiệp. Với chiến lược đổi mới liên tục và nền tảng tài chính mạnh, Techcombank đang giữ vai trò quan trọng trong quá trình hiện đại hóa ngành ngân hàng Việt Nam.`,
     address: "191 Bà Triệu, Hai Bà Trưng, Hà Nội",
     mapUrl:
       "https://www.google.com/maps?q=Techcombank%20191%20B%C3%A0%20Tri%E1%BB%87u%2C%20Hai%20B%C3%A0%20Tr%C6%B0ng%2C%20H%C3%A0%20N%E1%BB%99i&output=embed",
@@ -119,8 +131,11 @@ const COMPANIES_DATA = [
     name: "Vingroup",
     email: "careers@vingroup.net",
     phone: "02439740740",
-    description:
-      "Vingroup là tập đoàn kinh tế tư nhân đa ngành hàng đầu Việt Nam với hệ sinh thái rộng lớn từ bất động sản, bán lẻ, y tế, giáo dục đến công nghệ.",
+    description: `Vingroup là một trong những tập đoàn kinh tế tư nhân lớn nhất Việt Nam, hoạt động đa ngành trong các lĩnh vực bất động sản, công nghệ, công nghiệp, giáo dục, y tế, du lịch và bán lẻ. Được thành lập bởi tỷ phú Phạm Nhật Vượng, Vingroup đã xây dựng hệ sinh thái quy mô lớn với nhiều thương hiệu nổi bật như Vinhomes, VinFast, Vinmec, Vinschool và Vinpearl.
+
+Tập đoàn nổi bật nhờ chiến lược phát triển mạnh mẽ, khả năng đầu tư quy mô lớn và định hướng ứng dụng công nghệ vào nhiều lĩnh vực kinh doanh. Trong đó, VinFast là dự án công nghiệp trọng điểm với tham vọng đưa thương hiệu ô tô điện Việt Nam ra thị trường quốc tế. Ngoài ra, Vingroup còn chú trọng phát triển các lĩnh vực giáo dục, y tế và đô thị thông minh nhằm nâng cao chất lượng sống cho người dân.
+
+Không chỉ có ảnh hưởng lớn về kinh tế, Vingroup còn đóng vai trò tích cực trong các hoạt động xã hội và đổi mới sáng tạo tại Việt Nam. Với quy mô lớn, môi trường làm việc hiện đại và tốc độ phát triển nhanh, Vingroup hiện là một trong những tập đoàn thu hút nguồn nhân lực chất lượng cao trong nhiều lĩnh vực khác nhau.`,
     address: "Số 7 Bảng Lảng, Khu Đô thị Vinhomes Riverside, Long Biên, Hà Nội",
     mapUrl:
       "https://www.google.com/maps?q=Vingroup%20S%E1%BB%91%207%20B%E1%BA%A3ng%20L%E1%BA%A3ng%2C%20Vinhomes%20Riverside%2C%20Long%20Bi%C3%AAn%2C%20H%C3%A0%20N%E1%BB%99i&output=embed",
@@ -138,8 +153,11 @@ const COMPANIES_DATA = [
     name: "Masan Group",
     email: "hr@masan.com.vn",
     phone: "02838321888",
-    description:
-      "Masan Group là tập đoàn kinh doanh hàng tiêu dùng và tài nguyên thiết yếu hàng đầu Việt Nam, sở hữu các thương hiệu nổi tiếng như Chinsu, Nam Ngư, WinMart.",
+    description: `Masan Group là một trong những tập đoàn kinh tế tư nhân lớn và có sức ảnh hưởng mạnh tại Việt Nam, hoạt động đa ngành với trọng tâm ở lĩnh vực hàng tiêu dùng nhanh, bán lẻ, thực phẩm, đồ uống và khai khoáng. Được thành lập vào năm 1996, Masan đã xây dựng hệ sinh thái tiêu dùng quy mô lớn với mục tiêu phục vụ nhu cầu thiết yếu hằng ngày của người Việt. Tập đoàn sở hữu nhiều thương hiệu quen thuộc như Chin-su, Nam Ngư, Omachi, Kokomi, Wake-Up 247, Vinacafé Biên Hòa cùng hệ thống bán lẻ WinMart và WinMart+ trải rộng trên toàn quốc.
+
+Masan nổi bật với chiến lược “Point of Life” – xây dựng nền tảng tiêu dùng tích hợp từ sản xuất đến phân phối nhằm tối ưu trải nghiệm khách hàng. Trong lĩnh vực bán lẻ, tập đoàn đã đầu tư mạnh vào chuyển đổi số, logistics và mô hình bán lẻ hiện đại nhằm kết nối người tiêu dùng với hệ sinh thái sản phẩm và dịch vụ đa dạng. Bên cạnh đó, Masan High-Tech Materials còn là một trong những doanh nghiệp khai khoáng công nghệ cao lớn trong khu vực, tập trung vào vật liệu công nghiệp chiến lược.
+
+Không chỉ phát triển mạnh về kinh doanh, Masan còn chú trọng đổi mới sáng tạo, quản trị doanh nghiệp hiện đại và xây dựng nguồn nhân lực chất lượng cao. Tập đoàn thường xuyên hợp tác với các đối tác quốc tế lớn để mở rộng năng lực sản xuất, công nghệ và thị trường. Với định hướng trở thành nền tảng tiêu dùng – bán lẻ hàng đầu Việt Nam, Masan đang đóng vai trò quan trọng trong quá trình hiện đại hóa thị trường tiêu dùng nội địa và nâng cao chất lượng cuộc sống của người dân.`,
     address:
       "Tầng 12, Tòa nhà MPlaza Saigon, 39 Lê Duẩn, Quận 1, TP. Hồ Chí Minh",
     mapUrl:
@@ -155,8 +173,11 @@ const COMPANIES_DATA = [
     name: "KPMG Việt Nam",
     email: "vn-fm-recruitment@kpmg.com.vn",
     phone: "02438310100",
-    description:
-      "KPMG Việt Nam là một trong bốn công ty kiểm toán và tư vấn lớn nhất thế giới (Big 4), cung cấp dịch vụ kiểm toán, thuế, và tư vấn quản lý.",
+    description: `KPMG Việt Nam là thành viên của mạng lưới KPMG toàn cầu – một trong bốn công ty kiểm toán và tư vấn lớn nhất thế giới. Công ty hoạt động tại Việt Nam trong các lĩnh vực trọng điểm như kiểm toán, tư vấn thuế, tư vấn tài chính, quản trị rủi ro, chuyển đổi số và tư vấn doanh nghiệp. Với nhiều năm kinh nghiệm trên thị trường, KPMG Việt Nam đã xây dựng được uy tín mạnh mẽ trong cộng đồng doanh nghiệp trong và ngoài nước.
+
+KPMG nổi bật nhờ đội ngũ chuyên gia có chuyên môn cao cùng khả năng cung cấp các giải pháp tư vấn toàn diện cho nhiều ngành nghề như ngân hàng, bất động sản, sản xuất, công nghệ và tiêu dùng. Công ty hỗ trợ doanh nghiệp trong việc tối ưu vận hành, nâng cao hiệu quả tài chính, tuân thủ quy định pháp lý và triển khai chiến lược phát triển dài hạn. Ngoài ra, KPMG cũng đầu tư mạnh vào các giải pháp công nghệ, phân tích dữ liệu và chuyển đổi số nhằm đáp ứng xu hướng phát triển của thị trường hiện đại.
+
+Môi trường làm việc tại KPMG được đánh giá chuyên nghiệp, quốc tế và có tính học hỏi cao. Công ty thường xuyên tổ chức các chương trình đào tạo kỹ năng chuyên môn, chương trình thực tập và phát triển nhân tài trẻ. Với mạng lưới toàn cầu, quy trình vận hành chuẩn quốc tế và uy tín thương hiệu lớn, KPMG Việt Nam là điểm đến hấp dẫn đối với các ứng viên theo đuổi lĩnh vực kiểm toán, tài chính và tư vấn doanh nghiệp.`,
     address:
       "Tầng 46, Keangnam Hanoi Landmark Tower, Phạm Hùng, Nam Từ Liêm, Hà Nội",
     mapUrl:
@@ -175,8 +196,11 @@ const COMPANIES_DATA = [
     name: "Grab Việt Nam",
     email: "careers@grab.com",
     phone: "02838266999",
-    description:
-      "Grab là siêu ứng dụng hàng đầu Đông Nam Á cung cấp các dịch vụ vận tải, giao đồ ăn, thanh toán và tài chính kỹ thuật số cho hàng triệu người dùng.",
+    description: `Grab Việt Nam là công ty công nghệ hoạt động trong lĩnh vực gọi xe, giao hàng, thanh toán điện tử và dịch vụ số. Là thành viên của Grab Holdings – tập đoàn công nghệ hàng đầu Đông Nam Á, Grab đã nhanh chóng trở thành một trong những nền tảng công nghệ phổ biến nhất tại Việt Nam với các dịch vụ như GrabBike, GrabCar, GrabFood, GrabExpress và GrabPay.
+
+Grab nổi bật nhờ hệ sinh thái dịch vụ đa dạng kết hợp công nghệ dữ liệu, AI và bản đồ số để tối ưu trải nghiệm người dùng. Công ty đầu tư mạnh vào nền tảng công nghệ vận hành, hệ thống điều phối tài xế và giải pháp thanh toán không tiền mặt nhằm nâng cao hiệu quả hoạt động. Ngoài ra, Grab còn hợp tác với nhiều doanh nghiệp, nhà hàng, ngân hàng và đối tác địa phương để mở rộng hệ sinh thái dịch vụ.
+
+Không chỉ tập trung vào tăng trưởng kinh doanh, Grab Việt Nam còn triển khai nhiều chương trình hỗ trợ tài xế, thúc đẩy chuyển đổi số cho doanh nghiệp nhỏ và tham gia các hoạt động cộng đồng. Với môi trường làm việc năng động, đổi mới và đa văn hóa, Grab là một trong những công ty công nghệ được nhiều nhân sự trẻ quan tâm tại Việt Nam.`,
     address:
       "Tầng 9, Tòa nhà Deutsches Haus, 33 Lê Duẩn, Quận 1, TP. Hồ Chí Minh",
     mapUrl:
@@ -195,8 +219,11 @@ const COMPANIES_DATA = [
     name: "VNG Corporation",
     email: "hr@vng.com.vn",
     phone: "02839978797",
-    description:
-      "VNG là công ty công nghệ hàng đầu Việt Nam, nổi tiếng với Zalo, ZaloPay và các sản phẩm game, nội dung số phục vụ hàng triệu người dùng trong và ngoài nước.",
+    description: `VNG Corporation là một trong những công ty công nghệ hàng đầu Việt Nam, hoạt động trong nhiều lĩnh vực như trò chơi trực tuyến, nền tảng số, thanh toán điện tử, điện toán đám mây và trí tuệ nhân tạo. Được thành lập vào năm 2004, VNG nổi tiếng với nhiều sản phẩm quen thuộc như Zalo, Zing MP3, ZaloPay và hệ thống game online có lượng người dùng lớn tại Việt Nam.
+
+Công ty nổi bật nhờ khả năng phát triển các sản phẩm công nghệ phục vụ hàng chục triệu người dùng trong nước và quốc tế. Zalo hiện là một trong những nền tảng nhắn tin phổ biến nhất Việt Nam, trong khi ZaloPay đóng vai trò quan trọng trong lĩnh vực fintech và thanh toán số. Bên cạnh đó, VNG còn đầu tư mạnh vào AI, Cloud Computing và các công nghệ mới nhằm mở rộng hệ sinh thái số và nâng cao năng lực cạnh tranh toàn cầu.
+
+VNG được đánh giá là môi trường làm việc trẻ trung, sáng tạo và đề cao tinh thần đổi mới. Công ty thường xuyên tuyển dụng kỹ sư phần mềm, chuyên gia dữ liệu, nhà thiết kế sản phẩm và nhân sự công nghệ chất lượng cao. Với định hướng trở thành doanh nghiệp công nghệ toàn cầu, VNG đang góp phần thúc đẩy sự phát triển của ngành công nghệ số tại Việt Nam.`,
     address: "182 Lê Đại Hành, Phường 15, Quận 11, TP. Hồ Chí Minh",
     mapUrl:
       "https://www.google.com/maps?q=VNG%20Corporation%20182%20L%C3%AA%20%C4%90%E1%BA%A1i%20H%C3%A0nh%2C%20Ph%C6%B0%E1%BB%9Dng%2015%2C%20Qu%E1%BA%ADn%2011%2C%20TP.%20H%E1%BB%93%20Ch%C3%AD%20Minh&output=embed",
@@ -214,8 +241,11 @@ const COMPANIES_DATA = [
     name: "MoMo",
     email: "careers@momo.vn",
     phone: "02844455678",
-    description:
-      "MoMo là ví điện tử và nền tảng tài chính kỹ thuật số hàng đầu Việt Nam với hơn 31 triệu người dùng, cung cấp hàng ngàn dịch vụ tài chính tiện ích.",
+    description: `MoMo là một trong những công ty fintech hàng đầu Việt Nam, nổi bật với ví điện tử và hệ sinh thái thanh toán số phục vụ hàng chục triệu người dùng trên toàn quốc. Được phát triển bởi Công ty Cổ phần Dịch vụ Di động Trực tuyến, MoMo cung cấp nhiều dịch vụ như chuyển tiền, thanh toán hóa đơn, mua vé, nạp tiền điện thoại, thanh toán mua sắm, đầu tư tài chính và bảo hiểm trực tuyến.
+
+MoMo đóng vai trò quan trọng trong việc thúc đẩy xu hướng thanh toán không tiền mặt tại Việt Nam. Nền tảng này hợp tác với hàng nghìn doanh nghiệp, ngân hàng, cửa hàng và đối tác dịch vụ nhằm xây dựng hệ sinh thái thanh toán đa dạng và tiện lợi. Bên cạnh đó, MoMo còn đầu tư mạnh vào công nghệ bảo mật, AI và dữ liệu lớn nhằm tối ưu trải nghiệm người dùng và tăng tính an toàn cho các giao dịch tài chính.
+
+Không chỉ là ứng dụng thanh toán, MoMo còn hướng tới xây dựng “siêu ứng dụng” phục vụ nhu cầu tài chính và tiêu dùng hàng ngày của người Việt. Công ty thường xuyên triển khai các chương trình ưu đãi, hoàn tiền và chiến dịch cộng đồng nhằm tăng mức độ tiếp cận người dùng. Với tốc độ phát triển nhanh, năng lực đổi mới công nghệ và định hướng mở rộng hệ sinh thái số, MoMo hiện là một trong những thương hiệu fintech có sức ảnh hưởng lớn nhất tại Việt Nam.`,
     address:
       "Tầng 5-6, Tòa nhà IMS, 90 Nguyễn Hữu Cảnh, Bình Thạnh, TP. Hồ Chí Minh",
     mapUrl:
@@ -234,8 +264,11 @@ const COMPANIES_DATA = [
     name: "Tiki",
     email: "talent@tiki.vn",
     phone: "02873006789",
-    description:
-      "Tiki là sàn thương mại điện tử Việt Nam được yêu thích nhất với cam kết giao hàng nhanh TikiNOW và chất lượng sản phẩm đảm bảo cho hàng triệu khách hàng.",
+    description: `Tiki là một trong những nền tảng thương mại điện tử lớn tại Việt Nam, được thành lập vào năm 2010 với khởi đầu là website bán sách trực tuyến. Sau nhiều năm phát triển, Tiki đã mở rộng thành sàn thương mại điện tử đa ngành cung cấp nhiều sản phẩm như điện tử, gia dụng, thời trang, mỹ phẩm, thực phẩm và hàng tiêu dùng.
+
+Tiki nổi bật nhờ chiến lược tập trung vào chất lượng dịch vụ, tốc độ giao hàng và trải nghiệm khách hàng. Công ty đầu tư mạnh vào hệ thống logistics, kho vận và công nghệ dữ liệu nhằm tối ưu quy trình vận hành và nâng cao chất lượng dịch vụ giao hàng nhanh. Ngoài ra, Tiki còn phát triển các chương trình hỗ trợ nhà bán hàng, quảng cáo số và hệ sinh thái thương mại điện tử hiện đại.
+
+Không chỉ cạnh tranh trong lĩnh vực bán lẻ trực tuyến, Tiki còn góp phần thúc đẩy xu hướng tiêu dùng số và thương mại điện tử tại Việt Nam. Với môi trường làm việc năng động, văn hóa sáng tạo và định hướng công nghệ rõ ràng, Tiki hiện là một trong những doanh nghiệp thu hút nhiều nhân sự trẻ trong lĩnh vực công nghệ và thương mại điện tử.`,
     address: "Tầng 6, 52 Út Tịch, Tân Bình, TP. Hồ Chí Minh",
     mapUrl:
       "https://www.google.com/maps?q=Tiki%2052%20%C3%9At%20T%E1%BB%8Bch%2C%20T%C3%A2n%20B%C3%ACnh%2C%20TP.%20H%E1%BB%93%20Ch%C3%AD%20Minh&output=embed",
@@ -252,8 +285,11 @@ const COMPANIES_DATA = [
     name: "Lazada Việt Nam",
     email: "hr@lazada.vn",
     phone: "02839335577",
-    description:
-      "Lazada là nền tảng thương mại điện tử hàng đầu Đông Nam Á thuộc hệ sinh thái Alibaba, cung cấp trải nghiệm mua sắm trực tuyến đa dạng và tiện lợi.",
+    description: `Lazada Việt Nam là một trong những nền tảng thương mại điện tử lớn tại Việt Nam, thuộc tập đoàn Alibaba của Trung Quốc. Ra mắt tại Việt Nam từ năm 2012, Lazada hoạt động theo mô hình sàn thương mại điện tử kết nối người bán với người tiêu dùng trên nền tảng số. Công ty cung cấp nhiều ngành hàng đa dạng như điện tử, thời trang, mỹ phẩm, gia dụng, thực phẩm và hàng tiêu dùng.
+
+Lazada nổi bật nhờ hệ thống công nghệ thương mại điện tử hiện đại cùng mạng lưới logistics và vận chuyển quy mô lớn. Công ty đầu tư mạnh vào dữ liệu, AI và hệ thống quản lý kho vận nhằm tối ưu trải nghiệm mua sắm trực tuyến cho khách hàng. Ngoài ra, Lazada còn triển khai nhiều chương trình hỗ trợ nhà bán hàng như đào tạo kinh doanh online, quảng cáo số và công cụ quản lý vận hành.
+
+Bên cạnh hoạt động thương mại điện tử, Lazada Việt Nam còn góp phần thúc đẩy quá trình chuyển đổi số trong lĩnh vực bán lẻ tại Việt Nam. Với môi trường làm việc quốc tế, văn hóa đổi mới và tốc độ phát triển nhanh, công ty là điểm đến hấp dẫn đối với nhân sự trong lĩnh vực công nghệ, dữ liệu, marketing và vận hành thương mại điện tử.`,
     address:
       "Tầng 22, Tòa nhà Bitexco Financial Tower, 2 Hải Triều, Quận 1, TP. Hồ Chí Minh",
     mapUrl:
@@ -269,8 +305,11 @@ const COMPANIES_DATA = [
     name: "Deloitte Việt Nam",
     email: "vn.recruitment@deloitte.com",
     phone: "02838220100",
-    description:
-      "Deloitte Việt Nam cung cấp dịch vụ kiểm toán, tư vấn thuế, tư vấn quản lý và tư vấn tài chính cho các doanh nghiệp lớn và tổ chức tài chính hàng đầu.",
+    description: `Deloitte Việt Nam là thành viên của mạng lưới Deloitte toàn cầu – một trong “Big Four” công ty kiểm toán và tư vấn lớn nhất thế giới. Doanh nghiệp hoạt động tại Việt Nam trong nhiều lĩnh vực như kiểm toán, tư vấn thuế, tư vấn tài chính, quản trị rủi ro, chuyển đổi số và tư vấn chiến lược cho doanh nghiệp. Với đội ngũ chuyên gia giàu kinh nghiệm cùng tiêu chuẩn vận hành quốc tế, Deloitte Việt Nam đã đồng hành cùng nhiều tập đoàn lớn, tổ chức tài chính và doanh nghiệp trong nước lẫn quốc tế.
+
+Công ty nổi bật nhờ khả năng cung cấp các giải pháp tư vấn toàn diện giúp doanh nghiệp tối ưu hiệu quả hoạt động, quản trị rủi ro và thích ứng với môi trường kinh doanh thay đổi nhanh chóng. Deloitte cũng tham gia nhiều dự án chuyển đổi số, ESG, phân tích dữ liệu và tư vấn chiến lược cho các tổ chức trong nhiều ngành nghề khác nhau. Bên cạnh đó, doanh nghiệp luôn chú trọng cập nhật xu hướng công nghệ và tiêu chuẩn quốc tế để hỗ trợ khách hàng nâng cao năng lực cạnh tranh.
+
+Deloitte Việt Nam được đánh giá cao nhờ môi trường làm việc chuyên nghiệp, quy trình đào tạo bài bản và cơ hội phát triển nghề nghiệp rộng mở. Công ty thường xuyên tổ chức các chương trình thực tập, tuyển dụng sinh viên tài năng và đào tạo chuyên sâu trong lĩnh vực kiểm toán – tài chính. Với uy tín toàn cầu cùng nền tảng chuyên môn vững mạnh, Deloitte Việt Nam hiện là một trong những lựa chọn hàng đầu đối với các doanh nghiệp và nhân sự muốn phát triển trong lĩnh vực tư vấn và dịch vụ chuyên nghiệp.`,
     address:
       "Tầng 15, Vietcombank Tower, 5 Công Trường Mê Linh, Quận 1, TP. Hồ Chí Minh",
     mapUrl:
@@ -289,8 +328,11 @@ const COMPANIES_DATA = [
     name: "Be Group",
     email: "careers@be.com.vn",
     phone: "02866662255",
-    description:
-      "Be Group là công ty công nghệ Việt Nam vận hành ứng dụng gọi xe beBike và beCar cùng các dịch vụ giao hàng beDelivery, phục vụ hàng triệu người dùng nội địa.",
+    description: `Be Group là công ty công nghệ Việt Nam hoạt động chủ yếu trong lĩnh vực gọi xe công nghệ, giao hàng và dịch vụ số. Ra mắt vào năm 2018 với ứng dụng be, doanh nghiệp nhanh chóng trở thành một trong những nền tảng công nghệ nội địa nổi bật cạnh tranh trực tiếp với nhiều thương hiệu quốc tế tại thị trường Việt Nam. Hệ sinh thái của Be hiện bao gồm nhiều dịch vụ như beBike, beCar, beDelivery, thanh toán điện tử, bảo hiểm và các giải pháp tài chính dành cho tài xế và người dùng.
+
+Điểm nổi bật của Be Group là định hướng xây dựng nền tảng công nghệ “Made in Vietnam”, tập trung tối ưu trải nghiệm phù hợp với nhu cầu và hành vi người dùng Việt Nam. Công ty đầu tư mạnh vào dữ liệu, AI, hệ thống điều phối và công nghệ vận hành nhằm nâng cao hiệu suất dịch vụ và chất lượng trải nghiệm khách hàng. Ngoài ra, Be còn hợp tác với nhiều ngân hàng, doanh nghiệp bảo hiểm và đối tác công nghệ để mở rộng hệ sinh thái dịch vụ số.
+
+Không chỉ tập trung tăng trưởng thị phần, Be Group còn chú trọng phát triển bền vững và hỗ trợ cộng đồng tài xế thông qua nhiều chính sách phúc lợi và chương trình hỗ trợ thu nhập. Với đội ngũ nhân sự trẻ, năng động cùng tinh thần đổi mới liên tục, doanh nghiệp đang từng bước mở rộng vị thế trong lĩnh vực công nghệ và dịch vụ số tại Việt Nam.`,
     address: "Tầng 8, Tòa nhà IDMC My Dinh, 15 Phạm Hùng, Nam Từ Liêm, Hà Nội",
     mapUrl:
       "https://www.google.com/maps?q=Be%20Group%2015%20Ph%E1%BA%A1m%20H%C3%B9ng%2C%20Nam%20T%E1%BB%AB%20Li%C3%AAm%2C%20H%C3%A0%20N%E1%BB%99i&output=embed",
@@ -305,8 +347,11 @@ const COMPANIES_DATA = [
     name: "Agribank",
     email: "tuyendung@agribank.com.vn",
     phone: "02438315270",
-    description:
-      "Ngân hàng Nông nghiệp và Phát triển Nông thôn Việt Nam là ngân hàng thương mại lớn nhất Việt Nam về tài sản, phục vụ chủ yếu khu vực nông thôn và nông nghiệp.",
+    description: `Agribank là một trong những ngân hàng thương mại lớn nhất Việt Nam, hoạt động chủ yếu trong lĩnh vực tài chính – ngân hàng với vai trò trọng tâm trong phát triển nông nghiệp và nông thôn. Được thành lập năm 1988, Agribank hiện sở hữu mạng lưới chi nhánh rộng khắp cả nước, đặc biệt tại các khu vực nông thôn và vùng sâu vùng xa.
+
+Ngân hàng cung cấp đa dạng dịch vụ tài chính như huy động vốn, cho vay, thanh toán, ngân hàng số và hỗ trợ tín dụng cho cá nhân, doanh nghiệp và hộ sản xuất. Agribank giữ vai trò quan trọng trong việc thúc đẩy phát triển kinh tế nông nghiệp, hỗ trợ doanh nghiệp vừa và nhỏ cũng như triển khai các chính sách tài chính của Nhà nước.
+
+Bên cạnh hoạt động kinh doanh, Agribank còn tích cực tham gia các chương trình an sinh xã hội, phát triển cộng đồng và hỗ trợ người dân trong nhiều lĩnh vực. Với quy mô lớn, nền tảng tài chính ổn định và mạng lưới rộng khắp, Agribank tiếp tục giữ vị thế là một trong những ngân hàng có ảnh hưởng lớn tại Việt Nam.`,
     address: "2 Láng Hạ, Ba Đình, Hà Nội",
     mapUrl:
       "https://www.google.com/maps?q=Agribank%202%20L%C3%A1ng%20H%E1%BA%A1%2C%20Ba%20%C4%90%C3%ACnh%2C%20H%C3%A0%20N%E1%BB%99i&output=embed",
@@ -321,8 +366,11 @@ const COMPANIES_DATA = [
     name: "Unilever Việt Nam",
     email: "careers.vietnam@unilever.com",
     phone: "02837217150",
-    description:
-      "Unilever Việt Nam là công ty hàng tiêu dùng đa quốc gia với các thương hiệu đình đám như OMO, Dove, Knorr, Lipton phục vụ hàng chục triệu hộ gia đình Việt.",
+    description: `Unilever Việt Nam là công ty thuộc tập đoàn Unilever toàn cầu – một trong những doanh nghiệp hàng đầu thế giới trong lĩnh vực hàng tiêu dùng nhanh. Hoạt động tại Việt Nam từ năm 1995, Unilever đã xây dựng danh mục thương hiệu quen thuộc với người tiêu dùng như OMO, Sunlight, Lifebuoy, Dove, Clear, P/S và Knorr.
+
+Công ty nổi bật nhờ chiến lược phát triển bền vững, tập trung vào đổi mới sản phẩm, nghiên cứu thị trường và xây dựng thương hiệu mạnh. Unilever Việt Nam đầu tư lớn vào hệ thống phân phối, marketing và phát triển sản phẩm phù hợp với nhu cầu người tiêu dùng Việt Nam. Ngoài ra, doanh nghiệp còn chú trọng các chương trình bảo vệ môi trường, phát triển cộng đồng và nâng cao chất lượng sống.
+
+Unilever được đánh giá là môi trường làm việc chuyên nghiệp với văn hóa doanh nghiệp hiện đại, sáng tạo và đề cao phát triển con người. Công ty thường xuyên nằm trong danh sách những nơi làm việc tốt nhất Việt Nam và là điểm đến hấp dẫn với sinh viên, nhân sự trẻ trong lĩnh vực kinh doanh, marketing và quản trị.`,
     address: "156 Nguyễn Lương Bằng, Quận 7, TP. Hồ Chí Minh",
     mapUrl:
       "https://www.google.com/maps?q=Unilever%20Vi%E1%BB%87t%20Nam%20156%20Nguy%E1%BB%85n%20L%C6%B0%C6%A1ng%20B%E1%BA%B1ng%2C%20Qu%E1%BA%ADn%207%2C%20TP.%20H%E1%BB%93%20Ch%C3%AD%20Minh&output=embed",
@@ -340,8 +388,11 @@ const COMPANIES_DATA = [
     name: "Thế Giới Di Động",
     email: "tuyendung@thegioididong.com",
     phone: "19001222",
-    description:
-      "Công ty Cổ phần Đầu tư Thế Giới Di Động là nhà bán lẻ điện thoại, điện tử và thiết bị gia dụng lớn nhất Việt Nam với hệ thống hơn 2.200 cửa hàng trên toàn quốc.",
+    description: `Thế Giới Di Động là một trong những tập đoàn bán lẻ lớn nhất Việt Nam, hoạt động chủ yếu trong lĩnh vực điện thoại, điện máy, công nghệ và hàng tiêu dùng. Được thành lập vào năm 2004, doanh nghiệp đã phát triển mạnh mẽ với nhiều chuỗi bán lẻ nổi tiếng như Thế Giới Di Động, Điện Máy Xanh, Bách Hóa Xanh, TopZone và An Khang. Với hàng nghìn cửa hàng trên toàn quốc, công ty đóng vai trò quan trọng trong việc thay đổi thói quen mua sắm và thúc đẩy mô hình bán lẻ hiện đại tại Việt Nam.
+
+Thế Giới Di Động nổi bật nhờ chiến lược lấy khách hàng làm trung tâm, tập trung vào chất lượng dịch vụ, trải nghiệm mua sắm và tốc độ vận hành. Công ty đầu tư mạnh vào công nghệ quản lý, logistics, dữ liệu khách hàng và thương mại điện tử nhằm tối ưu hiệu quả kinh doanh. Ngoài ra, doanh nghiệp còn xây dựng hệ thống hậu mãi chuyên nghiệp với chính sách bảo hành, đổi trả và chăm sóc khách hàng được đánh giá cao trên thị trường.
+
+Trong nhiều năm liên tiếp, Thế Giới Di Động luôn nằm trong nhóm doanh nghiệp bán lẻ có doanh thu và lợi nhuận dẫn đầu Việt Nam. Công ty cũng được biết đến với văn hóa doanh nghiệp năng động, tốc độ và đề cao tinh thần đổi mới sáng tạo. Với định hướng mở rộng hệ sinh thái bán lẻ đa ngành, ứng dụng công nghệ sâu vào vận hành và nâng cao chất lượng dịch vụ, Thế Giới Di Động tiếp tục giữ vai trò tiên phong trong ngành bán lẻ hiện đại tại Việt Nam.`,
     address: "Số 128 Trần Quang Khải, Tân Định, Quận 1, TP. Hồ Chí Minh",
     mapUrl:
       "https://www.google.com/maps?q=Th%E1%BA%BF%20Gi%E1%BB%9Bi%20Di%20%C4%90%E1%BB%99ng%20128%20Tr%E1%BA%A7n%20Quang%20Kh%E1%BA%A3i%2C%20T%C3%A2n%20%C4%90%E1%BB%8Bnh%2C%20Qu%E1%BA%ADn%201%2C%20TP.%20H%E1%BB%93%20Ch%C3%AD%20Minh&output=embed",
@@ -356,8 +407,11 @@ const COMPANIES_DATA = [
     name: "PwC Việt Nam",
     email: "vn_recruitment@pwc.com",
     phone: "02838230796",
-    description:
-      "PricewaterhouseCoopers Việt Nam (PwC) cung cấp dịch vụ kiểm toán, thuế và tư vấn chuyên nghiệp cho các doanh nghiệp lớn, đa quốc gia tại thị trường Việt Nam.",
+    description: `PwC Việt Nam là thành viên của mạng lưới PricewaterhouseCoopers toàn cầu – một trong những tập đoàn cung cấp dịch vụ kiểm toán và tư vấn hàng đầu thế giới. Công ty hoạt động tại Việt Nam trong các lĩnh vực như kiểm toán, tư vấn thuế, tư vấn doanh nghiệp, pháp lý, quản trị rủi ro và chuyển đổi số. Với kinh nghiệm quốc tế cùng sự hiểu biết sâu sắc về thị trường trong nước, PwC Việt Nam đã hỗ trợ nhiều doanh nghiệp lớn trong quá trình phát triển và mở rộng hoạt động.
+
+PwC nổi bật nhờ khả năng cung cấp các giải pháp chiến lược toàn diện, giúp doanh nghiệp nâng cao hiệu quả quản trị, tuân thủ pháp lý và tối ưu hoạt động tài chính. Công ty cũng tham gia nhiều dự án liên quan đến ESG, phân tích dữ liệu, công nghệ số và tái cấu trúc doanh nghiệp. Bên cạnh dịch vụ chuyên môn, PwC còn chú trọng phát triển nguồn nhân lực và xây dựng văn hóa học tập liên tục trong tổ chức.
+
+Môi trường làm việc tại PwC được đánh giá hiện đại, chuyên nghiệp và mang tính quốc tế cao. Công ty thường xuyên tuyển dụng sinh viên, thực tập sinh và nhân sự trẻ với các chương trình đào tạo chuyên sâu nhằm phát triển kỹ năng chuyên môn và kỹ năng lãnh đạo. Với uy tín toàn cầu và chất lượng dịch vụ cao, PwC Việt Nam hiện là một trong những doanh nghiệp hàng đầu trong lĩnh vực kiểm toán và tư vấn tại Việt Nam.`,
     address: "Tầng 8, Saigon Tower, 29 Lê Duẩn, Quận 1, TP. Hồ Chí Minh",
     mapUrl:
       "https://www.google.com/maps?q=PwC%20Vi%E1%BB%87t%20Nam%20Saigon%20Tower%2029%20L%C3%AA%20Du%E1%BA%A9n%2C%20Qu%E1%BA%ADn%201%2C%20TP.%20H%E1%BB%93%20Ch%C3%AD%20Minh&output=embed",
@@ -375,8 +429,11 @@ const COMPANIES_DATA = [
     name: "Tập đoàn Hòa Phát",
     email: "nhansu@hoaphatteel.com",
     phone: "02462911111",
-    description:
-      "Tập đoàn Hòa Phát là doanh nghiệp sản xuất thép lớn nhất Đông Nam Á, đồng thời kinh doanh đa ngành trong lĩnh vực nội thất, điện lạnh, nông nghiệp và bất động sản.",
+    description: `Tập đoàn Hòa Phát là một trong những tập đoàn công nghiệp lớn nhất Việt Nam, hoạt động chủ yếu trong lĩnh vực sản xuất thép, công nghiệp nặng, nông nghiệp và bất động sản. Được thành lập từ năm 1992, Hòa Phát đã phát triển mạnh mẽ và trở thành doanh nghiệp dẫn đầu thị phần thép xây dựng tại Việt Nam với hệ thống khu liên hợp sản xuất quy mô lớn.
+
+Hòa Phát nổi bật nhờ chiến lược đầu tư bài bản vào công nghệ sản xuất, quy trình vận hành và chuỗi cung ứng khép kín. Tập đoàn sở hữu nhiều nhà máy hiện đại ứng dụng công nghệ tiên tiến nhằm nâng cao năng suất và tối ưu chi phí sản xuất. Ngoài lĩnh vực thép, Hòa Phát còn mở rộng sang sản xuất nội thất, điện lạnh, nông nghiệp và phát triển bất động sản công nghiệp.
+
+Trong nhiều năm liên tiếp, Hòa Phát duy trì tốc độ tăng trưởng mạnh và đóng vai trò quan trọng trong ngành công nghiệp sản xuất Việt Nam. Tập đoàn cũng chú trọng xây dựng văn hóa doanh nghiệp, phát triển nguồn nhân lực và tham gia các hoạt động xã hội. Với nền tảng tài chính vững mạnh, năng lực sản xuất lớn và định hướng mở rộng dài hạn, Hòa Phát hiện là một trong những doanh nghiệp công nghiệp có ảnh hưởng lớn nhất tại Việt Nam.`,
     address: "Tòa nhà Hòa Phát, 64 Triệu Việt Vương, Hai Bà Trưng, Hà Nội",
     mapUrl:
       "https://www.google.com/maps?q=T%E1%BA%ADp%20%C4%91o%C3%A0n%20H%C3%B2a%20Ph%C3%A1t%2064%20Tri%E1%BB%87u%20Vi%E1%BB%87t%20V%C6%B0%C6%A1ng%2C%20Hai%20B%C3%A0%20Tr%C6%B0ng%2C%20H%C3%A0%20N%E1%BB%99i&output=embed",
@@ -394,8 +451,11 @@ const COMPANIES_DATA = [
     name: "Sacombank",
     email: "tuyendung@sacombank.com",
     phone: "02838267530",
-    description:
-      "Ngân hàng TMCP Sài Gòn Thương Tín (Sacombank) là một trong những ngân hàng thương mại cổ phần lớn nhất Việt Nam với mạng lưới hơn 560 điểm giao dịch.",
+    description: `Sacombank là một trong những ngân hàng thương mại cổ phần lớn tại Việt Nam, được thành lập vào năm 1991. Trong quá trình phát triển, Sacombank đã xây dựng mạng lưới hoạt động rộng khắp cả nước và mở rộng hiện diện tại một số thị trường khu vực Đông Nam Á. Ngân hàng cung cấp đa dạng sản phẩm và dịch vụ tài chính cho khách hàng cá nhân, doanh nghiệp và tổ chức như tiền gửi, tín dụng, ngân hàng điện tử, thanh toán quốc tế, bảo hiểm và đầu tư tài chính.
+
+Sacombank nổi bật với chiến lược phát triển ngân hàng bán lẻ hiện đại, tập trung mạnh vào trải nghiệm khách hàng và ứng dụng công nghệ trong hoạt động vận hành. Ngân hàng đầu tư vào các nền tảng ngân hàng số, thanh toán trực tuyến và hệ sinh thái tài chính nhằm đáp ứng nhu cầu giao dịch ngày càng tăng của khách hàng. Bên cạnh đó, Sacombank cũng chú trọng nâng cao chất lượng dịch vụ, quản trị rủi ro và cải thiện hiệu quả hoạt động kinh doanh.
+
+Không chỉ phát triển trong lĩnh vực tài chính, Sacombank còn tích cực tham gia các chương trình cộng đồng, hỗ trợ giáo dục và hoạt động an sinh xã hội. Với môi trường làm việc chuyên nghiệp, chính sách đào tạo nhân sự bài bản và định hướng đổi mới liên tục, Sacombank hiện là một trong những ngân hàng thu hút nguồn nhân lực trẻ trong lĩnh vực tài chính – ngân hàng tại Việt Nam.`,
     address: "266-268 Nam Kỳ Khởi Nghĩa, Quận 3, TP. Hồ Chí Minh",
     mapUrl:
       "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7328.245127327219!2d106.67358469357907!3d10.789523699999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f3188e9987f%3A0xfff5914fd4e3e767!2sSACOMBANK%20-%20PGD%20Qu%E1%BA%ADn%203!5e1!3m2!1sen!2s!4v1776918827936!5m2!1sen!2s",

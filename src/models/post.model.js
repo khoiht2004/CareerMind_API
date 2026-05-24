@@ -49,9 +49,10 @@ const buildPostPayload = (data, authorId) => {
   };
 };
 
-async function getPosts({ page = 1, limit = 9, search, category }) {
+async function getPosts({ page = 1, limit = 9, search, category, companyId }) {
   const where = {
     isPublished: true,
+    ...(companyId && { author: { is: { companyId } } }),
     ...(category && category !== "ALL" && { category }),
     ...(search && {
       OR: [
