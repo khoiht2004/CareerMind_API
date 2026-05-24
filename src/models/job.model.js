@@ -37,6 +37,7 @@ const getJobs = async ({
   level,
   industry,
   salary,
+  isHot,
   status = "PUBLISHED",
   sort = "newest",
 }) => {
@@ -55,6 +56,7 @@ const getJobs = async ({
       industry: { array_contains: industry },
     }),
     ...(salary && salary !== "ALL" && { salary: { contains: salary } }),
+    ...(isHot !== undefined && { isHot }),
   };
 
   const orderBy =

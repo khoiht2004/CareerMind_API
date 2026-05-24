@@ -10,6 +10,7 @@ async function getJobs(req, res) {
     level,
     industry,
     salary,
+    isHot,
     sort,
   } = req.query;
   const result = await model.getJobs({
@@ -21,6 +22,8 @@ async function getJobs(req, res) {
     level,
     industry,
     salary,
+    isHot:
+      isHot === "true" ? true : isHot === "false" ? false : undefined,
     sort,
   });
   return res.success(200, result);

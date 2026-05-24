@@ -128,6 +128,103 @@ class AdminModel {
     });
   }
 
+  static async getPostsAndCount(where, skip, limit) {
+    return Promise.all([
+      prisma.post.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { createdAt: "desc" },
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          excerpt: true,
+          coverUrl: true,
+          category: true,
+          authorName: true,
+          authorId: true,
+          contentFormat: true,
+          isPublished: true,
+          viewCount: true,
+          createdAt: true,
+          updatedAt: true,
+          author: {
+            select: {
+              id: true,
+              email: true,
+              role: true,
+              profile: { select: { fullName: true } },
+              company: { select: { id: true, name: true } },
+            },
+          },
+        },
+      }),
+      prisma.post.count({ where }),
+    ]);
+  }
+
+  static async findPostById(id) {
+    return prisma.post.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        excerpt: true,
+        content: true,
+        contentFormat: true,
+        coverUrl: true,
+        category: true,
+        authorName: true,
+        authorId: true,
+        isPublished: true,
+        viewCount: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+  }
+
+  static async createPost(data) {
+    return prisma.post.create({
+      data,
+      select: {
+        id: true,
+        title: true,
+        category: true,
+        isPublished: true,
+        createdAt: true,
+      },
+    });
+  }
+
+  static async updatePost(id, data) {
+    return prisma.post.update({
+      where: { id },
+      data,
+      select: {
+        id: true,
+        title: true,
+        category: true,
+        isPublished: true,
+        updatedAt: true,
+      },
+    });
+  }
+
+  static async updatePostPublished(id, isPublished) {
+    return prisma.post.update({
+      where: { id },
+      data: { isPublished },
+      select: { id: true, title: true, isPublished: true },
+    });
+  }
+
+  static async deletePost(id) {
+    return prisma.post.delete({ where: { id } });
+  }
+
   static async getApplicationsAndCount(where, skip, limit) {
     return Promise.all([
       prisma.application.findMany({

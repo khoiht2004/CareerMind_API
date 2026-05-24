@@ -15,6 +15,13 @@ router.patch("/users/:id/toggle-active", controller.toggleUserActive);
 router.get("/jobs", controller.getAdminJobs);
 router.patch("/jobs/:id/status", controller.updateJobStatus);
 
+router.get("/posts", controller.getAdminPosts);
+router.post("/posts", controller.createAdminPost);
+router.get("/posts/:id", controller.getAdminPostById);
+router.put("/posts/:id", controller.updateAdminPost);
+router.patch("/posts/:id/published", controller.updateAdminPostPublished);
+router.delete("/posts/:id", controller.deleteAdminPost);
+
 router.get("/applications", controller.getAdminApplications);
 router.patch("/applications/:id/status", controller.updateApplicationStatus);
 

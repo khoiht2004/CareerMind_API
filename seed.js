@@ -6603,6 +6603,24 @@ async function main() {
       description:
         "Cho phép recruiter xóa bài viết do chính mình tạo. Quyền này cần được cấp thận trọng vì thao tác xóa ảnh hưởng trực tiếp tới nội dung đã xuất bản.",
     },
+    {
+      name: "post:read:all",
+      group: { value: "post", label: "Quản lý bài viết" },
+      description:
+        "Cho phép xem toàn bộ bài viết trong hệ thống, bao gồm bài công khai, bản nháp và bài viết của mọi recruiter.",
+    },
+    {
+      name: "post:update:any",
+      group: { value: "post", label: "Quản lý bài viết" },
+      description:
+        "Cho phép chỉnh sửa hoặc thay đổi trạng thái xuất bản của bất kỳ bài viết nào trong hệ thống.",
+    },
+    {
+      name: "post:delete:any",
+      group: { value: "post", label: "Quản lý bài viết" },
+      description:
+        "Cho phép xóa bất kỳ bài viết nào trong hệ thống. Quyền này chỉ nên dùng cho tài khoản quản trị nội dung.",
+    },
     // Application permissions
     {
       name: "application:read:company",
