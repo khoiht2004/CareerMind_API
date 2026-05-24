@@ -93,6 +93,13 @@ const getJobById = async (id) => {
   });
 };
 
+const getJobSnapshotById = async (id) => {
+  return prisma.job.findUnique({
+    where: { id },
+    select: JOB_SELECT,
+  });
+};
+
 const createJob = async (data, postedById, companyId) => {
   const { deadline, company, ...rest } = data; // strip legacy `company` string
   return prisma.job.create({
@@ -244,6 +251,7 @@ const getMyStats = async (userId) => {
 module.exports = {
   getJobs,
   getJobById,
+  getJobSnapshotById,
   getJobsForUser,
   createJob,
   updateJob,

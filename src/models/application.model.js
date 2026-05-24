@@ -174,6 +174,20 @@ const checkApplied = async (userId, jobId) => {
   return count > 0;
 };
 
+const getScreeningApplicationsByJob = async (jobId, recruiterId) => {
+  return prisma.application.findMany({
+    where: {
+      jobId,
+      status: { in: ["PENDING", "REVIEWING"] },
+      isDraft: false,
+      ...(recruiterId && { job: { postedById: recruiterId } }),
+    },
+    select: APP_SELECT,
+    orderBy: { createdAt: "desc" },
+    take: 30,
+  });
+};
+
 module.exports = {
   apply,
   getMyApplications,
@@ -182,4 +196,5 @@ module.exports = {
   updateStatus,
   deleteApplication,
   checkApplied,
+  getScreeningApplicationsByJob,
 };

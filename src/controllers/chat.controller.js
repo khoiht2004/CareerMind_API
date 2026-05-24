@@ -74,6 +74,21 @@ async function generateCoverLetter(req, res) {
   return res.success(200, { coverLetter });
 }
 
+async function analyzeRecruiterCandidates(req, res) {
+  const { jobId, criteria } = req.body;
+  if (!jobId) return res.error(400, "jobId là bắt buộc");
+
+  try {
+    const result = await chatbotService.analyzeRecruiterCandidates(req.auth.user, {
+      jobId,
+      criteria,
+    });
+    return res.success(200, result);
+  } catch (error) {
+    return res.error(error.statusCode || 500, error.message || "Không thể phân tích ứng viên");
+  }
+}
+
 module.exports = {
   getSessions,
   createSession,
@@ -82,4 +97,5 @@ module.exports = {
   updateTitle,
   deleteSession,
   generateCoverLetter,
+  analyzeRecruiterCandidates,
 };

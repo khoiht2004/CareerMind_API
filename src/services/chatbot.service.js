@@ -30,14 +30,22 @@ class ChatBotService {
 
     // Always store non-empty content — placeholder for image/file-only messages
     const storedContent = input.trim() || "[Tệp đính kèm]";
-    const userMessage = await chatModel.addMessage(sessionId, "USER", storedContent, attachments);
+    const userMessage = await chatModel.addMessage(
+      sessionId,
+      "USER",
+      storedContent,
+      attachments,
+    );
 
     const history = await chatModel.getRecentMessages(sessionId, 10);
 
     const loadMoreKeywords = /thêm|nữa|tiếp|khác|more/i;
     let loadMoreCount = 0;
     history.forEach((msg) => {
-      if ((msg.role === "USER" || msg.role === "user") && loadMoreKeywords.test(msg.content)) {
+      if (
+        (msg.role === "USER" || msg.role === "user") &&
+        loadMoreKeywords.test(msg.content)
+      ) {
         loadMoreCount++;
       }
     });
@@ -49,15 +57,23 @@ class ChatBotService {
         const isCurrentMsg = msg.id === userMessage.id;
 
         // Xử lý ảnh: Gửi Base64 ảnh lên AI
-        const msgImages = isCurrentMsg ? images : (msg.attachments?.filter(a => a.category === 'image') || []);
+        const msgImages = isCurrentMsg
+          ? images
+          : msg.attachments?.filter((a) => a.category === "image") || [];
         const hasImages = msgImages.length > 0;
 
         // Xử lý text từ file đính kèm cho cả tin nhắn hiện tại LẪN tin nhắn lịch sử (ĐỂ AI NHỚ ĐƯỢC CV)
         let historyFileContext = "";
-        const msgFiles = isCurrentMsg ? files : (msg.attachments?.filter(a => a.category !== 'image') || []);
+        const msgFiles = isCurrentMsg
+          ? files
+          : msg.attachments?.filter((a) => a.category !== "image") || [];
 
         if (msgFiles.length) {
-          const parts = msgFiles.map(f => f.extractedText ? `[File: ${f.name}]\n${f.extractedText}` : null).filter(Boolean);
+          const parts = msgFiles
+            .map((f) =>
+              f.extractedText ? `[File: ${f.name}]\n${f.extractedText}` : null,
+            )
+            .filter(Boolean);
           if (parts.length) {
             historyFileContext = `\n\n═══════\nNỘI DUNG FILE ĐÍNH KÈM\n═══════\n${parts.join("\n\n---\n\n")}`;
           }
@@ -66,8 +82,10 @@ class ChatBotService {
         const hasFileContext = historyFileContext.length > 0;
 
         // Nội dung text gửi lên AI = Nội dung chat + Nội dung file (nếu có)
-        const baseText = isCurrentMsg ? (input || "") : (msg.content || "");
-        const textContent = (baseText + (hasFileContext ? historyFileContext : "")).trim();
+        const baseText = isCurrentMsg ? input || "" : msg.content || "";
+        const textContent = (
+          baseText + (hasFileContext ? historyFileContext : "")
+        ).trim();
         const safeText = textContent || "[Tệp đính kèm]";
 
         if (hasImages) {
@@ -89,7 +107,8 @@ class ChatBotService {
         }
 
         // Historical / text-only messages — guard against empty content
-        const content = msg.content || (msg.role === "USER" ? "[Tệp đính kèm]" : "");
+        const content =
+          msg.content || (msg.role === "USER" ? "[Tệp đính kèm]" : "");
         if (!content) return null;
         return { role: msg.role === "USER" ? "user" : "assistant", content };
       })
@@ -122,7 +141,9 @@ class ChatBotService {
     } else {
       if (userInfor?.companyId) {
         const companyModel = require("@/models/company.model");
-        const companyData = await companyModel.getCompanyById(userInfor.companyId);
+        const companyData = await companyModel.getCompanyById(
+          userInfor.companyId,
+        );
         if (companyData) {
           companyInfo = companyData;
           jobs = (companyData.jobs || []).map((j) => ({
@@ -253,9 +274,9 @@ GIỌNG VÀ PHONG CÁCH:
 - Nếu người dùng yêu cầu "tìm thêm", "gợi ý thêm", hãy thông báo rằng bạn đang tải thêm kết quả và kèm theo từ khóa đặc biệt [LOAD_MORE_JOBS] ở cuối câu trả lời.
 
 QUI TẮC TUYỆT ĐỐI VỀ ĐỊNH DẠNG (KHÔNG ĐƯỢC VI PHẠM):
-❌ NGHIÊM CẤM dùng dấu gạch ngang phân cách: "---", "──", "===" hay bất kỳ dạng đường kẻ nào.
+❌ NGHIÊM CẤM dùng dấu gạch ngang phân cách: "--", "---", "──", "===" hay bất kỳ dạng đường kẻ nào.
 ❌ NGHIÊM CẤM để 2 dòng trống liên tiếp nhau (chỉ được dùng tối đa 1 dòng trống giữa các ý chính).
-❌ NGHIÊM CẤM dùng markdown heading: ##, ###.
+❌ NGHIÊM CẤM dùng markdown heading: #, ##, ###.
 ❌ NGHIÊM CẤM để dòng trống giữa dòng tiêu đề (dòng kết thúc bằng dấu ":" hoặc có icon ở đầu) và nội dung/danh sách liền sau nó.
   Ví dụ SAI: "💡 Gợi ý cho bạn:\n\n1. Điều X..."
   Ví dụ ĐÚNG: "💡 Gợi ý cho bạn:\n1. Điều X..."
@@ -282,7 +303,11 @@ TỐI ƯU
     const reqs = (() => {
       if (Array.isArray(job.requirements)) return job.requirements;
       if (typeof job.requirements === "string") {
-        try { return JSON.parse(job.requirements); } catch { return []; }
+        try {
+          return JSON.parse(job.requirements);
+        } catch {
+          return [];
+        }
       }
       return [];
     })();
@@ -290,14 +315,20 @@ TỐI ƯU
     const jobInfo = [
       `Vị trí: ${job.title}`,
       `Công ty: ${job.company?.name || "Chưa rõ"}`,
-      job.description ? `Mô tả công việc:\n${job.description.slice(0, 1000)}` : null,
-    ].filter(Boolean).join("\n");
+      job.description
+        ? `Mô tả công việc:\n${job.description.slice(0, 1000)}`
+        : null,
+    ]
+      .filter(Boolean)
+      .join("\n");
 
     const userInfo = profile
       ? [
-        profile.fullName ? `Họ tên: ${profile.fullName}` : null,
-        profile.bio ? `Giới thiệu: ${profile.bio}` : null,
-      ].filter(Boolean).join("\n")
+          profile.fullName ? `Họ tên: ${profile.fullName}` : null,
+          profile.bio ? `Giới thiệu: ${profile.bio}` : null,
+        ]
+          .filter(Boolean)
+          .join("\n")
       : "Chưa có thông tin profile.";
 
     const systemPrompt =
@@ -311,6 +342,124 @@ TỐI ƯU
     ];
 
     return aiService.completions(systemPrompt, messages);
+  }
+
+  async analyzeRecruiterCandidates(user, { jobId, criteria }) {
+    if (user.role !== "RECRUITER" && user.role !== "ADMIN") {
+      const error = new Error("Chức năng này chỉ dành cho nhà tuyển dụng");
+      error.statusCode = 403;
+      throw error;
+    }
+
+    const jobModel = require("@/models/job.model");
+    const applicationModel = require("@/models/application.model");
+
+    const job = await jobModel.getJobSnapshotById(jobId);
+    if (!job) {
+      const error = new Error("Không tìm thấy công việc");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    if (user.role === "RECRUITER" && job.postedBy?.id !== user.id) {
+      const error = new Error(
+        "Bạn không có quyền phân tích ứng viên của công việc này",
+      );
+      error.statusCode = 403;
+      throw error;
+    }
+
+    const applications = await applicationModel.getScreeningApplicationsByJob(
+      jobId,
+      user.role === "RECRUITER" ? user.id : undefined,
+    );
+
+    if (!applications.length) {
+      return {
+        total: 0,
+        analysis:
+          "Hiện chưa có ứng viên ở trạng thái PENDING hoặc REVIEWING cho công việc này.",
+      };
+    }
+
+    const normalizeJson = (value) => {
+      if (!value) return "Chưa cập nhật";
+      if (Array.isArray(value)) return value.join(", ");
+      if (typeof value === "object") return JSON.stringify(value);
+      return String(value);
+    };
+
+    const jobContext = [
+      `ID: ${job.id}`,
+      `Vị trí: ${job.title}`,
+      `Công ty: ${job.company?.name || "Chưa cập nhật"}`,
+      `Địa điểm: ${job.location || "Chưa cập nhật"}`,
+      `Loại hình: ${job.type || "Chưa cập nhật"}`,
+      `Cấp bậc: ${job.level || "Chưa cập nhật"}`,
+      // `Lương: ${job.salary || "Chưa cập nhật"}`,
+      // `Tags: ${normalizeJson(job.tags)}`,
+      `Yêu cầu: ${normalizeJson(job.requirements)}`,
+      `Mô tả công việc:\n${job.description || "Chưa cập nhật"}`,
+      criteria?.trim()
+        ? `Tiêu chí bổ sung từ recruiter:\n${criteria.trim()}`
+        : null,
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    const candidateContext = applications
+      .map((app, index) => {
+        const profile = app.user?.profile || {};
+        return [
+          `Ứng viên ${index + 1}`,
+          `Application ID: ${app.id}`,
+          `Tên: ${profile.fullName || app.user?.email || "Chưa cập nhật"}`,
+          `Email: ${app.user?.email || "Chưa cập nhật"}`,
+          `Số điện thoại: ${app.phone || profile.phone || "Chưa cập nhật"}`,
+          `Trạng thái: ${app.status}`,
+          `Địa chỉ: ${profile.address || "Chưa cập nhật"}`,
+          `Bio: ${profile.bio || "Chưa cập nhật"}`,
+          `Kỹ năng: ${normalizeJson(profile.skills)}`,
+          `Cover letter: ${app.coverLetter || "Chưa cập nhật"}`,
+          `CV: ${app.cv?.name || app.cvUrl || "Chưa cập nhật"}`,
+        ].join("\n");
+      })
+      .join("\n\n");
+
+    const baseSystemPrompt = await this.generateSystemPrompt(user);
+    const systemPrompt = `${baseSystemPrompt}
+
+NHIỆM VỤ CHUYÊN BIỆT CHO RECRUITER
+Bạn đang phân tích ứng viên đã ứng tuyển vào đúng job. Chỉ sử dụng dữ liệu trong phần THÔNG TIN JOB và DANH SÁCH ỨNG VIÊN.
+Chấm điểm mức phù hợp theo thang 0-100.
+Ưu tiên ứng viên đang PENDING hoặc REVIEWING có kỹ năng, kinh nghiệm, địa điểm, cover letter và profile phù hợp JD.
+Không bịa kinh nghiệm, bằng cấp, kỹ năng hoặc nội dung CV nếu dữ liệu không có.
+Không dùng markdown heading (#, ##, ###) và không dùng separator dạng --, ---, ===, đường kẻ.
+Nếu cần viết phản hồi từ chối cho candidate, đặt nội dung phản hồi trong blockquote bắt đầu bằng ký tự > để UI hiển thị thành khối copy.
+
+Format trả lời bắt buộc:
+Tổng quan: [1-2 câu]
+
+Bảng xếp hạng:
+1. [Tên] - [Điểm]/100 - [Nên chọn/Cân nhắc/Không phù hợp]
+   Lý do: [ngắn gọn]
+   Thiếu dữ liệu/rủi ro: [ngắn gọn]
+   Gợi ý hành động: [phỏng vấn/đưa vào reviewing/từ chối]
+   Phản hồi nếu không phù hợp:
+   > [chỉ viết khi điểm dưới 60]
+
+Gợi ý tuyển chọn:
+[1-3 ứng viên nên ưu tiên và lý do]`.trim();
+
+    const messages = [
+      {
+        role: "user",
+        content: `THÔNG TIN JOB\n${jobContext}\n\nDANH SÁCH ỨNG VIÊN\n${candidateContext}`,
+      },
+    ];
+
+    const analysis = await aiService.completions(systemPrompt, messages);
+    return { total: applications.length, analysis };
   }
 }
 
