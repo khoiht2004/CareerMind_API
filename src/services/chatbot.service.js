@@ -461,6 +461,71 @@ Gợi ý tuyển chọn:
     const analysis = await aiService.completions(systemPrompt, messages);
     return { total: applications.length, analysis };
   }
+
+  async analyzeCandidateJobFit(user, { jobId }) {
+    if (user.role !== "CANDIDATE") {
+      const error = new Error("Chức năng này chỉ dành cho ứng viên");
+      error.statusCode = 403;
+      throw error;
+    }
+
+    const jobModel = require("@/models/job.model");
+    const job = await jobModel.getJobSnapshotById(jobId);
+    if (!job) {
+      const error = new Error("Không tìm thấy công việc");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const profile = await profileModel.getProfile(user.id);
+    const normalizeJson = (value) => {
+      if (!value) return "Chưa cập nhật";
+      if (Array.isArray(value)) return value.join(", ");
+      if (typeof value === "object") return JSON.stringify(value);
+      return String(value);
+    };
+
+    const baseSystemPrompt = await this.generateSystemPrompt(user);
+    const systemPrompt = `${baseSystemPrompt}
+
+NHIỆM VỤ CHUYÊN BIỆT CHO CANDIDATE
+Bạn đang phân tích nhanh mức độ phù hợp giữa hồ sơ ứng viên và job đang xem.
+Chỉ dùng dữ liệu trong THÔNG TIN ỨNG VIÊN và THÔNG TIN JOB.
+Không bịa kinh nghiệm, bằng cấp, kỹ năng hoặc nội dung CV nếu dữ liệu không có.
+Trả lời ngắn gọn, súc tích, tối đa 6 dòng.
+Không dùng markdown heading (#, ##, ###) và không dùng separator dạng --, ---, ===, đường kẻ.
+
+Format trả lời bắt buộc:
+Điểm phù hợp: [X]/100
+Điểm mạnh: [1 câu]
+Điểm thiếu: [1 câu]
+Gợi ý: [1-2 hành động cụ thể trước khi ứng tuyển]`.trim();
+
+    const messages = [
+      {
+        role: "user",
+        content: `THÔNG TIN ỨNG VIÊN
+Tên: ${profile?.fullName || user.email || "Chưa cập nhật"}
+Bio: ${profile?.bio || "Chưa cập nhật"}
+Kỹ năng: ${normalizeJson(profile?.skills)}
+Địa chỉ: ${profile?.address || "Chưa cập nhật"}
+
+THÔNG TIN JOB
+Vị trí: ${job.title}
+Công ty: ${job.company?.name || "Chưa cập nhật"}
+Địa điểm: ${job.location || "Chưa cập nhật"}
+Loại hình: ${job.type || "Chưa cập nhật"}
+Cấp bậc: ${job.level || "Chưa cập nhật"}
+Tags: ${normalizeJson(job.tags)}
+Yêu cầu: ${normalizeJson(job.requirements)}
+Mô tả công việc:
+${job.description || "Chưa cập nhật"}`,
+      },
+    ];
+
+    const analysis = await aiService.completions(systemPrompt, messages);
+    return { analysis };
+  }
 }
 
 module.exports = new ChatBotService();

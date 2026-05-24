@@ -18,5 +18,10 @@ router.post(
   permissionRequired("application:read:company"),
   controller.analyzeRecruiterCandidates,
 );
+router.post(
+  "/candidate/job-fit",
+  roleRequired("CANDIDATE"),
+  controller.analyzeCandidateJobFit,
+);
 
 module.exports = router;

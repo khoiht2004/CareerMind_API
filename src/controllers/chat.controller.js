@@ -89,6 +89,20 @@ async function analyzeRecruiterCandidates(req, res) {
   }
 }
 
+async function analyzeCandidateJobFit(req, res) {
+  const { jobId } = req.body;
+  if (!jobId) return res.error(400, "jobId là bắt buộc");
+
+  try {
+    const result = await chatbotService.analyzeCandidateJobFit(req.auth.user, {
+      jobId,
+    });
+    return res.success(200, result);
+  } catch (error) {
+    return res.error(error.statusCode || 500, error.message || "Không thể phân tích công việc");
+  }
+}
+
 module.exports = {
   getSessions,
   createSession,
@@ -98,4 +112,5 @@ module.exports = {
   deleteSession,
   generateCoverLetter,
   analyzeRecruiterCandidates,
+  analyzeCandidateJobFit,
 };
