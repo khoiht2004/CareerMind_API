@@ -6138,8 +6138,20 @@ const POST_SEED_DATA = [
     category: "Hành trang nghề nghiệp",
     excerpt:
       "Những phần quan trọng cần có trong CV entry-level và cách trình bày kinh nghiệm học tập, dự án, hoạt động ngoại khóa.",
-    content:
-      "<h2>CV entry-level cần thể hiện điều gì?</h2><p>Nhà tuyển dụng không kỳ vọng ứng viên mới ra trường có lịch sử làm việc dài. Điều họ cần thấy là khả năng học nhanh, tư duy có cấu trúc và mức độ phù hợp với vị trí.</p><h2>Cấu trúc nên dùng</h2><p>Hãy ưu tiên thông tin liên hệ, mục tiêu nghề nghiệp ngắn gọn, học vấn, dự án, kỹ năng và hoạt động nổi bật.</p><h3>Cách viết dự án</h3><p>Mỗi dự án nên có bối cảnh, vai trò của bạn, công cụ sử dụng và kết quả đo được.</p>",
+    coverUrl:
+      "https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=1200&auto=format&fit=crop",
+    content: `
+<h2>CV entry-level cần thể hiện điều gì?</h2>
+<p>Nhà tuyển dụng không kỳ vọng ứng viên mới ra trường có lịch sử làm việc dài. Điều họ cần thấy là khả năng học nhanh, tư duy có cấu trúc và mức độ phù hợp với vị trí. Một CV tốt không phải là CV dài nhất mà là CV khiến người đọc hiểu ngay bạn có thể làm được gì trong 30 giây đầu tiên.</p>
+
+<h2>Cấu trúc nên dùng</h2>
+<p>Hãy ưu tiên thứ tự: thông tin liên hệ (email chuyên nghiệp, LinkedIn, GitHub nếu có), mục tiêu nghề nghiệp 2–3 dòng, học vấn, dự án nổi bật, kỹ năng và hoạt động ngoại khóa. Tránh đưa ảnh cá nhân, ngày sinh hay tình trạng hôn nhân — các thông tin này không liên quan và có thể gây thiên kiến vô thức ở người đọc.</p>
+
+<h3>Cách viết dự án</h3>
+<p>Mỗi dự án nên có bốn yếu tố: bối cảnh (vấn đề cần giải quyết), vai trò của bạn, công cụ sử dụng và kết quả đo được. Nếu chưa có số liệu cứng, hãy mô tả tác động cụ thể: "Giúp nhóm rút ngắn thời gian báo cáo từ 2 giờ xuống 20 phút bằng script tự động hóa."</p>
+
+<h3>Lỗi phổ biến cần tránh</h3>
+<p>CV dài hơn một trang với ứng viên dưới 3 năm kinh nghiệm, font không nhất quán, liệt kê kỹ năng mà không có bằng chứng minh họa, và dùng email không chuyên nghiệp là bốn lỗi xuất hiện nhiều nhất trong CV entry-level.</p>`,
   },
   {
     title: "Checklist chuẩn bị phỏng vấn trong 24 giờ",
@@ -6147,8 +6159,17 @@ const POST_SEED_DATA = [
     category: "Bí kíp tìm việc",
     excerpt:
       "Một checklist thực tế giúp ứng viên chuẩn bị nhanh trước buổi phỏng vấn mà không bị lan man.",
-    content:
-      "<h2>Trước buổi phỏng vấn</h2><p>Đọc lại JD, nghiên cứu sản phẩm, chuẩn bị ví dụ theo phương pháp STAR và kiểm tra thiết bị nếu phỏng vấn online.</p><h2>Trong buổi phỏng vấn</h2><p>Trả lời ngắn gọn, đi vào kết quả và chủ động hỏi lại khi câu hỏi chưa rõ.</p><h3>Sau buổi phỏng vấn</h3><p>Gửi email cảm ơn, nhắc lại điểm phù hợp và bổ sung tài liệu nếu được yêu cầu.</p>",
+    coverUrl:
+      "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=1200&auto=format&fit=crop",
+    content: `
+<h2>Trước buổi phỏng vấn</h2>
+<p>Đọc lại toàn bộ JD và gạch chân 3–5 yêu cầu cốt lõi. Tra cứu sản phẩm, dịch vụ chính của công ty và đọc bài blog hoặc tin tức gần nhất của họ — điều này giúp bạn đặt câu hỏi thông minh và thể hiện sự quan tâm thực sự. Chuẩn bị 3–5 ví dụ theo phương pháp STAR (Situation – Task – Action – Result) để trả lời câu hỏi hành vi. Kiểm tra thiết bị, đường truyền và góc máy nếu phỏng vấn online.</p>
+
+<h2>Trong buổi phỏng vấn</h2>
+<p>Trả lời ngắn gọn, đi thẳng vào kết quả trước rồi mới giải thích quá trình. Nếu câu hỏi chưa rõ, hãy chủ động xác nhận lại thay vì đoán mò — điều này thể hiện tư duy làm việc chuyên nghiệp chứ không phải điểm yếu. Tránh nói xấu công ty hoặc quản lý cũ dù bị hỏi về lý do nghỉ việc.</p>
+
+<h3>Sau buổi phỏng vấn</h3>
+<p>Gửi email cảm ơn trong vòng 24 giờ, nhắc lại một điểm phù hợp cụ thể được trao đổi trong buổi phỏng vấn và bổ sung tài liệu nếu được yêu cầu. Email ngắn gọn, không quá 5 câu là đủ.</p>`,
   },
   {
     title: "Deal lương là gì và cách chuẩn bị mức kỳ vọng hợp lý",
@@ -6156,8 +6177,17 @@ const POST_SEED_DATA = [
     category: "Chế độ lương thưởng",
     excerpt:
       "Cách xác định khoảng lương, nói về kỳ vọng thu nhập và đánh giá tổng đãi ngộ khi nhận offer.",
-    content:
-      "<h2>Deal lương không chỉ là con số</h2><p>Ứng viên nên đánh giá cả lương cứng, thưởng, bảo hiểm, thời gian làm việc, cơ hội học tập và lộ trình tăng trưởng.</p><h2>Cách xác định khoảng lương</h2><p>So sánh mặt bằng thị trường, kinh nghiệm thực tế, độ khó vị trí và ngân sách ngành.</p><h3>Khi nhận offer</h3><p>Hãy phản hồi chuyên nghiệp, nêu cơ sở cho kỳ vọng và để lại khoảng mở để hai bên trao đổi.</p>",
+    coverUrl:
+      "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&auto=format&fit=crop",
+    content: `
+<h2>Deal lương không chỉ là con số</h2>
+<p>Ứng viên nên đánh giá tổng thể gói đãi ngộ bao gồm lương cứng, thưởng theo hiệu suất, bảo hiểm sức khỏe mở rộng, thời gian làm việc thực tế, ngân sách học tập và lộ trình tăng trưởng. Một mức lương cao hơn 2 triệu nhưng không có lộ trình thăng tiến rõ ràng có thể kém hấp dẫn hơn offer thấp hơn ở công ty có môi trường phát triển tốt.</p>
+
+<h2>Cách xác định khoảng lương</h2>
+<p>So sánh mặt bằng thị trường qua các nguồn như ITviec Salary Report, VietnamWorks Salary Insight hoặc khảo sát từ cộng đồng chuyên ngành. Đặt ra khoảng mục tiêu với ba mức: mức lý tưởng, mức chấp nhận được và mức tối thiểu. Đừng bao giờ tiết lộ mức tối thiểu trong quá trình thương lượng.</p>
+
+<h3>Khi nhận offer</h3>
+<p>Hãy phản hồi chuyên nghiệp bằng văn bản, nêu cụ thể cơ sở cho kỳ vọng (kinh nghiệm, kỹ năng đặc thù, mặt bằng thị trường) và để lại khoảng mở để hai bên tiếp tục trao đổi. Tránh đưa ra quyết định ngay lập tức — xin 24–48 giờ để cân nhắc là hoàn toàn chuyên nghiệp.</p>`,
   },
   {
     title: "Ngành IT gồm những vị trí phổ biến nào?",
@@ -6165,8 +6195,17 @@ const POST_SEED_DATA = [
     category: "Kiến thức chuyên ngành",
     excerpt:
       "Tổng quan các nhóm vị trí trong ngành IT để ứng viên định hướng lộ trình học tập và ứng tuyển.",
-    content:
-      "<h2>Nhóm phát triển phần mềm</h2><p>Frontend, Backend, Mobile và Fullstack là các nhóm phổ biến, yêu cầu năng lực lập trình và tư duy giải quyết vấn đề.</p><h2>Nhóm vận hành và dữ liệu</h2><p>DevOps, Data Analyst, Data Engineer và QA giúp sản phẩm ổn định, đo lường được và cải tiến liên tục.</p><h3>Chọn hướng đi</h3><p>Hãy bắt đầu từ điểm mạnh cá nhân, sau đó thử dự án nhỏ để kiểm chứng sự phù hợp.</p>",
+    coverUrl:
+      "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1200&auto=format&fit=crop",
+    content: `
+<h2>Nhóm phát triển phần mềm</h2>
+<p>Frontend, Backend, Mobile và Fullstack là các nhóm phổ biến nhất, yêu cầu năng lực lập trình vững và tư duy giải quyết vấn đề. Frontend tập trung vào giao diện và trải nghiệm người dùng; Backend xử lý logic nghiệp vụ, cơ sở dữ liệu và API; Mobile chuyên về iOS hoặc Android; Fullstack đảm nhận cả hai phía nhưng thường đi sâu hơn vào một phía.</p>
+
+<h2>Nhóm vận hành và dữ liệu</h2>
+<p>DevOps/Platform Engineer đảm bảo hạ tầng ổn định và quy trình triển khai trơn tru. Data Analyst biến số liệu thành insight cho quyết định kinh doanh. Data Engineer xây dựng pipeline để dữ liệu thô trở nên sạch và có thể truy vấn được. QA/Tester đảm bảo sản phẩm vận hành đúng kỳ vọng trước khi đến tay người dùng.</p>
+
+<h3>Chọn hướng đi</h3>
+<p>Hãy bắt đầu từ điểm mạnh cá nhân: nếu bạn thích thiết kế và tương tác, Frontend phù hợp hơn; nếu bạn thích logic và hệ thống, Backend là lựa chọn tự nhiên. Sau khi chọn hướng, hãy thử một dự án nhỏ hoàn chỉnh để kiểm chứng sự phù hợp trước khi đầu tư thêm thời gian.</p>`,
   },
   {
     title: "Lộ trình chuyển ngành sang Marketing cho người mới",
@@ -6174,8 +6213,17 @@ const POST_SEED_DATA = [
     category: "Định hướng nghề nghiệp",
     excerpt:
       "Các kỹ năng nền tảng và bước thực hành giúp người mới chuyển ngành sang Marketing có định hướng rõ hơn.",
-    content:
-      "<h2>Hiểu đúng về Marketing</h2><p>Marketing không chỉ là chạy quảng cáo. Công việc còn bao gồm nghiên cứu khách hàng, định vị, nội dung, phân phối và đo lường.</p><h2>Kỹ năng cần ưu tiên</h2><p>Hãy bắt đầu với phân tích khách hàng, viết nội dung, đọc số liệu và tư duy thử nghiệm.</p><h3>Dự án portfolio</h3><p>Một case study nhỏ có mục tiêu, cách làm và kết quả rõ ràng sẽ thuyết phục hơn danh sách khóa học.</p>",
+    coverUrl:
+      "https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=1200&auto=format&fit=crop",
+    content: `
+<h2>Hiểu đúng về Marketing</h2>
+<p>Marketing không chỉ là chạy quảng cáo hay đăng bài mạng xã hội. Công việc thực chất bao gồm nghiên cứu khách hàng, xác định định vị thương hiệu, sản xuất nội dung có chiến lược, lựa chọn kênh phân phối phù hợp và đo lường hiệu quả bằng số liệu cụ thể. Người làm Marketing giỏi là người hiểu khách hàng sâu hơn chính khách hàng hiểu bản thân họ.</p>
+
+<h2>Kỹ năng cần ưu tiên</h2>
+<p>Bắt đầu với bốn nền tảng: phân tích hành vi khách hàng (customer insight), viết nội dung rõ ràng và có mục tiêu, đọc và diễn giải số liệu cơ bản (Google Analytics, Meta Ads dashboard), và tư duy thử nghiệm (A/B testing, hypothesis-driven). Đây là bộ kỹ năng có thể học trong 3–6 tháng thực hành liên tục.</p>
+
+<h3>Dự án portfolio</h3>
+<p>Một case study nhỏ với mục tiêu rõ ràng, mô tả cách làm và kết quả thực tế sẽ thuyết phục hơn nhiều so với một danh sách dài các khóa học đã hoàn thành. Ví dụ: chạy một chiến dịch nhỏ cho fanpage cá nhân hoặc hỗ trợ một doanh nghiệp nhỏ quen biết, ghi lại toàn bộ quá trình và kết quả.</p>`,
   },
   {
     title: "Xu hướng tuyển dụng hybrid và remote năm 2026",
@@ -6183,8 +6231,17 @@ const POST_SEED_DATA = [
     category: "Thị trường và xu hướng tuyển dụng",
     excerpt:
       "Các tiêu chí nhà tuyển dụng thường dùng khi đánh giá ứng viên cho môi trường hybrid và remote.",
-    content:
-      "<h2>Hybrid trở thành tiêu chuẩn mới</h2><p>Nhiều doanh nghiệp duy trì mô hình linh hoạt nhưng yêu cầu khả năng tự quản trị, giao tiếp rõ ràng và trách nhiệm với kết quả.</p><h2>Ứng viên cần chuẩn bị gì?</h2><p>Hãy chứng minh năng lực làm việc độc lập, quản lý thời gian và cập nhật tiến độ minh bạch.</p><h3>Phỏng vấn remote</h3><p>Kiểm tra đường truyền, ánh sáng, micro và chuẩn bị tài liệu trước buổi phỏng vấn.</p>",
+    coverUrl:
+      "https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=1200&auto=format&fit=crop",
+    content: `
+<h2>Hybrid trở thành tiêu chuẩn mới</h2>
+<p>Nhiều doanh nghiệp duy trì mô hình linh hoạt nhưng đặt ra yêu cầu cao hơn về khả năng tự quản trị, giao tiếp rõ ràng qua văn bản và trách nhiệm với kết quả đầu ra thay vì thời gian có mặt. Ứng viên không quen làm việc không có người giám sát trực tiếp sẽ gặp khó khăn hơn trong môi trường này.</p>
+
+<h2>Ứng viên cần chuẩn bị gì?</h2>
+<p>Hãy chứng minh năng lực làm việc độc lập bằng ví dụ cụ thể: dự án tự hoàn thành, thói quen cập nhật tiến độ chủ động và cách bạn xử lý khi bị chặn mà không có ai hỗ trợ trực tiếp. Kỹ năng viết ngắn gọn, đủ ý trong Slack hoặc email cũng là yếu tố được đánh giá cao trong môi trường remote.</p>
+
+<h3>Phỏng vấn remote</h3>
+<p>Kiểm tra đường truyền, ánh sáng, micro và background ít nhất 30 phút trước giờ phỏng vấn. Chuẩn bị sẵn tài liệu, portfolio hoặc link demo có thể chia sẻ màn hình ngay lập tức khi được hỏi. Mắt nhìn vào camera, không nhìn vào màn hình để tạo cảm giác giao tiếp mắt với interviewer.</p>`,
   },
   {
     title: "Cách đọc JD để biết công việc có phù hợp không",
@@ -6192,8 +6249,17 @@ const POST_SEED_DATA = [
     category: "Bí kíp tìm việc",
     excerpt:
       "Phân tích mô tả công việc theo trách nhiệm, yêu cầu, mức độ ưu tiên và tín hiệu văn hóa.",
-    content:
-      "<h2>Đừng chỉ đọc tiêu đề</h2><p>Cùng một chức danh có thể khác nhau rất nhiều giữa các công ty. Hãy đọc kỹ phạm vi công việc và kết quả kỳ vọng.</p><h2>Phân loại yêu cầu</h2><p>Tách yêu cầu bắt buộc, yêu cầu cộng điểm và kỹ năng có thể học sau khi vào việc.</p><h3>Tín hiệu cần lưu ý</h3><p>JD quá mơ hồ hoặc gom quá nhiều vai trò có thể là dấu hiệu phạm vi công việc chưa rõ.</p>",
+    coverUrl:
+      "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&auto=format&fit=crop",
+    content: `
+<h2>Đừng chỉ đọc tiêu đề</h2>
+<p>Cùng một chức danh "Marketing Executive" có thể khác nhau hoàn toàn giữa hai công ty — một nơi tập trung vào performance ads, nơi kia thiên về brand và content. Hãy đọc kỹ phần mô tả công việc hàng ngày và kết quả được kỳ vọng, không chỉ dừng ở tên vị trí.</p>
+
+<h2>Phân loại yêu cầu</h2>
+<p>Tách JD thành ba nhóm: yêu cầu bắt buộc (must-have) thường xuất hiện ở phần đầu và dùng từ "có kinh nghiệm về", "thành thạo"; yêu cầu cộng điểm (nice-to-have) thường đi kèm "ưu tiên nếu có", "là lợi thế"; và kỹ năng có thể học sau khi vào việc. Nếu bạn đáp ứng 70% must-have, việc nộp đơn là hoàn toàn hợp lý.</p>
+
+<h3>Tín hiệu cần lưu ý</h3>
+<p>JD quá mơ hồ (không có KPI, không có scope cụ thể) hoặc gom quá nhiều vai trò vào một vị trí (vừa làm content, vừa chạy ads, vừa thiết kế) thường là dấu hiệu công ty chưa xác định rõ nhu cầu hoặc đang thiếu nhân lực trầm trọng. Cả hai trường hợp đều nên hỏi thẳng trong buổi phỏng vấn.</p>`,
   },
   {
     title: "Những câu hỏi nên hỏi nhà tuyển dụng cuối buổi phỏng vấn",
@@ -6201,8 +6267,17 @@ const POST_SEED_DATA = [
     category: "Hành trang nghề nghiệp",
     excerpt:
       "Danh sách câu hỏi giúp ứng viên hiểu rõ kỳ vọng, đội nhóm và cách đánh giá thành công.",
-    content:
-      "<h2>Hỏi về kỳ vọng</h2><p>Ứng viên nên hỏi ba tháng đầu cần đạt điều gì và tiêu chí đánh giá hiệu quả công việc.</p><h2>Hỏi về đội nhóm</h2><p>Tìm hiểu quy trình phối hợp, phong cách quản lý và các bên liên quan thường làm việc cùng.</p><h3>Hỏi về bước tiếp theo</h3><p>Câu hỏi về timeline tuyển dụng giúp bạn chủ động theo dõi mà không gây áp lực.</p>",
+    coverUrl:
+      "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=1200&auto=format&fit=crop",
+    content: `
+<h2>Hỏi về kỳ vọng</h2>
+<p>Ứng viên nên hỏi ba tháng đầu cần đạt được điều gì cụ thể và tiêu chí đánh giá hiệu quả công việc được xác định như thế nào. Câu hỏi này vừa giúp bạn hiểu rõ kỳ vọng, vừa thể hiện bạn là người định hướng kết quả — đây là tín hiệu tích cực với hầu hết hiring manager.</p>
+
+<h2>Hỏi về đội nhóm</h2>
+<p>Tìm hiểu quy trình phối hợp giữa các bộ phận, phong cách quản lý của người sẽ trực tiếp quản lý bạn và các bên liên quan thường xuyên làm việc cùng. Những thông tin này giúp bạn đánh giá xem mình có phù hợp với cách vận hành thực tế của team hay không.</p>
+
+<h3>Hỏi về bước tiếp theo</h3>
+<p>Kết thúc bằng câu hỏi về timeline tuyển dụng và bước tiếp theo trong quy trình. Câu hỏi này giúp bạn chủ động theo dõi tiến độ mà không gây áp lực, đồng thời tránh tình trạng chờ đợi không có thông tin.</p>`,
   },
   {
     title: "Phân biệt Gross và Net khi xem offer",
@@ -6210,8 +6285,17 @@ const POST_SEED_DATA = [
     category: "Chế độ lương thưởng",
     excerpt:
       "Cách hiểu lương Gross, Net và các khoản khấu trừ cơ bản để tránh nhầm lẫn khi nhận offer.",
-    content:
-      "<h2>Lương Gross là gì?</h2><p>Gross là tổng thu nhập trước khi trừ các khoản bảo hiểm bắt buộc và thuế thu nhập cá nhân nếu có.</p><h2>Lương Net là gì?</h2><p>Net là số tiền thực nhận sau các khoản khấu trừ. Khi so sánh offer, hãy hỏi rõ công ty đang nói theo Gross hay Net.</p><h3>Điểm cần kiểm tra</h3><p>Đọc kỹ phụ cấp, thưởng, thử việc và các khoản đóng bảo hiểm để tính đúng tổng đãi ngộ.</p>",
+    coverUrl:
+      "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=1200&auto=format&fit=crop",
+    content: `
+<h2>Lương Gross là gì?</h2>
+<p>Gross là tổng thu nhập trước khi trừ bất kỳ khoản nào, bao gồm bảo hiểm xã hội, bảo hiểm y tế, bảo hiểm thất nghiệp mà người lao động đóng và thuế thu nhập cá nhân nếu vượt mức giảm trừ. Đây là con số thường xuất hiện trong hợp đồng lao động.</p>
+
+<h2>Lương Net là gì?</h2>
+<p>Net là số tiền thực nhận vào tài khoản sau tất cả các khoản khấu trừ. Khi so sánh offer giữa các công ty, hãy hỏi rõ công ty đang báo giá theo Gross hay Net để tính đúng. Chênh lệch giữa Gross và Net có thể dao động từ 10–25% tùy mức thu nhập và chính sách đóng bảo hiểm.</p>
+
+<h3>Điểm cần kiểm tra</h3>
+<p>Đọc kỹ phần phụ cấp (xăng xe, ăn trưa, điện thoại), thưởng theo doanh số hoặc KPI, mức lương trong thời gian thử việc (thường 85–100% lương chính thức), và tỷ lệ các khoản đóng bảo hiểm bắt buộc để tính đúng tổng đãi ngộ thực tế.</p>`,
   },
   {
     title: "Cách xây dựng thương hiệu cá nhân trên LinkedIn",
@@ -6219,8 +6303,17 @@ const POST_SEED_DATA = [
     category: "Định hướng nghề nghiệp",
     excerpt:
       "Những bước đơn giản để hồ sơ LinkedIn thể hiện năng lực và giúp ứng viên tăng cơ hội được tiếp cận.",
-    content:
-      "<h2>Hoàn thiện hồ sơ nền tảng</h2><p>Ảnh đại diện, headline, phần giới thiệu và kinh nghiệm nên nhất quán với vị trí bạn đang nhắm tới.</p><h2>Chia sẻ có chọn lọc</h2><p>Đăng case study, bài học nghề nghiệp hoặc góc nhìn chuyên môn giúp nhà tuyển dụng hiểu cách bạn tư duy.</p><h3>Kết nối đúng người</h3><p>Ưu tiên kết nối với recruiter, chuyên gia trong ngành và cộng đồng liên quan tới hướng đi của bạn.</p>",
+    coverUrl:
+      "https://images.unsplash.com/photo-1611944212129-29977ae1398c?w=1200&auto=format&fit=crop",
+    content: `
+<h2>Hoàn thiện hồ sơ nền tảng</h2>
+<p>Ảnh đại diện chuyên nghiệp (ánh sáng tốt, nền trung tính, khuôn mặt rõ), headline mô tả đúng giá trị bạn mang lại thay vì chỉ ghi chức danh, phần About được viết từ góc nhìn của người đọc (họ cần biết bạn làm được gì, không phải bạn muốn gì), và kinh nghiệm được trình bày theo kết quả — tất cả phải nhất quán với vị trí bạn đang nhắm tới.</p>
+
+<h2>Chia sẻ có chọn lọc</h2>
+<p>Đăng case study thực tế, bài học rút ra từ dự án hoặc góc nhìn chuyên môn về vấn đề trong ngành. Nội dung này giúp nhà tuyển dụng hiểu cách bạn tư duy và giải quyết vấn đề — điều mà CV không thể hiện được. Không cần đăng mỗi ngày; nhất quán và có giá trị quan trọng hơn tần suất.</p>
+
+<h3>Kết nối đúng người</h3>
+<p>Ưu tiên kết nối với recruiter chuyên ngành, senior trong lĩnh vực bạn nhắm tới và thành viên cộng đồng liên quan. Khi gửi lời mời kết nối, hãy kèm tin nhắn ngắn nêu rõ lý do — tỉ lệ chấp nhận sẽ cao hơn đáng kể so với gửi không có context.</p>`,
   },
 ];
 
@@ -6399,6 +6492,7 @@ async function main() {
   }
   console.log(`✅ Đã tạo ${createdJobs.length} việc làm`);
 
+  // ── 6. Tạo Posts ───────────────────────────────────────────────────────────────
   const createdPosts = [];
   for (const [index, post] of POST_SEED_DATA.entries()) {
     const recruiterData = recruiters[index % recruiters.length];
