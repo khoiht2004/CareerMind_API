@@ -2,7 +2,7 @@ const aiService = require("@/services/ai.service");
 const chatModel = require("@/models/chat.model");
 const profileModel = require("@/models/profile.model");
 const authModel = require("@/models/auth.model");
-const { _getMatchingJobs, _formatJobs } = require("@/utils/chatbot.helper");
+const { _getMatchingJobs, _formatJobs, _formatJobsWithCandidates } = require("@/utils/chatbot.helper");
 const { extractFileText } = require("../utils/chatbot.helper");
 
 class ChatBotService {
@@ -114,7 +114,7 @@ class ChatBotService {
       })
       .filter(Boolean);
 
-    const systemPrompt = await this.generateSystemPrompt(user, jobLimit);
+    const systemPrompt = await this.generateSystemPrompt(user, jobLimit, input);
     const aiReply = await aiService.completions(systemPrompt, messages);
 
     const assistantMessage = await chatModel.addMessage(
@@ -126,7 +126,7 @@ class ChatBotService {
     return { userMessage, assistantMessage: { ...assistantMessage } };
   }
 
-  async generateSystemPrompt(user, jobLimit = 20) {
+  async generateSystemPrompt(user, jobLimit = 20, userInput = "") {
     const [profile, userInfor] = await Promise.all([
       profileModel.getProfile(user.id),
       authModel.getUserById(user.id),
@@ -135,9 +135,12 @@ class ChatBotService {
     const isCandidate = userInfor?.role === "CANDIDATE";
     let jobs = [];
     let companyInfo = null;
+    let jobList = "";
+    let isCandidateAnalysisContext = false;
 
     if (isCandidate) {
       jobs = await _getMatchingJobs(profile, jobLimit);
+      jobList = _formatJobs(jobs);
     } else {
       if (userInfor?.companyId) {
         const companyModel = require("@/models/company.model");
@@ -146,21 +149,70 @@ class ChatBotService {
         );
         if (companyData) {
           companyInfo = companyData;
-          jobs = (companyData.jobs || []).map((j) => ({
-            ...j,
-            company: { name: companyData.name },
-          }));
+          
+          // Phát hiện xem user có đang muốn hỏi/phân tích ứng viên hay không
+          const askForCandidates = /ứng viên|candidate|ai ứng tuyển|nộp hồ sơ|phân tích|đánh giá|cv|hồ sơ/i.test(userInput);
+          
+          if (askForCandidates) {
+            isCandidateAnalysisContext = true;
+            const prisma = require("@/libs/prisma");
+            jobs = await prisma.job.findMany({
+              where: {
+                companyId: userInfor.companyId,
+                status: "PUBLISHED",
+              },
+              include: {
+                applications: {
+                  where: {
+                    status: { in: ["PENDING", "REVIEWING"] },
+                    isDraft: false
+                  },
+                  select: {
+                    id: true,
+                    status: true,
+                    coverLetter: true,
+                    phone: true,
+                    cv: { select: { name: true } },
+                    user: {
+                      select: {
+                        email: true,
+                        profile: {
+                          select: {
+                            fullName: true,
+                            skills: true,
+                            bio: true,
+                            address: true
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              orderBy: { createdAt: "desc" },
+              take: 10 // Giới hạn 10 job mới nhất có hoạt động để tránh overload token
+            });
+            jobList = _formatJobsWithCandidates(jobs);
+          } else {
+            jobs = (companyData.jobs || []).map((j) => ({
+              ...j,
+              company: { name: companyData.name },
+            }));
+            jobList = _formatJobs(jobs);
+          }
         }
       }
     }
-
-    const jobList = _formatJobs(jobs);
 
     let dynamicContext = "";
     if (isCandidate) {
       dynamicContext = `DỮ LIỆU CÔNG VIỆC\n━━━━━━━━━━━━━━━━━━━━\n${jobList || "Hiện chưa có dữ liệu công việc."}`;
     } else {
-      dynamicContext = `THÔNG TIN DOANH NGHIỆP CỦA BẠN\n━━━━━━━━━━━━━━━━━━━━\n- Tên công ty: ${companyInfo?.name || "Chưa cập nhật"}\n- Địa chỉ: ${companyInfo?.address || "Chưa cập nhật"}\n- Tổng job: ${companyInfo?.totalJobs || 0}\n\nCÁC CÔNG VIỆC BẠN ĐÃ ĐĂNG:\n${jobList || "Bạn chưa đăng công việc nào."}`;
+      if (isCandidateAnalysisContext) {
+        dynamicContext = `THÔNG TIN DOANH NGHIỆP CỦA BẠN\n━━━━━━━━━━━━━━━━━━━━\n- Tên công ty: ${companyInfo?.name || "Chưa cập nhật"}\n- Địa chỉ: ${companyInfo?.address || "Chưa cập nhật"}\n- Tổng job: ${companyInfo?.totalJobs || 0}\n\nCÁC CÔNG VIỆC BẠN ĐÃ ĐĂNG VÀ DANH SÁCH ỨNG VIÊN ĐANG CHỜ DUYỆT:\n${jobList}`;
+      } else {
+        dynamicContext = `THÔNG TIN DOANH NGHIỆP CỦA BẠN\n━━━━━━━━━━━━━━━━━━━━\n- Tên công ty: ${companyInfo?.name || "Chưa cập nhật"}\n- Địa chỉ: ${companyInfo?.address || "Chưa cập nhật"}\n- Tổng job: ${companyInfo?.totalJobs || 0}\n\nCÁC CÔNG VIỆC BẠN ĐÃ ĐĂNG:\n${jobList || "Bạn chưa đăng công việc nào."}`;
+      }
     }
 
     const systemPrompt = `
@@ -201,9 +253,11 @@ PHÂN QUYỀN THEO VAI TRÒ
 
 [RECRUITER - Nhà tuyển dụng]
 ✅ Được hỗ trợ:
-  - Tư vấn tiêu chí tuyển dụng, gợi ý cấu trúc JD
+  - Tư vấn tiêu chí tuyển dụng, gợi ý cấu trúc JD hiệu quả
   - Tìm kiếm ứng viên phù hợp (dựa trên dữ liệu có sẵn)
   - Đánh giá CV ứng viên theo JD
+  - Phân tích, so sánh các ứng viên đã ứng tuyển cho các job đang tuyển dụng
+  - Khi được yêu cầu phân tích/đánh giá ứng viên ứng tuyển: Hãy tiến hành xếp hạng, cho điểm mức độ phù hợp từ 0-100, chỉ rõ điểm mạnh, điểm yếu, mức độ đáp ứng kỹ năng và gợi ý bước tiếp theo (phỏng vấn/từ chối) một cách trung thực, chuyên nghiệp dựa trên dữ liệu ứng viên được cung cấp.
 ❌ Không hỗ trợ tìm kiếm việc làm
   → Từ chối: "Tôi xin lỗi, chức năng này dành cho Ứng viên."
 
@@ -344,6 +398,7 @@ TỐI ƯU
     return aiService.completions(systemPrompt, messages);
   }
 
+  // AI phân tích đề xuất chọn ứng viên cho nhà tuyển dụng
   async analyzeRecruiterCandidates(user, { jobId, criteria }) {
     if (user.role !== "RECRUITER" && user.role !== "ADMIN") {
       const error = new Error("Chức năng này chỉ dành cho nhà tuyển dụng");
@@ -462,6 +517,7 @@ Gợi ý tuyển chọn:
     return { total: applications.length, analysis };
   }
 
+  // AI phân tích độ phù hợp của ứng viên với công việc
   async analyzeCandidateJobFit(user, { jobId }) {
     if (user.role !== "CANDIDATE") {
       const error = new Error("Chức năng này chỉ dành cho ứng viên");
