@@ -1,0 +1,20 @@
+model CvAnalysis {
+  id           String      @id @default(uuid())
+  score        Int         @map("score")
+  strengths    Json        @map("strengths")
+  weaknesses   Json        @map("weaknesses")
+  improvements Json        @map("improvements")
+  summary      String      @map("summary") @db.Text
+  rawCvText    String?     @map("raw_cv_text") @db.LongText
+  createdAt    DateTime    @default(now()) @map("created_at")
+  messageId    String      @unique @map("message_id")
+  jobId        String?     @map("job_id")
+  cvId         String?     @map("cv_id")
+  cv           Cv?         @relation(fields: [cvId], references: [id])
+  job          Job?        @relation(fields: [jobId], references: [id])
+  message      ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@index([jobId])
+  @@index([cvId])
+  @@map("cv_analyses")
+}

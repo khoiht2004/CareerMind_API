@@ -8,6 +8,7 @@ const bcrypt = require("bcrypt");
 
 // ─── Khởi tạo Prisma ─────────────────────────────────────────────────────────
 const { PrismaMariaDb } = require("@prisma/adapter-mariadb");
+const { uuidv7 } = require("uuidv7");
 const adapter = new PrismaMariaDb({
   host: process.env.DB_HOST || "localhost",
   port: Number(process.env.DB_PORT) || 3306,
@@ -15,7 +16,36 @@ const adapter = new PrismaMariaDb({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
 });
-const prisma = new PrismaClient({ adapter });
+const basePrisma = new PrismaClient({ adapter });
+const prisma = basePrisma.$extends({
+  query: {
+    $allModels: {
+      async create({ model, operation, args, query }) {
+        if (model !== "Queue") {
+          if (!args.data) args.data = {};
+          if (!args.data.id) {
+            args.data.id = uuidv7();
+          }
+        }
+        return query(args);
+      },
+      async createMany({ model, operation, args, query }) {
+        if (model !== "Queue") {
+          if (Array.isArray(args.data)) {
+            for (const item of args.data) {
+              if (item && !item.id) {
+                item.id = uuidv7();
+              }
+            }
+          } else if (args.data && !args.data.id) {
+            args.data.id = uuidv7();
+          }
+        }
+        return query(args);
+      },
+    },
+  },
+});
 
 // const prisma = new PrismaClient();
 

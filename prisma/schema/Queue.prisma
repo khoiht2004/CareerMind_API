@@ -1,0 +1,12 @@
+model Queue {
+  id         Int      @id @default(autoincrement())
+  type       String   @map("type") @db.VarChar(255)
+  payload    String   @map("payload") @db.Text
+  status     String   @default("pending") @map("status") @db.VarChar(255)
+  isPriority Int      @default(0) @map("is_priority") @db.SmallInt
+  info       String?  @map("info") @db.Text
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  @@map("queues")
+}

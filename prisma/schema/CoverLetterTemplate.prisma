@@ -1,0 +1,12 @@
+model CoverLetterTemplate {
+  id        String   @id @default(uuid())
+  title     String   @map("title")
+  industry  String?  @map("industry") @db.VarChar(100)
+  level     String?  @map("level") @db.VarChar(50)
+  content   String   @map("content") @db.LongText
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("cover_letter_templates")
+}

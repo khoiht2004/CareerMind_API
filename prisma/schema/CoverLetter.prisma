@@ -1,0 +1,12 @@
+model CoverLetter {
+  id        String   @id @default(uuid())
+  title     String   @map("title")
+  content   String   @map("content") @db.LongText
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("cover_letters")
+}

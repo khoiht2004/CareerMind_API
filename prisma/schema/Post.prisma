@@ -1,0 +1,21 @@
+model Post {
+  id            String   @id @default(uuid())
+  title         String   @map("title")
+  slug          String?  @unique @map("slug")
+  excerpt       String?  @map("excerpt") @db.Text
+  content       String   @map("content") @db.LongText
+  contentFormat String   @default("HTML") @map("content_format") @db.VarChar(20)
+  coverUrl      String?  @map("cover_url") @db.Text
+  category      String?  @map("category") @db.VarChar(100)
+  authorName    String?  @map("author_name") @db.VarChar(120)
+  isPublished   Boolean  @default(true) @map("is_published")
+  viewCount     Int      @default(0) @map("view_count")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  authorId      String?  @map("author_id")
+  author        User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  @@index([category])
+  @@index([authorId])
+  @@map("posts")
+}

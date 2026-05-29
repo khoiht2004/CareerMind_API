@@ -1,0 +1,11 @@
+model UserPermission {
+  id           String     @id @default(uuid())
+  userId       String     @map("user_id")
+  permissionId String     @map("permission_id")
+  isGranted    Boolean    @default(true) @map("is_granted")
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, permissionId])
+  @@map("user_permissions")
+}
