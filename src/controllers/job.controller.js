@@ -1,14 +1,30 @@
 const model = require("@/models/job.model");
-const { toJsonString } = require("../utils/helper");
 
 async function getJobs(req, res) {
-  const { page = 1, limit = 12, search, type, location } = req.query;
+  const {
+    page = 1,
+    limit = 12,
+    search,
+    type,
+    location,
+    level,
+    industry,
+    salary,
+    isHot,
+    sort,
+  } = req.query;
   const result = await model.getJobs({
     page: +page,
     limit: +limit,
     search,
     type,
     location,
+    level,
+    industry,
+    salary,
+    isHot:
+      isHot === "true" ? true : isHot === "false" ? false : undefined,
+    sort,
   });
   return res.success(200, result);
 }
@@ -34,6 +50,7 @@ async function createJob(req, res) {
   const payload = {
     ...req.body,
     tags: req.body.tags,
+    industry: req.body.industry,
     benefits: req.body.benefits,
     requirements: req.body.requirements,
   };
@@ -55,6 +72,7 @@ async function updateJob(req, res) {
   const payload = {
     ...req.body,
     tags: req.body.tags,
+    industry: req.body.industry,
     benefits: req.body.benefits,
     requirements: req.body.requirements,
   };

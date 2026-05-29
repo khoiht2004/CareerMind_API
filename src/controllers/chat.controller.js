@@ -1,5 +1,7 @@
 const model = require("@/models/chat.model");
 const chatbotService = require("@/services/chatbot.service");
+const jobModel = require("@/models/job.model");
+const profileModel = require("@/models/profile.model");
 
 async function getSessions(req, res) {
   const sessions = await model.getSessions(req.auth.user.id);
@@ -22,14 +24,14 @@ async function getMessages(req, res) {
 
 async function sendMessage(req, res) {
   const { id } = req.params;
-  const { content, images } = req.body;
-  if (!content?.trim() && !images?.length)
-    return res.error(400, "Vui lòng nhập nội dung hoặc đính kèm ảnh");
+  const { content, attachments } = req.body;
+  if (!content?.trim() && !attachments?.length)
+    return res.error(400, "Vui lòng nhập nội dung hoặc đính kèm file");
 
   const session = await model.getSession(id, req.auth.user.id);
   if (!session) return res.error(404, "Không tìm thấy cuộc trò chuyện");
 
-  const result = await chatbotService.chat(req.auth.user, id, content ?? "", images);
+  const result = await chatbotService.chat(req.auth.user, id, content || "", attachments);
   return res.success(200, result);
 }
 
@@ -54,6 +56,53 @@ async function deleteSession(req, res) {
   return res.success(200, "Xóa cuộc trò chuyện thành công");
 }
 
+async function generateCoverLetter(req, res) {
+  const { jobId, title } = req.body;
+  if (!jobId && !title?.trim()) return res.error(400, "jobId hoặc title là bắt buộc");
+
+  let job;
+  if (jobId) {
+    job = await jobModel.getJobById(jobId);
+    if (!job) return res.error(404, "Không tìm thấy công việc");
+  } else {
+    // No specific job — AI will infer from title + user profile
+    job = { title: title.trim() };
+  }
+
+  const profile = await profileModel.getProfile(req.auth.user.id);
+  const coverLetter = await chatbotService.generateCoverLetter(job, profile);
+  return res.success(200, { coverLetter });
+}
+
+async function analyzeRecruiterCandidates(req, res) {
+  const { jobId, criteria } = req.body;
+  if (!jobId) return res.error(400, "jobId là bắt buộc");
+
+  try {
+    const result = await chatbotService.analyzeRecruiterCandidates(req.auth.user, {
+      jobId,
+      criteria,
+    });
+    return res.success(200, result);
+  } catch (error) {
+    return res.error(error.statusCode || 500, error.message || "Không thể phân tích ứng viên");
+  }
+}
+
+async function analyzeCandidateJobFit(req, res) {
+  const { jobId } = req.body;
+  if (!jobId) return res.error(400, "jobId là bắt buộc");
+
+  try {
+    const result = await chatbotService.analyzeCandidateJobFit(req.auth.user, {
+      jobId,
+    });
+    return res.success(200, result);
+  } catch (error) {
+    return res.error(error.statusCode || 500, error.message || "Không thể phân tích công việc");
+  }
+}
+
 module.exports = {
   getSessions,
   createSession,
@@ -61,4 +110,7 @@ module.exports = {
   sendMessage,
   updateTitle,
   deleteSession,
+  generateCoverLetter,
+  analyzeRecruiterCandidates,
+  analyzeCandidateJobFit,
 };

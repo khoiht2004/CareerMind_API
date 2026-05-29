@@ -1,0 +1,15 @@
+model Profile {
+  id        String   @id @default(uuid())
+  fullName  String?  @map("full_name")
+  phone     String?  @map("phone") @db.Text
+  avatarUrl String?  @map("avatar_url")
+  bio       String?  @map("bio") @db.Text
+  subBio    String?  @map("sub_bio") @db.Text
+  address   String?  @map("address")
+  skills    Json?    @map("skills")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  userId    String   @unique @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("profiles")
+}

@@ -1,0 +1,17 @@
+model Cv {
+  id           String        @id @default(uuid())
+  name         String        @map("name")
+  fileUrl      String        @map("file_url")
+  isDefault    Boolean       @default(false) @map("is_default")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  userId       String        @map("user_id")
+  fileSize     Int?          @map("file_size")
+  fileType     String?       @map("file_type") @db.VarChar(10)
+  applications Application[]
+  cvAnalyses   CvAnalysis[]
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("cvs")
+}

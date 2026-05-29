@@ -15,6 +15,13 @@ router.patch("/users/:id/toggle-active", controller.toggleUserActive);
 router.get("/jobs", controller.getAdminJobs);
 router.patch("/jobs/:id/status", controller.updateJobStatus);
 
+router.get("/posts", controller.getAdminPosts);
+router.post("/posts", controller.createAdminPost);
+router.get("/posts/:id", controller.getAdminPostById);
+router.put("/posts/:id", controller.updateAdminPost);
+router.patch("/posts/:id/published", controller.updateAdminPostPublished);
+router.delete("/posts/:id", controller.deleteAdminPost);
+
 router.get("/applications", controller.getAdminApplications);
 router.patch("/applications/:id/status", controller.updateApplicationStatus);
 
@@ -22,10 +29,19 @@ router.get("/chat-stats", controller.getChatStats);
 router.get("/chat-sessions", controller.getAdminChatSessions);
 
 router.get("/system-stats", controller.getSystemStats);
+router.get("/queues", controller.getAdminQueues);
 
 router.get("/companies", controller.getAdminCompanies);
 router.post("/companies", controller.createCompany);
 router.put("/companies/:id/verify", controller.verifyCompany);
 router.put("/companies/:id/active", controller.toggleCompanyActive);
+
+// Permission management
+router.get("/permissions", controller.getAllPermissions);
+router.post("/permissions", controller.createPermission);
+router.patch("/permissions/:id", controller.updatePermission);
+router.delete("/permissions/:id", controller.deletePermission);
+router.get("/users/:userId/permissions", controller.getUserPermissionDetails);
+router.post("/users/:userId/permissions", controller.updateUserPermissions);
 
 module.exports = router;

@@ -1,49 +1,47 @@
-<div
-  style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;background:#fff;border-radius:12px;border:1px solid #e5e7eb">
-  <div style="text-align:center;margin-bottom:24px">
-    <div style="display:inline-block;background:#111;color:#fff;font-weight:700;padding:8px 16px;border-radius:8px;font-size:14px">
-      SRA
-    </div>
+<div style="font-family:'Inter', sans-serif;max-width:480px;margin:0 auto;padding:40px 32px;background:#fff;border-radius:24px;border:1px solid #e8e8e8;box-shadow:0 8px 30px rgba(0,0,0,0.04)">
+  <div style="text-align:center;margin-bottom:32px">
+    <div style="display:inline-block;background:#00b14f;color:#fff;font-weight:800;padding:8px 16px;border-radius:12px;font-size:18px;letter-spacing:-0.5px">topcv</div>
   </div>
 
-  <h2 style="font-size:20px;font-weight:700;margin:0 0 8px">Thư mời phỏng vấn</h2>
-  <p style="color:#6b7280;font-size:14px;margin:0 0 16px">Chào <strong><%= applicantName %></strong>,</p>
+  <div style="text-align:center;margin-bottom:24px">
+    <span style="display:inline-block;background:#e7f8ed;color:#1b6a41;font-weight:700;font-size:13px;padding:6px 16px;border-radius:9999px;border:1px solid #b8e1c7;letter-spacing:0.3px">
+       LỊCH PHỎNG VẤN
+    </span>
+  </div>
 
-  <p style="color:#6b7280;font-size:14px;margin:0 0 16px">
-    Cảm ơn bạn đã dành thời gian ứng tuyển vị trí <strong><%= jobTitle %></strong> tại <strong><%= company %></strong>.
-    Sau khi xem xét hồ sơ, chúng tôi trân trọng mời bạn tham dự buổi phỏng vấn với các thông tin như sau:
+  <h2 style="font-size:22px;font-weight:700;margin:0 0 16px;color:#181c20;text-align:center">Thư mời phỏng vấn</h2>
+  <p style="color:#5f6368;font-size:15px;margin:0 0 16px;line-height:1.6">Chào <strong style="color:#181c20"><%= applicantName %></strong>,</p>
+
+  <p style="color:#5f6368;font-size:15px;margin:0 0 24px;line-height:1.6">
+    Cảm ơn bạn đã ứng tuyển vị trí <strong style="color:#181c20"><%= jobTitle %></strong> tại <strong style="color:#181c20"><%= company %></strong>. Hồ sơ của bạn rất ấn tượng và chúng tôi trân trọng mời bạn tham gia một buổi phỏng vấn.
   </p>
 
-  <div
-    style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:16px 20px;margin:0 0 24px;font-size:14px;color:#111827">
-    <table style="width:100%;border-collapse:collapse">
+  <div style="background:#f1f4fa;border:1px solid #e8e8e8;border-radius:16px;padding:20px 24px;margin:0 0 24px">
+    <table style="width:100%;border-collapse:collapse;font-size:14px">
       <tr>
-        <td style="padding:6px 0;color:#6b7280;width:40%">Ngày phỏng vấn</td>
-        <td style="padding:6px 0;font-weight:600"><%= interviewDateFormat %></td>
+        <td style="padding:8px 0;color:#5f6368;width:35%">Ngày</td>
+        <td style="padding:8px 0;font-weight:600;color:#181c20"><%= interviewDateFormat %></td>
       </tr>
       <tr>
-        <td style="padding:6px 0;color:#6b7280">Thời gian</td>
-        <td style="padding:6px 0;font-weight:600"><%= interviewTime %></td>
+        <td style="padding:8px 0;color:#5f6368">Thời gian</td>
+        <td style="padding:8px 0;font-weight:600;color:#181c20"><%= interviewTime %></td>
       </tr>
       <tr>
-        <td style="padding:6px 0;color:#6b7280">Hình thức</td>
-        <td style="padding:6px 0;font-weight:600"><%= formatInterview %></td>
+        <td style="padding:8px 0;color:#5f6368">Hình thức</td>
+        <td style="padding:8px 0;font-weight:600;color:#181c20"><%= formatInterview %></td>
       </tr>
       <tr>
-        <td style="padding:6px 0;color:#6b7280">Địa điểm / Link</td>
-        <td style="padding:6px 0;font-weight:600"><%= interviewLocation %></td>
+        <td style="padding:8px 0;color:#5f6368;vertical-align:top">Địa điểm/Link</td>
+        <td style="padding:8px 0;font-weight:600;color:#181c20;line-height:1.5"><%= interviewLocation %></td>
       </tr>
     </table>
   </div>
 
-  <p style="color:#6b7280;font-size:14px;margin:0 0 16px">
-    Vui lòng xác nhận tham dự bằng cách phản hồi email này hoặc liên hệ trực tiếp với chúng tôi trước
-    <strong><%= confirmDeadlineFormat %></strong>. Nếu bạn có bất kỳ thắc mắc nào, đừng ngần ngại liên hệ để được hỗ trợ.
-  </p>
+  <div style="background:#fff7d1;border:1px solid #f0df9a;border-radius:12px;padding:16px;margin:0 0 32px">
+    <p style="color:#8a6a00;font-size:14px;margin:0;line-height:1.5;text-align:center">
+      Vui lòng xác nhận tham dự hoặc yêu cầu đổi lịch trước <strong style="color:#5e4800"><%= confirmDeadlineFormat %></strong> bằng cách trả lời lại email này.
+    </p>
+  </div>
 
-  <p style="color:#6b7280;font-size:14px;margin:0 0 24px">
-    Chúng tôi rất mong được gặp gỡ và trao đổi cùng bạn.
-  </p>
-
-  <p style="color:#6b7280;font-size:13px;margin:0">Trân trọng,<br />Đội ngũ Tuyển dụng — <strong><%= company %></strong></p>
+  <p style="color:#5f6368;font-size:14px;margin:0;line-height:1.5">Trân trọng,<br /><strong style="color:#181c20">Đội ngũ Tuyển dụng — <%= company %></strong></p>
 </div>

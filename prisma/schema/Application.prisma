@@ -1,0 +1,34 @@
+model Application {
+  id                String             @id @default(uuid())
+  coverLetter       String?            @map("cover_letter") @db.Text
+  cvUrl             String?            @map("cv_url")
+  status            ApplicationStatus? @default(PENDING) @map("status")
+  note              String?            @map("note") @db.Text
+  createdAt         DateTime           @default(now()) @map("created_at")
+  updatedAt         DateTime           @updatedAt @map("updated_at")
+  userId            String             @map("user_id")
+  jobId             String             @map("job_id")
+  phone             String?            @map("phone")
+  confirmDeadline   DateTime?          @map("confirm_deadline")
+  interviewDate     DateTime?          @map("interview_date")
+  interviewFormat   String?            @map("interview_format") @db.VarChar(20)
+  interviewLocation String?            @map("interview_location") @db.VarChar(500)
+  interviewTime     String?            @map("interview_time") @db.VarChar(10)
+  officeAddress     String?            @map("office_address") @db.VarChar(500)
+  startDate         DateTime?          @map("start_date")
+  startTime         String?            @map("start_time") @db.VarChar(10)
+  cvId              String?            @map("cv_id")
+  companyId         String?
+  isDraft           Boolean            @default(false) @map("is_draft")
+  company           Company?           @relation(fields: [companyId], references: [id])
+  cv                Cv?                @relation(fields: [cvId], references: [id])
+  job               Job                @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, jobId])
+  @@index([userId])
+  @@index([jobId])
+  @@index([cvId])
+  @@index([companyId], map: "applications_companyId_fkey")
+  @@map("applications")
+}

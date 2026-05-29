@@ -1,0 +1,31 @@
+model Job {
+  id           String        @id @default(uuid())
+  title        String        @map("title")
+  location     String        @map("location")
+  salary       String?       @map("salary")
+  type         JobType       @default(FULL_TIME) @map("type")
+  level        String?       @map("level")
+  description  String        @map("description") @db.LongText
+  tags         Json?         @map("tags")
+  industry     Json?         @map("industry")
+  benefits     Json?         @map("benefits")
+  requirements Json?         @map("requirements")
+  slots        Int           @default(1) @map("slots")
+  deadline     DateTime?     @map("deadline")
+  status       JobStatus     @default(PUBLISHED) @map("status")
+  isHot        Boolean       @default(false) @map("is_hot")
+  viewCount    Int           @default(0) @map("view_count")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  postedById   String        @map("posted_by_id")
+  companyId    String        @map("company_id")
+  applications Application[]
+  cvAnalyses   CvAnalysis[]
+  company      Company       @relation(fields: [companyId], references: [id])
+  postedBy     User          @relation(fields: [postedById], references: [id], onDelete: Cascade)
+  savedBy      SavedJob[]
+
+  @@index([postedById])
+  @@index([companyId], map: "jobs_company_id_fkey")
+  @@map("jobs")
+}

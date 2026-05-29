@@ -1,0 +1,27 @@
+model Company {
+  id                String          @id @default(uuid())
+  name              String          @map("name")
+  email             String          @map("email")
+  phone             String?         @map("phone")
+  description       String?         @map("description") @db.Text
+  subDescription    String?         @map("sub_description") @db.Text
+  address           String?         @map("address") @db.VarChar(255)
+  industry          String?         @map("industry") @db.VarChar(100)
+  size              String?         @map("size") @db.VarChar(100)
+  mapUrl            String?         @map("map_url") @db.Text
+  logoUrl           String?         @map("logo_url") @db.Text
+  coverImageUrl     String?         @map("cover_image_url") @db.Text
+  socialLinks       Json?           @map("social_links")
+  isVerified        Boolean         @default(false) @map("is_verified")
+  isActive          Boolean         @default(true) @map("is_active")
+  createdAt         DateTime        @default(now()) @map("created_at")
+  updatedAt         DateTime        @updatedAt @map("updated_at")
+  totalJobs         Int             @default(0) @map("total_jobs")
+  totalApplications Int             @default(0) @map("total_applications")
+  applications      Application[]
+  reviews           CompanyReview[]
+  jobs              Job[]
+  user              User[]
+
+  @@map("companies")
+}

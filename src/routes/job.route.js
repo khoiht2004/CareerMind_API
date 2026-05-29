@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const controller = require("@/controllers/job.controller");
 const { authRequired, roleRequired } = require("@/middlewares");
+const permissionRequired = require("@/middlewares/permissionRequired");
 
 // Public
 router.get("/", controller.getJobs);
@@ -11,9 +12,27 @@ router.get("/my/stats", authRequired, roleRequired("RECRUITER", "ADMIN"), contro
 
 router.get("/:id", controller.getJobById);
 
-// Recruiter + Admin
-router.post("/", authRequired, roleRequired("RECRUITER", "ADMIN"), controller.createJob);
-router.put("/:id", authRequired, roleRequired("RECRUITER", "ADMIN"), controller.updateJob);
-router.delete("/:id", authRequired, roleRequired("RECRUITER", "ADMIN"), controller.deleteJob);
+// Recruiter + Admin (permission-gated)
+router.post(
+  "/",
+  authRequired,
+  roleRequired("RECRUITER", "ADMIN"),
+  permissionRequired("job:create"),
+  controller.createJob,
+);
+router.put(
+  "/:id",
+  authRequired,
+  roleRequired("RECRUITER", "ADMIN"),
+  permissionRequired("job:update:own", "job:update:company"),
+  controller.updateJob,
+);
+router.delete(
+  "/:id",
+  authRequired,
+  roleRequired("RECRUITER", "ADMIN"),
+  permissionRequired("job:delete:own"),
+  controller.deleteJob,
+);
 
 module.exports = router;

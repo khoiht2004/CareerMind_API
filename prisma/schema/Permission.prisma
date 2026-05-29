@@ -1,0 +1,11 @@
+model Permission {
+  id              String           @id @default(uuid())
+  name            String           @unique
+  description     String?
+  group           Json
+  createdAt       DateTime         @default(now()) @map("created_at")
+  rolePermissions RolePermission[]
+  userPermissions UserPermission[]
+
+  @@map("permissions")
+}

@@ -1,9 +1,10 @@
 const model = require("@/models/application.model");
 const jobModel = require("@/models/job.model");
 const queueService = require("@/services/queue.service");
+const prisma = require('@/libs/prisma');
 
 async function apply(req, res) {
-  const { jobId, coverLetter, cvUrl, cvId, phone, email, name } = req.body;
+  const { jobId, coverLetter, cvUrl, cvId, phone, email, name, isDraft = false } = req.body;
   if (!jobId) return res.error(400, "jobId là bắt buộc");
 
   const job = await jobModel.getJobById(jobId);
@@ -15,31 +16,43 @@ async function apply(req, res) {
     cvUrl,
     cvId: cvId || undefined,
     phone,
+    isDraft: Boolean(isDraft),
   });
 
-  if (!application) return res.error(409, "Bạn đã ứng tuyển vị trí này rồi");
+  if (!application)
+    return res.error(
+      409,
+      isDraft
+        ? "Bạn đã có đơn ứng tuyển hoặc bản nháp cho vị trí này"
+        : "Bạn đã ứng tuyển vị trí này rồi",
+    );
 
-  // Gửi email thông báo
-  await queueService.push(
-    "sendApplyEmail",
-    {
-      email: email,
-      applicantName: name,
-      jobTitle: job.title,
-      company: job.company.name,
-    },
-    1,
-  );
+  if (!isDraft) {
+    await queueService.push(
+      "sendApplyEmail",
+      {
+        email: email,
+        applicantName: name,
+        jobTitle: job.title,
+        company: job.company.name,
+      },
+      1,
+    );
+  }
 
   return res.success(201, application);
 }
 
 async function getMyApplications(req, res) {
-  const { page = 1, limit = 10, status } = req.query;
+  const { page = 1, limit = 10, status, isDraft } = req.query;
+  // Support both legacy isDraft filter and new status-based filter
+  const parsedIsDraft =
+    isDraft === "true" ? true : isDraft === "false" ? false : undefined;
   const result = await model.getMyApplications(req.auth.user.id, {
     page: +page,
     limit: +limit,
-    status,
+    status: status || undefined,
+    isDraft: parsedIsDraft,
   });
   return res.success(200, result);
 }
@@ -85,7 +98,7 @@ async function updateStatus(req, res) {
 
   const VALID = ["PENDING", "REVIEWING", "INTERVIEW", "ACCEPTED", "REJECTED"];
   if (!status || !VALID.includes(status))
-    return res.error(400, "Trạng thái không hợp lệ");
+    return res.error(400, "Trạng thái không hợp lệ. Recruiter không thể đặt trạng thái DRAFT");
 
   const app = await model.getApplicationById(req.params.id);
   if (!app) return res.error(404, "Không tìm thấy đơn ứng tuyển");
@@ -173,6 +186,44 @@ async function checkApplied(req, res) {
   return res.success(200, { applied });
 }
 
+async function getMyInsights(req, res) {
+  const userId = req.auth.user.id;
+  
+  const applications = await prisma.application.findMany({
+    where: { userId },
+    include: {
+      job: { include: { company: true } }
+    },
+    orderBy: { createdAt: 'desc' }
+  });
+
+  const total = applications.length;
+  const statusCounts = applications.reduce((acc, app) => {
+    acc[app.status] = (acc[app.status] || 0) + 1;
+    return acc;
+  }, {});
+
+  const rejectedApps = applications.filter(a => a.status === 'REJECTED').slice(0, 5);
+  let feedback = "Bạn chưa có đơn ứng tuyển nào bị từ chối. Cứ tự tin ứng tuyển các công việc phù hợp nhé!";
+
+  if (rejectedApps.length > 0) {
+    const aiService = require("@/services/ai.service");
+    const prompt = `Phân tích nguyên nhân rớt ứng tuyển của ứng viên này.
+Đây là danh sách các công việc ứng viên đã bị từ chối gần đây:
+${rejectedApps.map(a => `- Vị trí: ${a.job?.title} tại công ty ${a.job?.company?.name}`).join('\n')}
+
+Dựa vào danh sách này, hãy đưa ra 1 đoạn nhận xét ngắn gọn (khoảng 3-4 câu) bằng tiếng Việt, mang tính động viên và khuyên ứng viên về định hướng hoặc cách cải thiện CV.`;
+    try {
+      feedback = await aiService.completions(prompt, [{ role: "user", content: "Phân tích và cho tôi lời khuyên" }]);
+    } catch (e) {
+      console.error(e);
+      feedback = "Hệ thống AI đang bận, không thể phân tích lúc này.";
+    }
+  }
+
+  return res.success(200, { total, statusCounts, feedback });
+}
+
 module.exports = {
   apply,
   getMyApplications,
@@ -181,4 +232,5 @@ module.exports = {
   updateStatus,
   deleteApplication,
   checkApplied,
+  getMyInsights,
 };

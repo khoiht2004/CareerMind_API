@@ -69,7 +69,7 @@ class AdminModel {
     });
   }
 
-  static async findUserById(id, selectFields) {
+  static async findUserByIdAndSelectFields(id, selectFields) {
     return prisma.user.findUnique({
       where: { id },
       select: selectFields,
@@ -126,6 +126,103 @@ class AdminModel {
       data: { status },
       select: { id: true, title: true, status: true },
     });
+  }
+
+  static async getPostsAndCount(where, skip, limit) {
+    return Promise.all([
+      prisma.post.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { createdAt: "desc" },
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          excerpt: true,
+          coverUrl: true,
+          category: true,
+          authorName: true,
+          authorId: true,
+          contentFormat: true,
+          isPublished: true,
+          viewCount: true,
+          createdAt: true,
+          updatedAt: true,
+          author: {
+            select: {
+              id: true,
+              email: true,
+              role: true,
+              profile: { select: { fullName: true } },
+              company: { select: { id: true, name: true } },
+            },
+          },
+        },
+      }),
+      prisma.post.count({ where }),
+    ]);
+  }
+
+  static async findPostById(id) {
+    return prisma.post.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        excerpt: true,
+        content: true,
+        contentFormat: true,
+        coverUrl: true,
+        category: true,
+        authorName: true,
+        authorId: true,
+        isPublished: true,
+        viewCount: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+  }
+
+  static async createPost(data) {
+    return prisma.post.create({
+      data,
+      select: {
+        id: true,
+        title: true,
+        category: true,
+        isPublished: true,
+        createdAt: true,
+      },
+    });
+  }
+
+  static async updatePost(id, data) {
+    return prisma.post.update({
+      where: { id },
+      data,
+      select: {
+        id: true,
+        title: true,
+        category: true,
+        isPublished: true,
+        updatedAt: true,
+      },
+    });
+  }
+
+  static async updatePostPublished(id, isPublished) {
+    return prisma.post.update({
+      where: { id },
+      data: { isPublished },
+      select: { id: true, title: true, isPublished: true },
+    });
+  }
+
+  static async deletePost(id) {
+    return prisma.post.delete({ where: { id } });
   }
 
   static async getApplicationsAndCount(where, skip, limit) {
@@ -256,6 +353,79 @@ class AdminModel {
     return prisma.company.update({
       where: { id },
       data: { isActive },
+    });
+  }
+
+  // ─── Permission Management ───────────────────────────────────────────────────
+
+  static async getAllPermissions() {
+    return prisma.permission.findMany({
+      orderBy: { name: "asc" },
+      include: { rolePermissions: { select: { role: true } } },
+    });
+  }
+
+  static async getQueuesAndCount(where, skip, limit) {
+    return Promise.all([
+      prisma.queue.findMany({ where, skip, take: limit, orderBy: { id: "desc" } }),
+      prisma.queue.count({ where }),
+    ]);
+  }
+
+  static async findUserById(id) {
+    return prisma.user.findUnique({ where: { id }, select: { id: true, role: true, email: true } });
+  }
+
+  static async getRolePermissions(role) {
+    return prisma.rolePermission.findMany({
+      where: { role },
+      include: { permission: true },
+    });
+  }
+
+  static async getUserPermissions(userId) {
+    return prisma.userPermission.findMany({
+      where: { userId },
+      include: { permission: true },
+    });
+  }
+
+  static async upsertUserPermission(userId, permissionId, isGranted) {
+    return prisma.userPermission.upsert({
+      where: { userId_permissionId: { userId, permissionId } },
+      update: { isGranted },
+      create: { userId, permissionId, isGranted },
+    });
+  }
+
+  static async createPermission(data) {
+    return prisma.permission.create({ data });
+  }
+
+  static async findPermissionById(id) {
+    return prisma.permission.findUnique({ where: { id } });
+  }
+
+  static async findPermissionByName(name) {
+    return prisma.permission.findUnique({ where: { name } });
+  }
+
+  static async deletePermission(id) {
+    return prisma.permission.delete({ where: { id } });
+  }
+
+  static async updatePermission(id, { name, description, group }) {
+    return prisma.permission.update({
+      where: { id },
+      data: { name, description, group },
+    });
+  }
+
+  static async syncRolePermissions(permissionId, roles) {
+    await prisma.rolePermission.deleteMany({ where: { permissionId } });
+    if (roles.length === 0) return;
+    await prisma.rolePermission.createMany({
+      data: roles.map((role) => ({ role, permissionId })),
     });
   }
 }

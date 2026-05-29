@@ -20,10 +20,9 @@ const app = express();
 // Cấu hình CORS
 const corsOptions = {
   origin: [
+    "http://localhost",
     "http://localhost:5173",
     "http://localhost:5174",
-    "https://khoiht2004.github.io",
-    "https://sra-fe-demo.vercel.app",
   ],
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   optionsSuccessStatus: 200,

@@ -1,0 +1,15 @@
+model ChatMessage {
+  id          String      @id @default(uuid())
+  role        MessageRole @map("role")
+  content     String      @map("content") @db.Text
+  createdAt   DateTime    @default(now()) @map("created_at")
+  sessionId   String      @map("session_id")
+  messageType MessageType @default(TEXT) @map("message_type")
+  attachments Json?       @map("attachments")
+  session     ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  cvAnalysis  CvAnalysis?
+
+  @@index([sessionId])
+  @@index([sessionId, createdAt])
+  @@map("chat_messages")
+}
