@@ -8,6 +8,16 @@ const getSessions = async (userId) => {
       title: true,
       createdAt: true,
       updatedAt: true,
+      user: {
+        select: {
+          id: true,
+          profile: {
+            select: {
+              avatarUrl: true,
+            },
+          },
+        },
+      },
       _count: { select: { messages: true } },
     },
     orderBy: { updatedAt: "desc" },
@@ -40,12 +50,19 @@ const getMessages = async (sessionId) => {
 
   const messages = await prisma.chatMessage.findMany({
     where: { id: { in: ids } },
-    select: { id: true, role: true, content: true, attachments: true, createdAt: true, cvAnalysis: true },
+    select: {
+      id: true,
+      role: true,
+      content: true,
+      attachments: true,
+      createdAt: true,
+      cvAnalysis: true,
+    },
   });
 
   // Sort ở Node.js memory dựa theo thứ tự của mảng ids ban đầu
-  const messageMap = new Map(messages.map(message => [message.id, message]));
-  return ids.map(id => messageMap.get(id)).filter(Boolean);
+  const messageMap = new Map(messages.map((message) => [message.id, message]));
+  return ids.map((id) => messageMap.get(id)).filter(Boolean);
 };
 
 const getRecentMessages = async (sessionId, limit = 10) => {
@@ -64,12 +81,22 @@ const getRecentMessages = async (sessionId, limit = 10) => {
   // Bước 2: Lấy full data của những ID đó (KHÔNG có ORDER BY)
   const messages = await prisma.chatMessage.findMany({
     where: { id: { in: ids } },
-    select: { id: true, role: true, content: true, attachments: true, createdAt: true, cvAnalysis: true },
+    select: {
+      id: true,
+      role: true,
+      content: true,
+      attachments: true,
+      createdAt: true,
+      cvAnalysis: true,
+    },
   });
 
   // Bước 3: Sort bằng JS và lật ngược thứ tự lại (vì lấy recent là desc, cần trả về asc cho UI)
-  const messageMap = new Map(messages.map(m => [m.id, m]));
-  return ids.map(id => messageMap.get(id)).filter(Boolean).reverse();
+  const messageMap = new Map(messages.map((m) => [m.id, m]));
+  return ids
+    .map((id) => messageMap.get(id))
+    .filter(Boolean)
+    .reverse();
 };
 
 const addMessage = async (sessionId, role, content, attachments = null) => {
@@ -80,7 +107,13 @@ const addMessage = async (sessionId, role, content, attachments = null) => {
       content,
       attachments: attachments?.length ? attachments : null,
     },
-    select: { id: true, role: true, content: true, attachments: true, createdAt: true },
+    select: {
+      id: true,
+      role: true,
+      content: true,
+      attachments: true,
+      createdAt: true,
+    },
   });
   await prisma.chatSession.update({
     where: { id: sessionId },
