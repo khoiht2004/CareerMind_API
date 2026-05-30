@@ -2,6 +2,7 @@ const model = require("@/models/application.model");
 const jobModel = require("@/models/job.model");
 const queueService = require("@/services/queue.service");
 const prisma = require('@/libs/prisma');
+const socketHelper = require("@/libs/socket");
 
 async function apply(req, res) {
   const { jobId, coverLetter, cvUrl, cvId, phone, email, name, isDraft = false } = req.body;
@@ -123,6 +124,42 @@ async function updateStatus(req, res) {
     note,
     extraFields,
   );
+
+  try {
+    // 1. Tạo Notification trong Database
+    const jobTitle = app.job?.title ?? "vị trí tuyển dụng";
+    let statusText = status;
+    if (status === "REVIEWING") statusText = "Đang xem xét";
+    else if (status === "INTERVIEW") statusText = "Lên lịch phỏng vấn";
+    else if (status === "ACCEPTED") statusText = "Được nhận";
+    else if (status === "REJECTED") statusText = "Từ chối";
+    else if (status === "PENDING") statusText = "Chờ xét duyệt";
+
+    let notiTitle = "Cập nhật đơn ứng tuyển";
+    let notiContent = `Đơn ứng tuyển của bạn cho vị trí "${jobTitle}" đã chuyển sang trạng thái: ${statusText}.`;
+
+    if (status === "INTERVIEW") {
+      notiTitle = "Lời mời phỏng vấn";
+      notiContent = `Bạn có một lời mời phỏng vấn mới cho vị trí "${jobTitle}" vào ngày ${interviewDate} lúc ${interviewTime || ""}.`;
+    } else if (status === "ACCEPTED") {
+      notiTitle = "Chúc mừng! Bạn đã trúng tuyển";
+      notiContent = `Chúc mừng bạn đã trúng tuyển vào vị trí "${jobTitle}". Ngày bắt đầu làm việc: ${startDate}.`;
+    }
+
+    // Lưu thông báo vào database (Prisma Client đã được generate mới nhất)
+    const notification = await prisma.notification.create({
+      data: {
+        userId: app.user.id,
+        title: notiTitle,
+        content: notiContent,
+      },
+    });
+
+    // 2. Gửi realtime socket
+    socketHelper.sendToUser(app.user.id, "notification:new", notification);
+  } catch (error) {
+    console.error("Lỗi khi lưu và gửi thông báo realtime:", error);
+  }
 
   // Gửi email thông báo nếu sendEmail = true
   if (sendEmail) {

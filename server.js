@@ -23,6 +23,7 @@ const corsOptions = {
     "http://localhost",
     "http://localhost:5173",
     "http://localhost:5174",
+    "http://localhost:5175",
   ],
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   optionsSuccessStatus: 200,
@@ -47,7 +48,14 @@ app.use(handleMulterError);
 app.use(notFoundHandler);
 app.use(exceptionHandler);
 
+const http = require("http");
+const { initSocket } = require("@/libs/socket");
+
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
+const server = http.createServer(app);
+
+initSocket(server);
+
+server.listen(port, () => {
   console.log(`App listening on port ${port}`);
 });
