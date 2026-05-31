@@ -2,7 +2,11 @@ const aiService = require("@/services/ai.service");
 const chatModel = require("@/models/chat.model");
 const profileModel = require("@/models/profile.model");
 const authModel = require("@/models/auth.model");
-const { _getMatchingJobs, _formatJobs, _formatJobsWithCandidates } = require("@/utils/chatbot.helper");
+const {
+  _getMatchingJobs,
+  _formatJobs,
+  _formatJobsWithCandidates,
+} = require("@/utils/chatbot.helper");
 const { extractFileText } = require("../utils/chatbot.helper");
 
 class ChatBotService {
@@ -149,10 +153,13 @@ class ChatBotService {
         );
         if (companyData) {
           companyInfo = companyData;
-          
+
           // Phát hiện xem user có đang muốn hỏi/phân tích ứng viên hay không
-          const askForCandidates = /ứng viên|candidate|ai ứng tuyển|nộp hồ sơ|phân tích|đánh giá|cv|hồ sơ/i.test(userInput);
-          
+          const askForCandidates =
+            /ứng viên|candidate|ai ứng tuyển|nộp hồ sơ|phân tích|đánh giá|cv|hồ sơ/i.test(
+              userInput,
+            );
+
           if (askForCandidates) {
             isCandidateAnalysisContext = true;
             const prisma = require("@/libs/prisma");
@@ -165,7 +172,7 @@ class ChatBotService {
                 applications: {
                   where: {
                     status: { in: ["PENDING", "REVIEWING"] },
-                    isDraft: false
+                    isDraft: false,
                   },
                   select: {
                     id: true,
@@ -181,16 +188,16 @@ class ChatBotService {
                             fullName: true,
                             skills: true,
                             bio: true,
-                            address: true
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
+                            address: true,
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
               },
               orderBy: { createdAt: "desc" },
-              take: 10 // Giới hạn 10 job mới nhất có hoạt động để tránh overload token
+              take: 10, // Giới hạn 10 job mới nhất có hoạt động để tránh overload token
             });
             jobList = _formatJobsWithCandidates(jobs);
           } else {
@@ -216,7 +223,7 @@ class ChatBotService {
     }
 
     const systemPrompt = `
-Bạn là AI Scout - Trợ lý tuyển dụng thông minh, hỗ trợ ${isCandidate ? "ứng viên tìm kiếm việc làm phù hợp" : "nhà tuyển dụng tìm kiếm ứng viên chất lượng"}.
+Bạn là MindScout - Trợ lý tuyển dụng thông minh, hỗ trợ ${isCandidate ? "ứng viên tìm kiếm việc làm phù hợp" : "nhà tuyển dụng tìm kiếm ứng viên chất lượng"}.
 ════════════════════════════════
 THÔNG TIN NGƯỜI DÙNG (ĐÃ XÁC THỰC)
 ════════════════════════════════
