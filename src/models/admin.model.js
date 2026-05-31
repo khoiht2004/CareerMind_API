@@ -35,7 +35,13 @@ class AdminModel {
             profile: { select: { fullName: true, avatarUrl: true } },
           },
         },
-        job: { select: { id: true, title: true, company: { select: { id: true, name: true } } } },
+        job: {
+          select: {
+            id: true,
+            title: true,
+            company: { select: { id: true, name: true } },
+          },
+        },
       },
     });
   }
@@ -126,6 +132,10 @@ class AdminModel {
       data: { status },
       select: { id: true, title: true, status: true },
     });
+  }
+
+  static async deleteJob(id) {
+    return prisma.job.delete({ where: { id } });
   }
 
   static async getPostsAndCount(where, skip, limit) {
@@ -244,7 +254,13 @@ class AdminModel {
               profile: { select: { fullName: true, avatarUrl: true } },
             },
           },
-          job: { select: { id: true, title: true, company: { select: { id: true, name: true } } } },
+          job: {
+            select: {
+              id: true,
+              title: true,
+              company: { select: { id: true, name: true } },
+            },
+          },
         },
       }),
       prisma.application.count({ where }),
@@ -261,6 +277,10 @@ class AdminModel {
       data,
       select: { id: true, status: true, note: true },
     });
+  }
+
+  static async deleteApplication(id) {
+    return prisma.application.delete({ where: { id } });
   }
 
   static async getChatStats(sevenDaysAgo) {
@@ -367,13 +387,21 @@ class AdminModel {
 
   static async getQueuesAndCount(where, skip, limit) {
     return Promise.all([
-      prisma.queue.findMany({ where, skip, take: limit, orderBy: { id: "desc" } }),
+      prisma.queue.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { id: "desc" },
+      }),
       prisma.queue.count({ where }),
     ]);
   }
 
   static async findUserById(id) {
-    return prisma.user.findUnique({ where: { id }, select: { id: true, role: true, email: true } });
+    return prisma.user.findUnique({
+      where: { id },
+      select: { id: true, role: true, email: true },
+    });
   }
 
   static async getRolePermissions(role) {

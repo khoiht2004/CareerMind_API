@@ -14,6 +14,7 @@ router.patch("/users/:id/toggle-active", controller.toggleUserActive);
 
 router.get("/jobs", controller.getAdminJobs);
 router.patch("/jobs/:id/status", controller.updateJobStatus);
+router.delete("/jobs/:id", controller.deleteJob);
 
 router.get("/posts", controller.getAdminPosts);
 router.post("/posts", controller.createAdminPost);
@@ -24,6 +25,7 @@ router.delete("/posts/:id", controller.deleteAdminPost);
 
 router.get("/applications", controller.getAdminApplications);
 router.patch("/applications/:id/status", controller.updateApplicationStatus);
+router.delete("/applications/:id", controller.deleteApplication);
 
 router.get("/chat-stats", controller.getChatStats);
 router.get("/chat-sessions", controller.getAdminChatSessions);
