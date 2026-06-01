@@ -247,6 +247,24 @@ class AdminModel {
           status: true,
           createdAt: true,
           note: true,
+          interview: {
+            select: {
+              id: true,
+              interviewDate: true,
+              interviewTime: true,
+              interviewFormat: true,
+              interviewLocation: true,
+              confirmDeadline: true,
+            }
+          },
+          jobOffer: {
+            select: {
+              id: true,
+              startDate: true,
+              startTime: true,
+              officeAddress: true,
+            }
+          },
           user: {
             select: {
               id: true,

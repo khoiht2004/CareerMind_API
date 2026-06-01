@@ -1,0 +1,14 @@
+model Interview {
+  id              String      @id @default(uuid())
+  applicationId   String      @unique @map("application_id")
+  application     Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  interviewDate   DateTime    @map("interview_date")
+  interviewTime   String?     @map("interview_time") @db.VarChar(10)
+  interviewFormat String      @map("interview_format") @db.VarChar(20) // e.g. online, offline
+  interviewLocation String?   @map("interview_location") @db.VarChar(500)
+  confirmDeadline DateTime?   @map("confirm_deadline")
+  createdAt       DateTime    @default(now()) @map("created_at")
+  updatedAt       DateTime    @updatedAt @map("updated_at")
+
+  @@map("interviews")
+}
