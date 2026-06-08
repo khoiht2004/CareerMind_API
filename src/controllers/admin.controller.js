@@ -85,7 +85,9 @@ async function updateUserRole(req, res) {
 
 async function toggleUserActive(req, res) {
   const { id } = req.params;
-  const user = await AdminModel.findUserByIdAndSelectFields(id, { isActive: true });
+  const user = await AdminModel.findUserByIdAndSelectFields(id, {
+    isActive: true,
+  });
   if (!user) return res.error(404, "Không tìm thấy người dùng");
 
   const updated = await AdminModel.toggleUserActive(id, !user.isActive);
@@ -133,6 +135,15 @@ async function updateJobStatus(req, res) {
   return res.success(200, updated);
 }
 
+async function deleteJob(req, res) {
+  const { id } = req.params;
+  const job = await AdminModel.findJobById(id);
+  if (!job) return res.error(404, "Không tìm thấy công việc");
+
+  await AdminModel.deleteJob(id);
+  return res.success(200, { message: "Đã xóa công việc thành công" });
+}
+
 const slugify = (value = "") =>
   value
     .normalize("NFD")
@@ -162,7 +173,14 @@ function buildPostPayload(body, authorId) {
 }
 
 async function getAdminPosts(req, res) {
-  const { page = 1, limit = 20, search, category, status, authorId } = req.query;
+  const {
+    page = 1,
+    limit = 20,
+    search,
+    category,
+    status,
+    authorId,
+  } = req.query;
   const skip = (+page - 1) * +limit;
   const where = {
     ...(category && { category }),
@@ -232,7 +250,10 @@ async function updateAdminPostPublished(req, res) {
   const post = await AdminModel.findPostById(req.params.id);
   if (!post) return res.error(404, "Không tìm thấy bài viết");
 
-  const updated = await AdminModel.updatePostPublished(req.params.id, isPublished);
+  const updated = await AdminModel.updatePostPublished(
+    req.params.id,
+    isPublished,
+  );
   return res.success(200, updated);
 }
 
@@ -261,7 +282,11 @@ async function getAdminApplications(req, res) {
     }),
   };
 
-  const [data, total] = await AdminModel.getApplicationsAndCount(where, skip, +limit);
+  const [data, total] = await AdminModel.getApplicationsAndCount(
+    where,
+    skip,
+    +limit,
+  );
 
   return res.success(200, {
     data,
@@ -282,15 +307,30 @@ async function updateApplicationStatus(req, res) {
   const app = await AdminModel.findApplicationById(id);
   if (!app) return res.error(404, "Không tìm thấy đơn ứng tuyển");
 
-  const updated = await AdminModel.updateApplicationStatus(id, { status, ...(note && { note }) });
+  const updated = await AdminModel.updateApplicationStatus(id, {
+    status,
+    ...(note && { note }),
+  });
   return res.success(200, updated);
+}
+
+async function deleteApplication(req, res) {
+  const { id } = req.params;
+  const app = await AdminModel.findApplicationById(id);
+  if (!app) return res.error(404, "Không tìm thấy đơn ứng tuyển");
+
+  await AdminModel.deleteApplication(id);
+  return res.success(200, {
+    message: "Đã xóa đơn ứng tuyển thành công",
+  });
 }
 
 // ─── Admin Chat ───────────────────────────────────────────────────────────────
 
 async function getChatStats(req, res) {
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-  const [totalSessions, totalMessages, recentSessions] = await AdminModel.getChatStats(sevenDaysAgo);
+  const [totalSessions, totalMessages, recentSessions] =
+    await AdminModel.getChatStats(sevenDaysAgo);
   return res.success(200, { totalSessions, totalMessages, recentSessions });
 }
 
@@ -312,7 +352,8 @@ async function getAdminChatSessions(req, res) {
 // ─── Admin System ─────────────────────────────────────────────────────────────
 
 async function getSystemStats(req, res) {
-  const [totalQueues, pendingQueues, failedQueues, processedQueues] = await AdminModel.getSystemStats();
+  const [totalQueues, pendingQueues, failedQueues, processedQueues] =
+    await AdminModel.getSystemStats();
   return res.success(200, {
     totalQueues,
     pendingQueues,
@@ -353,7 +394,11 @@ async function getAdminCompanies(req, res) {
       ],
     }),
   };
-  const [data, total] = await AdminModel.getCompaniesAndCount(where, skip, +limit);
+  const [data, total] = await AdminModel.getCompaniesAndCount(
+    where,
+    skip,
+    +limit,
+  );
   return res.success(200, {
     data,
     total,
@@ -365,13 +410,32 @@ async function getAdminCompanies(req, res) {
 
 // [POST] Admin tạo một công ty mới (Hoặc có thể lúc recruiter signup thì tự tạo)
 async function createCompany(req, res) {
-  const { name, email, description, logoUrl, phone, address, coverImageUrl, socialLinks } = req.body;
+  const {
+    name,
+    email,
+    description,
+    logoUrl,
+    phone,
+    address,
+    coverImageUrl,
+    socialLinks,
+  } = req.body;
   if (!name || !email || !description || !logoUrl) {
-    return res.error(400, "Thiếu thông tin bắt buộc: name, email, description, logoUrl");
+    return res.error(
+      400,
+      "Thiếu thông tin bắt buộc: name, email, description, logoUrl",
+    );
   }
 
   const company = await AdminModel.createCompany({
-    name, email, description, logoUrl, phone, address, coverImageUrl, socialLinks
+    name,
+    email,
+    description,
+    logoUrl,
+    phone,
+    address,
+    coverImageUrl,
+    socialLinks,
   });
   res.success(201, company);
 }
@@ -434,7 +498,11 @@ async function createPermission(req, res) {
   if (!name || !group) return res.error(400, "name và group là bắt buộc");
   const existing = await AdminModel.findPermissionByName(name);
   if (existing) return res.error(409, "Tên quyền đã tồn tại");
-  const permission = await AdminModel.createPermission({ name, description, group });
+  const permission = await AdminModel.createPermission({
+    name,
+    description,
+    group,
+  });
   return res.success(201, permission);
 }
 
@@ -451,13 +519,15 @@ async function updatePermission(req, res) {
   const { name, description, group, roles = [] } = req.body;
 
   if (!name || !group) return res.error(400, "name và group là bắt buộc");
-  if (!group.label || !group.value) return res.error(400, "group phải có label và value");
+  if (!group.label || !group.value)
+    return res.error(400, "group phải có label và value");
 
   const perm = await AdminModel.findPermissionById(id);
   if (!perm) return res.error(404, "Không tìm thấy quyền");
 
   const conflict = await AdminModel.findPermissionByName(name);
-  if (conflict && conflict.id !== id) return res.error(409, "Tên quyền đã tồn tại");
+  if (conflict && conflict.id !== id)
+    return res.error(409, "Tên quyền đã tồn tại");
 
   const validRoles = ["ADMIN", "RECRUITER", "CANDIDATE"];
   const sanitizedRoles = roles.filter((r) => validRoles.includes(r));
@@ -480,6 +550,7 @@ module.exports = {
   toggleUserActive,
   getAdminJobs,
   updateJobStatus,
+  deleteJob,
   getAdminPosts,
   getAdminPostById,
   createAdminPost,
@@ -488,6 +559,7 @@ module.exports = {
   deleteAdminPost,
   getAdminApplications,
   updateApplicationStatus,
+  deleteApplication,
   getChatStats,
   getAdminChatSessions,
   getSystemStats,

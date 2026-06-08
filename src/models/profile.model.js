@@ -60,4 +60,50 @@ const deleteAvatar = async (userId) => {
   });
 };
 
-module.exports = { getProfile, upsertProfile, updateAvatar, deleteAvatar };
+const getProfileView = async (userId) => {
+  return prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      email: true,
+      role: true,
+      createdAt: true,
+      profile: {
+        select: {
+          fullName: true,
+          phone: true,
+          avatarUrl: true,
+          bio: true,
+          subBio: true,
+          address: true,
+          skills: true,
+        },
+      },
+      company: {
+        select: {
+          id: true,
+          name: true,
+          logoUrl: true,
+          address: true,
+          industry: true,
+          description: true,
+        },
+      },
+      cvs: {
+        select: {
+          id: true,
+          name: true,
+          fileUrl: true,
+          fileSize: true,
+          isDefault: true,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
+    },
+  });
+};
+
+module.exports = { getProfile, upsertProfile, updateAvatar, deleteAvatar, getProfileView };
+

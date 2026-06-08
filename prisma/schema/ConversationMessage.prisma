@@ -1,0 +1,16 @@
+model ConversationMessage {
+  id             String       @id @default(uuid())
+  content        String       @map("content") @db.Text
+  messageType    MessageType  @default(TEXT) @map("message_type")
+  attachments    Json?        @map("attachments")
+  isRead         Boolean      @default(false) @map("is_read")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  conversationId String       @map("conversation_id")
+  senderId       String       @map("sender_id")
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender         User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+  @@index([conversationId, createdAt])
+  @@map("conversation_messages")
+}

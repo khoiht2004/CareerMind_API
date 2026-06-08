@@ -6641,25 +6641,37 @@ async function main() {
         note: hasNote ? pick(RECRUITER_NOTES) : null,
       };
 
-      // Nếu status là INTERVIEW, thêm thông tin phỏng vấn
+      // Nếu status là INTERVIEW, thêm thông tin phỏng vấn vào bảng quan hệ
       if (status === "INTERVIEW") {
         const interviewDate = new Date(
           Date.now() + randInt(3, 14) * 86_400_000,
         );
-        appData.interviewDate = interviewDate;
-        appData.interviewFormat = pick(["online", "offline"]);
-        appData.interviewTime = `${randInt(8, 17)}:${pick(["00", "30"])}`;
-        if (appData.interviewFormat === "offline") {
-          appData.interviewLocation = job.companyId
-            ? "Văn phòng công ty"
-            : "TBD";
+        const format = pick(["online", "offline"]);
+        let location = null;
+        if (format === "offline") {
+          location = job.companyId ? "Văn phòng công ty" : "TBD";
         }
+        appData.interview = {
+          create: {
+            interviewDate,
+            interviewFormat: format,
+            interviewTime: `${randInt(8, 17)}:${pick(["00", "30"])}`,
+            interviewLocation: location,
+          },
+        };
       }
 
-      // Nếu ACCEPTED, thêm ngày bắt đầu
+      // Nếu ACCEPTED, thêm ngày bắt đầu vào bảng quan hệ
       if (status === "ACCEPTED") {
-        appData.startDate = new Date(Date.now() + randInt(14, 30) * 86_400_000);
-        appData.startTime = `${randInt(8, 9)}:00`;
+        appData.jobOffer = {
+          create: {
+            startDate: new Date(Date.now() + randInt(14, 30) * 86_400_000),
+            startTime: `${randInt(8, 9)}:00`,
+            officeAddress: job.companyId
+              ? "Văn phòng công ty"
+              : "Văn phòng làm việc",
+          },
+        };
       }
 
       await prisma.application.create({ data: appData });
@@ -6805,19 +6817,6 @@ async function main() {
       description:
         "Cho phép xóa bất kỳ bài viết nào trong hệ thống. Quyền này chỉ nên dùng cho tài khoản quản trị nội dung.",
     },
-    // Application permissions
-    {
-      name: "application:read:company",
-      group: { value: "application", label: "Quản lý đơn ứng tuyển" },
-      description:
-        "Cho phép xem toàn bộ đơn ứng tuyển thuộc công ty, kể cả đơn gửi cho tin của recruiter khác. Phù hợp cho nhà quản lý cần có cái nhìn toàn diện về pipeline tuyển dụng.",
-    },
-    {
-      name: "application:update:status",
-      group: { value: "application", label: "Quản lý đơn ứng tuyển" },
-      description:
-        "Cho phép thay đổi trạng thái đơn ứng tuyển như chuyển sang Đang xem xét, Phỏng vấn, Đã nhận hoặc Từ chối. Đây là quyền cốt lõi trong quy trình xét duyệt hồ sơ ứng viên.",
-    },
     // Company permissions
     {
       name: "company:manage",
@@ -6825,7 +6824,7 @@ async function main() {
       description:
         "Cho phép chỉnh sửa thông tin công ty như mô tả, logo, địa chỉ và các liên kết mạng xã hội. Quyền này nên được cấp cho người phụ trách thương hiệu nhà tuyển dụng.",
     },
-    // Candidate — Application permissions
+    // Application permissions
     {
       name: "application:create",
       group: { value: "application", label: "Quản lý đơn ứng tuyển" },
@@ -6843,6 +6842,18 @@ async function main() {
       group: { value: "application", label: "Quản lý đơn ứng tuyển" },
       description:
         "Cho phép ứng viên rút lại đơn ứng tuyển đã nộp. Chỉ áp dụng với đơn còn đang ở trạng thái chờ xét duyệt hoặc đang xem xét.",
+    },
+    {
+      name: "application:read:company",
+      group: { value: "application", label: "Quản lý đơn ứng tuyển" },
+      description:
+        "Cho phép xem toàn bộ đơn ứng tuyển thuộc công ty, kể cả đơn gửi cho tin của recruiter khác. Phù hợp cho nhà quản lý cần có cái nhìn toàn diện về pipeline tuyển dụng.",
+    },
+    {
+      name: "application:update:status",
+      group: { value: "application", label: "Quản lý đơn ứng tuyển" },
+      description:
+        "Cho phép thay đổi trạng thái đơn ứng tuyển như chuyển sang Đang xem xét, Phỏng vấn, Đã nhận hoặc Từ chối. Đây là quyền cốt lõi trong quy trình xét duyệt hồ sơ ứng viên.",
     },
     // Candidate — Job permissions
     {
@@ -6880,6 +6891,9 @@ async function main() {
     "post:create",
     "post:update:own",
     "post:delete:own",
+    "application:create",
+    "application:read:own",
+    "application:delete:own",
     "application:read:company",
     "application:update:status",
   ];

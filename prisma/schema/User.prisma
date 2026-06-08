@@ -1,7 +1,9 @@
 model User {
   id                    String           @id @default(uuid())
   email                 String           @unique @map("email")
-  password              String           @map("password")
+  password              String?          @map("password")
+  provider              String           @default("credentials") @map("provider")
+  providerId            String?          @map("provider_id")
   role                  Role             @default(CANDIDATE) @map("role")
   isVerified            Boolean          @default(false) @map("is_verified")
   isActive              Boolean          @default(true) @map("is_active")
@@ -13,6 +15,7 @@ model User {
   canCompanyManage      Boolean          @default(false) @map("can_company_manage")
   applications          Application[]
   chatSessions          ChatSession[]
+  notifications         Notification[]
   coverLetters          CoverLetter[]
   cvs                   Cv[]
   postedJobs            Job[]
@@ -24,6 +27,9 @@ model User {
   companyReviews        CompanyReview[]
   company               Company?         @relation(fields: [companyId], references: [id])
   userPermissions       UserPermission[]
+  conversationsOne     Conversation[]        @relation("UserOneConversations")
+  conversationsTwo     Conversation[]        @relation("UserTwoConversations")
+  conversationMessages ConversationMessage[]
 
   @@index([companyId], map: "users_company_id_fkey")
   @@map("users")

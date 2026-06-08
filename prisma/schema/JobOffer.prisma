@@ -1,0 +1,12 @@
+model JobOffer {
+  id            String      @id @default(uuid())
+  applicationId String      @unique @map("application_id")
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  startDate     DateTime    @map("start_date")
+  startTime     String?     @map("start_time") @db.VarChar(10)
+  officeAddress String?     @map("office_address") @db.VarChar(500)
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+
+  @@map("job_offers")
+}

@@ -2,6 +2,8 @@ const bcrypt = require("bcrypt");
 const model = require("@/models/auth.model");
 const AuthService = require("@/services/auth.service");
 const { getUserPermissions, groupPermissions } = require("@/utils/permission.util");
+const { google } = require("googleapis");
+const { authConfig } = require("@/config");
 
 async function register(req, res) {
   const { name, email, password } = req.body;
@@ -132,6 +134,152 @@ async function changePassword(req, res) {
   return res.success(200, data);
 }
 
+async function googleLogin(req, res) {
+  const { code, redirectUri } = req.body;
+  if (!code || !redirectUri) {
+    return res.error(400, "Mã code và redirectUri là bắt buộc");
+  }
+
+  try {
+    const oauth2Client = new google.auth.OAuth2(
+      authConfig.googleClientId,
+      authConfig.googleClientSecret,
+      redirectUri
+    );
+
+    const { tokens } = await oauth2Client.getToken(code);
+    oauth2Client.setCredentials(tokens);
+
+    const ticket = await oauth2Client.verifyIdToken({
+      idToken: tokens.id_token,
+      audience: authConfig.googleClientId,
+    });
+    const payload = ticket.getPayload();
+    const { sub: providerId, email, name, picture: avatarUrl } = payload;
+
+    if (!email) {
+      return res.error(400, "Không thể lấy email từ tài khoản Google");
+    }
+
+    const user = await model.findOrCreateSocialUser({
+      email,
+      name,
+      avatarUrl,
+      provider: "google",
+      providerId,
+    });
+
+    const { accessToken, timeExp } = await AuthService.signAccessToken(user);
+    const refreshToken = await AuthService.createRefreshToken(user);
+
+    return res.success(200, {
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      accessToken,
+      refreshToken,
+      expiredAt: timeExp,
+      companyId: user.companyId,
+      canCompanyManage: user.canCompanyManage,
+    });
+  } catch (error) {
+    console.error("Google login error:", error);
+    return res.error(500, "Đăng nhập bằng Google thất bại: " + error.message);
+  }
+}
+
+async function githubLogin(req, res) {
+  const { code, redirectUri } = req.body;
+  if (!code) {
+    return res.error(400, "Mã code là bắt buộc");
+  }
+
+  try {
+    // 1. Đổi code lấy Access Token từ GitHub
+    const tokenResponse = await fetch("https://github.com/login/oauth/access_token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        client_id: authConfig.githubClientId,
+        client_secret: authConfig.githubClientSecret,
+        code,
+        redirect_uri: redirectUri,
+      }),
+    });
+
+    const tokenData = await tokenResponse.json();
+    if (tokenData.error) {
+      return res.error(400, `GitHub OAuth Error: ${tokenData.error_description || tokenData.error}`);
+    }
+
+    const githubAccessToken = tokenData.access_token;
+
+    // 2. Lấy thông tin profile người dùng từ GitHub
+    const userResponse = await fetch("https://api.github.com/user", {
+      headers: {
+        Authorization: `Bearer ${githubAccessToken}`,
+        "User-Agent": "Smart-Recruit-Assistant",
+      },
+    });
+    const userData = await userResponse.json();
+    if (!userData.id) {
+      return res.error(400, "Không thể lấy thông tin người dùng từ GitHub");
+    }
+
+    const providerId = String(userData.id);
+    const name = userData.name || userData.login;
+    const avatarUrl = userData.avatar_url;
+    let email = userData.email;
+
+    // 3. Nếu email không được public, gọi API lấy danh sách email để tìm email chính
+    if (!email) {
+      const emailsResponse = await fetch("https://api.github.com/user/emails", {
+        headers: {
+          Authorization: `Bearer ${githubAccessToken}`,
+          "User-Agent": "Smart-Recruit-Assistant",
+        },
+      });
+      const emailsData = await emailsResponse.json();
+      if (Array.isArray(emailsData)) {
+        const primaryEmailObj = emailsData.find(e => e.primary && e.verified) || emailsData.find(e => e.primary) || emailsData[0];
+        email = primaryEmailObj?.email;
+      }
+    }
+
+    if (!email) {
+      return res.error(400, "Không thể lấy email từ tài khoản GitHub. Hãy đảm bảo email được xác thực.");
+    }
+
+    const user = await model.findOrCreateSocialUser({
+      email,
+      name,
+      avatarUrl,
+      provider: "github",
+      providerId,
+    });
+
+    const { accessToken, timeExp } = await AuthService.signAccessToken(user);
+    const refreshToken = await AuthService.createRefreshToken(user);
+
+    return res.success(200, {
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      accessToken,
+      refreshToken,
+      expiredAt: timeExp,
+      companyId: user.companyId,
+      canCompanyManage: user.canCompanyManage,
+    });
+  } catch (error) {
+    console.error("GitHub login error:", error);
+    return res.error(500, "Đăng nhập bằng GitHub thất bại: " + error.message);
+  }
+}
+
 module.exports = {
   register,
   login,
@@ -141,4 +289,6 @@ module.exports = {
   logout,
   refreshToken,
   changePassword,
+  googleLogin,
+  githubLogin,
 };

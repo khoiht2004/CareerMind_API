@@ -5,7 +5,9 @@ const { authRequired, uploadCloud } = require("@/middlewares");
 router.use(authRequired);
 
 router.get("/", controller.getProfile);
+router.get("/:id/view", controller.getProfileView);
 router.put("/", controller.updateProfile);
+
 router.post("/upload-avatar", uploadCloud.single("avatar_url"), controller.updateAvatar);
 router.delete("/delete-avatar", controller.deleteAvatar);
 

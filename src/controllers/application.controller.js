@@ -2,6 +2,7 @@ const model = require("@/models/application.model");
 const jobModel = require("@/models/job.model");
 const queueService = require("@/services/queue.service");
 const prisma = require('@/libs/prisma');
+const socketHelper = require("@/libs/socket");
 
 async function apply(req, res) {
   const { jobId, coverLetter, cvUrl, cvId, phone, email, name, isDraft = false } = req.body;
@@ -124,6 +125,45 @@ async function updateStatus(req, res) {
     extraFields,
   );
 
+  try {
+    // 1. Tạo Notification trong Database
+    const jobTitle = app.job?.title ?? "vị trí tuyển dụng";
+    let statusText = status;
+    if (status === "REVIEWING") statusText = "Đang xem xét";
+    else if (status === "INTERVIEW") statusText = "Lên lịch phỏng vấn";
+    else if (status === "ACCEPTED") statusText = "Được nhận";
+    else if (status === "REJECTED") statusText = "Từ chối";
+    else if (status === "PENDING") statusText = "Chờ xét duyệt";
+
+    let notiTitle = "Cập nhật đơn ứng tuyển";
+    let notiContent = `Đơn ứng tuyển của bạn cho vị trí "${jobTitle}" đã chuyển sang trạng thái: ${statusText}.`;
+
+    if (status === "INTERVIEW") {
+      const displayDate = interviewDate ? new Date(interviewDate).toLocaleDateString("vi-VN") : (updated.interview?.interviewDate ? new Date(updated.interview.interviewDate).toLocaleDateString("vi-VN") : "");
+      const displayTime = interviewTime || updated.interview?.interviewTime || "";
+      notiTitle = "Lời mời phỏng vấn";
+      notiContent = `Bạn có một lời mời phỏng vấn mới cho vị trí "${jobTitle}" vào ngày ${displayDate} lúc ${displayTime}.`;
+    } else if (status === "ACCEPTED") {
+      const displayStartDate = startDate ? new Date(startDate).toLocaleDateString("vi-VN") : (updated.jobOffer?.startDate ? new Date(updated.jobOffer.startDate).toLocaleDateString("vi-VN") : "");
+      notiTitle = "Chúc mừng! Bạn đã trúng tuyển";
+      notiContent = `Chúc mừng bạn đã trúng tuyển vào vị trí "${jobTitle}". Ngày bắt đầu làm việc: ${displayStartDate}.`;
+    }
+
+    // Lưu thông báo vào database (Prisma Client đã được generate mới nhất)
+    const notification = await prisma.notification.create({
+      data: {
+        userId: app.user.id,
+        title: notiTitle,
+        content: notiContent,
+      },
+    });
+
+    // 2. Gửi realtime socket
+    socketHelper.sendToUser(app.user.id, "notification:new", notification);
+  } catch (error) {
+    console.error("Lỗi khi lưu và gửi thông báo realtime:", error);
+  }
+
   // Gửi email thông báo nếu sendEmail = true
   if (sendEmail) {
     const candidateEmail = app.user?.email;
@@ -138,11 +178,11 @@ async function updateStatus(req, res) {
         applicantName,
         jobTitle,
         company,
-        interviewDate: interviewDate ?? null,
-        interviewTime: interviewTime ?? null,
-        interviewFormat: interviewFormat ?? null,
-        interviewLocation: interviewLocation ?? null,
-        confirmDeadline: confirmDeadline ?? null,
+        interviewDate: updated.interview?.interviewDate ?? null,
+        interviewTime: updated.interview?.interviewTime ?? null,
+        interviewFormat: updated.interview?.interviewFormat ?? null,
+        interviewLocation: updated.interview?.interviewLocation ?? null,
+        confirmDeadline: updated.interview?.confirmDeadline ?? null,
       });
     } else if (status === "ACCEPTED") {
       await queueService.push("sendAcceptedEmail", {
@@ -150,9 +190,9 @@ async function updateStatus(req, res) {
         applicantName,
         jobTitle,
         company,
-        startDate: startDate ?? null,
-        startTime: startTime ?? null,
-        officeAddress: officeAddress ?? null,
+        startDate: updated.jobOffer?.startDate ?? null,
+        startTime: updated.jobOffer?.startTime ?? null,
+        officeAddress: updated.jobOffer?.officeAddress ?? null,
       });
     } else if (status === "REJECTED") {
       await queueService.push("sendRejectedEmail", {

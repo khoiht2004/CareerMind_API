@@ -36,5 +36,29 @@ async function deleteAvatar(req, res) {
   return res.success(200, avatar);
 }
 
-module.exports = { getProfile, updateProfile, updateAvatar, deleteAvatar };
+async function getProfileView(req, res) {
+  const { id } = req.params;
+  const user = await model.getProfileView(id);
+  if (!user) return res.error(404, "Không tìm thấy người dùng");
+
+  let defaultCv = null;
+  if (user.cvs && user.cvs.length > 0) {
+    defaultCv = user.cvs.find((cv) => cv.isDefault) || user.cvs[0];
+  }
+
+  const responseData = {
+    id: user.id,
+    email: user.email,
+    role: user.role,
+    createdAt: user.createdAt,
+    profile: user.profile,
+    company: user.role === "RECRUITER" ? user.company : null,
+    defaultCv: user.role === "CANDIDATE" ? defaultCv : null,
+  };
+
+  return res.success(200, responseData);
+}
+
+module.exports = { getProfile, updateProfile, updateAvatar, deleteAvatar, getProfileView };
+
 

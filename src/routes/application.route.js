@@ -6,11 +6,11 @@ const permissionRequired = require("@/middlewares/permissionRequired");
 router.use(authRequired);
 
 // Candidate
-router.post("/", roleRequired("CANDIDATE"), controller.apply);
+router.post("/", controller.apply);
 router.get("/me", controller.getMyApplications);
 router.get("/my/insights", controller.getMyInsights);
 router.get("/check", controller.checkApplied);
-router.delete("/:id", roleRequired("CANDIDATE"), controller.deleteApplication);
+router.delete("/:id", controller.deleteApplication);
 router.get("/:id", controller.getApplicationById);
 
 // Admin + Recruiter

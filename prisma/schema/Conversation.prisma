@@ -1,0 +1,13 @@
+model Conversation {
+  id        String                @id @default(uuid())
+  createdAt DateTime              @default(now()) @map("created_at")
+  updatedAt DateTime              @updatedAt @map("updated_at")
+  userOneId String                @map("user_one_id")
+  userTwoId String                @map("user_two_id")
+  userOne   User                  @relation("UserOneConversations", fields: [userOneId], references: [id], onDelete: Cascade)
+  userTwo   User                  @relation("UserTwoConversations", fields: [userTwoId], references: [id], onDelete: Cascade)
+  messages  ConversationMessage[]
+
+  @@unique([userOneId, userTwoId])
+  @@map("conversations")
+}

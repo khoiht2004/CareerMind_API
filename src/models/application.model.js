@@ -8,14 +8,24 @@ const APP_SELECT = {
   status: true,
   isDraft: true,
   note: true,
-  interviewDate: true,
-  interviewTime: true,
-  interviewFormat: true,
-  interviewLocation: true,
-  confirmDeadline: true,
-  startDate: true,
-  startTime: true,
-  officeAddress: true,
+  interview: {
+    select: {
+      id: true,
+      interviewDate: true,
+      interviewTime: true,
+      interviewFormat: true,
+      interviewLocation: true,
+      confirmDeadline: true,
+    }
+  },
+  jobOffer: {
+    select: {
+      id: true,
+      startDate: true,
+      startTime: true,
+      officeAddress: true,
+    }
+  },
   createdAt: true,
   updatedAt: true,
   cv: {
@@ -148,13 +158,30 @@ const getAllApplications = async ({
 };
 
 const updateStatus = async (id, status, note, extraFields = {}) => {
+  const data = {
+    status,
+    ...(note !== undefined && { note }),
+  };
+
+  if (status === "INTERVIEW") {
+    data.interview = {
+      upsert: {
+        create: extraFields,
+        update: extraFields,
+      }
+    };
+  } else if (status === "ACCEPTED") {
+    data.jobOffer = {
+      upsert: {
+        create: extraFields,
+        update: extraFields,
+      }
+    };
+  }
+
   return prisma.application.update({
     where: { id },
-    data: {
-      status,
-      ...(note !== undefined && { note }),
-      ...extraFields,
-    },
+    data,
     select: APP_SELECT,
   });
 };

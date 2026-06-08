@@ -30,4 +30,14 @@ const changePasswordSchema = z
     path: ["confirmPassword"],
   });
 
-module.exports = { registerSchema, loginSchema, changePasswordSchema };
+const googleLoginSchema = z.object({
+  code: z.string().min(1, "Mã code là bắt buộc"),
+  redirectUri: z.string().min(1, "Redirect URI là bắt buộc"),
+});
+
+const githubLoginSchema = z.object({
+  code: z.string().min(1, "Mã code là bắt buộc"),
+  redirectUri: z.string().min(1, "Redirect URI là bắt buộc"),
+});
+
+module.exports = { registerSchema, loginSchema, changePasswordSchema, googleLoginSchema, githubLoginSchema };

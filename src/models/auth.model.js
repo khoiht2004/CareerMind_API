@@ -132,6 +132,100 @@ const changePassword = async (id, password) => {
   return prisma.user.update({ where: { id }, data: { password } });
 };
 
+const findOrCreateSocialUser = async ({ email, name, avatarUrl, provider, providerId }) => {
+  let user = await prisma.user.findFirst({
+    where: {
+      provider,
+      providerId,
+    },
+    select: {
+      id: true,
+      email: true,
+      role: true,
+      companyId: true,
+      canCompanyManage: true,
+    },
+  });
+
+  if (user) {
+    return user;
+  }
+
+  user = await prisma.user.findUnique({
+    where: { email },
+    select: {
+      id: true,
+      email: true,
+      role: true,
+      companyId: true,
+      canCompanyManage: true,
+      provider: true,
+      providerId: true,
+    },
+  });
+
+  if (user) {
+    user = await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        provider,
+        providerId,
+        isVerified: true,
+      },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        companyId: true,
+        canCompanyManage: true,
+      },
+    });
+
+    const profile = await prisma.profile.findUnique({ where: { userId: user.id } });
+    if (profile) {
+      if (!profile.avatarUrl && avatarUrl) {
+        await prisma.profile.update({
+          where: { userId: user.id },
+          data: { avatarUrl },
+        });
+      }
+    } else {
+      await prisma.profile.create({
+        data: {
+          userId: user.id,
+          fullName: name || email.split("@")[0],
+          avatarUrl,
+        },
+      });
+    }
+
+    return user;
+  }
+
+  return prisma.user.create({
+    data: {
+      email,
+      password: null,
+      provider,
+      providerId,
+      isVerified: true,
+      profile: {
+        create: {
+          fullName: name || email.split("@")[0],
+          avatarUrl,
+        },
+      },
+    },
+    select: {
+      id: true,
+      email: true,
+      role: true,
+      companyId: true,
+      canCompanyManage: true,
+    },
+  });
+};
+
 module.exports = {
   findByEmail,
   createUser,
@@ -144,4 +238,5 @@ module.exports = {
   deleteRefreshToken,
   revokeToken,
   changePassword,
+  findOrCreateSocialUser,
 };

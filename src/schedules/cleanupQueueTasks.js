@@ -22,6 +22,19 @@ async function cleanupQueueTasks() {
   });
 
   console.log(`Cleanup ${result.count} queue tasks (failed/completed)`);
+
+  try {
+    const { getIO } = require("@/libs/socket");
+    const io = getIO();
+    io.to("role:ADMIN").emit("notification:admin_new", {
+      title: "Dọn dẹp Queue",
+      content: `Đã dọn dẹp ${result.count} tasks hoàn thành/thất bại khỏi hàng đợi.`,
+      type: "QUEUE_LOG",
+      createdAt: new Date(),
+    });
+  } catch (error) {
+    // Socket chưa init hoặc lỗi khác
+  }
 }
 
 module.exports = cleanupQueueTasks;
