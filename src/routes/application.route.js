@@ -1,12 +1,13 @@
 const router = require("express").Router();
 const controller = require("@/controllers/application.controller");
-const { authRequired, roleRequired } = require("@/middlewares");
+const { authRequired, roleRequired, validate } = require("@/middlewares");
 const permissionRequired = require("@/middlewares/permissionRequired");
+const { applySchema } = require("@/validation/apply.schema");
 
 router.use(authRequired);
 
 // Candidate
-router.post("/", controller.apply);
+router.post("/", validate(applySchema), controller.apply);
 router.get("/me", controller.getMyApplications);
 router.get("/my/insights", controller.getMyInsights);
 router.get("/check", controller.checkApplied);
