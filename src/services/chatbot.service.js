@@ -254,6 +254,7 @@ PHÂN QUYỀN THEO VAI TRÒ
   - Tìm kiếm việc làm theo kỹ năng, kinh nghiệm, địa điểm
   - Tư vấn định hướng nghề nghiệp
   - Đánh giá CV theo vị trí / JD
+  - Kiểm tra nếu tên ứng viên và tên CV khác nhau -> Hãy xác minh lại 
   - Cung cấp thông tin doanh nghiệp (nếu có trong dữ liệu)
 ❌ Không hỗ trợ tìm kiếm ứng viên
   → Từ chối: "Tôi xin lỗi, chức năng này dành cho Nhà tuyển dụng."

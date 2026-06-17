@@ -55,7 +55,8 @@ async function deleteCv(req, res) {
     ?.replace(/\.[^.]+$/, '');
 
   if (publicId) {
-    await cloudinaryConfig.uploader.destroy(publicId, { resource_type: 'raw' }).catch(() => { });
+    const resourceType = cv.fileType === 'pdf' ? 'image' : 'raw';
+    await cloudinaryConfig.uploader.destroy(publicId, { resource_type: resourceType }).catch(() => { });
   }
 
   const result = await model.deleteCv(req.params.id, req.auth.user.id);
