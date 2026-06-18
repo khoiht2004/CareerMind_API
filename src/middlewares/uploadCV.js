@@ -15,7 +15,7 @@ const storage = new CloudinaryStorage({
     const uniqueId = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     return {
       folder: 'sra_cv',
-      resource_type: 'raw',
+      resource_type: ext === 'pdf' ? 'image' : 'raw',
       public_id: uniqueId,
       format: ext,
     };

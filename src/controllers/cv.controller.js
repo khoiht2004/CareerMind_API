@@ -1,5 +1,33 @@
 const model = require('@/models/cv.model');
 const { cloudinaryConfig } = require('@/config');
+const pdfParse = require('pdf-parse');
+const mammoth = require('mammoth');
+
+async function extractTextFromUrl(fileUrl, fileType) {
+  try {
+    const res = await fetch(fileUrl);
+    if (!res.ok) throw new Error(`Tải file từ Cloudinary thất bại, status: ${res.status}`);
+    const arrayBuffer = await res.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    let text = '';
+    if (fileType === 'pdf') {
+      const result = await pdfParse(buffer);
+      text = result.text?.trim() || '';
+    } else if (fileType === 'doc' || fileType === 'docx') {
+      const result = await mammoth.extractRawText({ buffer });
+      text = result.value?.trim() || '';
+    }
+
+    if (text.length > 8000) {
+      text = text.slice(0, 8000);
+    }
+    return text;
+  } catch (err) {
+    console.error('[cv.controller] extractTextFromUrl failed:', err.message);
+    return '';
+  }
+}
 
 // POST /cv — upload a new CV file
 async function uploadCv(req, res) {
@@ -24,8 +52,25 @@ async function uploadCv(req, res) {
     isDefault: false,
   });
 
-  return res.success(201, cv);
+  let parsedProfile = null;
+  if (['pdf', 'doc', 'docx'].includes(fileType)) {
+    try {
+      const extractedText = await extractTextFromUrl(fileUrl, fileType);
+      if (extractedText) {
+        const aiService = require('@/services/ai.service');
+        parsedProfile = await aiService.parseCV(extractedText);
+      }
+    } catch (err) {
+      console.error('[cv.controller] parse CV failed:', err.message);
+    }
+  }
+
+  return res.success(201, {
+    ...cv,
+    parsedProfile,
+  });
 }
+
 
 async function getMyCvs(req, res) {
   const cvs = await model.getMyCvs(req.auth.user.id);
@@ -55,7 +100,8 @@ async function deleteCv(req, res) {
     ?.replace(/\.[^.]+$/, '');
 
   if (publicId) {
-    await cloudinaryConfig.uploader.destroy(publicId, { resource_type: 'raw' }).catch(() => { });
+    const resourceType = cv.fileType === 'pdf' ? 'image' : 'raw';
+    await cloudinaryConfig.uploader.destroy(publicId, { resource_type: resourceType }).catch(() => { });
   }
 
   const result = await model.deleteCv(req.params.id, req.auth.user.id);

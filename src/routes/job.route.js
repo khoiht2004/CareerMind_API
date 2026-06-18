@@ -9,6 +9,7 @@ router.get("/", controller.getJobs);
 // Recruiter + Admin - must be before /:id
 router.get("/my/jobs", authRequired, roleRequired("RECRUITER", "ADMIN"), controller.getMyJobs);
 router.get("/my/stats", authRequired, roleRequired("RECRUITER", "ADMIN"), controller.getMyStats);
+router.post("/generate-jd-ai", authRequired, roleRequired("RECRUITER", "ADMIN"), controller.generateJDAI);
 
 router.get("/:id", controller.getJobById);
 
