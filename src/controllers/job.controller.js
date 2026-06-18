@@ -111,6 +111,25 @@ async function getMyStats(req, res) {
   return res.success(200, stats);
 }
 
+async function generateJDAI(req, res) {
+  const { title, experience, location, keyRequirements } = req.body;
+  if (!title) {
+    return res.error(400, "Tiêu đề công việc là bắt buộc");
+  }
+
+  try {
+    const aiService = require("@/services/ai.service");
+    const jdData = await aiService.generateJD({ title, experience, location, keyRequirements });
+    if (!jdData) {
+      return res.error(500, "Không thể sinh JD bằng AI");
+    }
+    return res.success(200, jdData);
+  } catch (error) {
+    console.error("[job.controller] generateJDAI error:", error);
+    return res.error(500, "Đã xảy ra lỗi khi sinh mô tả công việc bằng AI");
+  }
+}
+
 module.exports = {
   getJobs,
   getJobById,
@@ -119,4 +138,5 @@ module.exports = {
   deleteJob,
   getMyJobs,
   getMyStats,
+  generateJDAI,
 };
