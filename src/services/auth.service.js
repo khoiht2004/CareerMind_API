@@ -37,6 +37,10 @@ class AuthService {
     await queueService.push("sendVerificationEmail", { email, code }, 1);
   }
 
+  async sendForgotPasswordEmail(email, newPassword) {
+    await queueService.push("sendForgotPasswordEmail", { email, newPassword }, 1);
+  }
+
   async changePassword(user, oldPassword, newPassword, confirmPassword) {
     if (!oldPassword || !newPassword || !confirmPassword)
       return ["Vui lòng điền đầy đủ các trường", null];
