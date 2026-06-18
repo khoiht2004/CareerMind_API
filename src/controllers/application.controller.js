@@ -12,6 +12,10 @@ async function apply(req, res) {
   if (!job || job.status !== "PUBLISHED")
     return res.error(404, "Công việc không tồn tại hoặc đã đóng");
 
+  if (job.deadline && new Date(job.deadline) < new Date()) {
+    return res.error(400, "Công việc này đã quá hạn nộp đơn");
+  }
+
   const application = await model.apply(req.auth.user.id, jobId, {
     coverLetter,
     cvUrl,

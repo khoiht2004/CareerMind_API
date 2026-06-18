@@ -5,7 +5,7 @@ const passwordSchema = z
   .min(8, "Mật khẩu phải tối thiểu 8 ký tự")
   .refine(
     (val) => /[a-zA-Z]/.test(val) && /[0-9]/.test(val),
-    "Mật khẩu phải có ít nhất 1 chữ cái và 1 chữ số"
+    "Mật khẩu phải có ít nhất 1 chữ cái và 1 chữ số",
   );
 
 const registerSchema = z.object({
@@ -40,4 +40,15 @@ const githubLoginSchema = z.object({
   redirectUri: z.string().min(1, "Redirect URI là bắt buộc"),
 });
 
-module.exports = { registerSchema, loginSchema, changePasswordSchema, googleLoginSchema, githubLoginSchema };
+const forgotPasswordSchema = z.object({
+  email: z.string().email("Email không hợp lệ"),
+});
+
+module.exports = {
+  registerSchema,
+  loginSchema,
+  changePasswordSchema,
+  googleLoginSchema,
+  githubLoginSchema,
+  forgotPasswordSchema,
+};

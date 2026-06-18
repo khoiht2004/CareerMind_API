@@ -1,9 +1,13 @@
 const bcrypt = require("bcrypt");
 const model = require("@/models/auth.model");
 const AuthService = require("@/services/auth.service");
-const { getUserPermissions, groupPermissions } = require("@/utils/permission.util");
+const {
+  getUserPermissions,
+  groupPermissions,
+} = require("@/utils/permission.util");
 const { google } = require("googleapis");
 const { authConfig } = require("@/config");
+const crypto = require("crypto");
 
 async function register(req, res) {
   const { name, email, password } = req.body;
@@ -32,6 +36,13 @@ async function login(req, res) {
 
   const user = await model.findByEmail(email);
   if (!user) return res.error(401, "Email hoặc mật khẩu không đúng");
+
+  if (!user.password) {
+    return res.error(
+      401,
+      "Tài khoản của bạn được đăng ký bằng Google/GitHub. Vui lòng đăng nhập bằng dịch vụ tương ứng hoặc dùng Quên mật khẩu để tạo mật khẩu.",
+    );
+  }
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) return res.error(401, "Email hoặc mật khẩu không đúng");
@@ -79,7 +90,11 @@ async function resendVerification(req, res) {
 async function getMe(req, res) {
   const { user } = req.auth;
   if (user.role === "ADMIN") {
-    return res.success(200, { ...user, permissions: { system: ["*"] }, permissionList: ["*"] });
+    return res.success(200, {
+      ...user,
+      permissions: { system: ["*"] },
+      permissionList: ["*"],
+    });
   }
   const permSet = await getUserPermissions(user.id, user.role);
   return res.success(200, {
@@ -144,7 +159,7 @@ async function googleLogin(req, res) {
     const oauth2Client = new google.auth.OAuth2(
       authConfig.googleClientId,
       authConfig.googleClientSecret,
-      redirectUri
+      redirectUri,
     );
 
     const { tokens } = await oauth2Client.getToken(code);
@@ -196,23 +211,29 @@ async function githubLogin(req, res) {
 
   try {
     // 1. Đổi code lấy Access Token từ GitHub
-    const tokenResponse = await fetch("https://github.com/login/oauth/access_token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
+    const tokenResponse = await fetch(
+      "https://github.com/login/oauth/access_token",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          client_id: authConfig.githubClientId,
+          client_secret: authConfig.githubClientSecret,
+          code,
+          redirect_uri: redirectUri,
+        }),
       },
-      body: JSON.stringify({
-        client_id: authConfig.githubClientId,
-        client_secret: authConfig.githubClientSecret,
-        code,
-        redirect_uri: redirectUri,
-      }),
-    });
+    );
 
     const tokenData = await tokenResponse.json();
     if (tokenData.error) {
-      return res.error(400, `GitHub OAuth Error: ${tokenData.error_description || tokenData.error}`);
+      return res.error(
+        400,
+        `GitHub OAuth Error: ${tokenData.error_description || tokenData.error}`,
+      );
     }
 
     const githubAccessToken = tokenData.access_token;
@@ -244,13 +265,19 @@ async function githubLogin(req, res) {
       });
       const emailsData = await emailsResponse.json();
       if (Array.isArray(emailsData)) {
-        const primaryEmailObj = emailsData.find(e => e.primary && e.verified) || emailsData.find(e => e.primary) || emailsData[0];
+        const primaryEmailObj =
+          emailsData.find((e) => e.primary && e.verified) ||
+          emailsData.find((e) => e.primary) ||
+          emailsData[0];
         email = primaryEmailObj?.email;
       }
     }
 
     if (!email) {
-      return res.error(400, "Không thể lấy email từ tài khoản GitHub. Hãy đảm bảo email được xác thực.");
+      return res.error(
+        400,
+        "Không thể lấy email từ tài khoản GitHub. Hãy đảm bảo email được xác thực.",
+      );
     }
 
     const user = await model.findOrCreateSocialUser({
@@ -280,6 +307,38 @@ async function githubLogin(req, res) {
   }
 }
 
+function generateRandomPassword() {
+  const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const numbers = "0123456789";
+  let pwd = "";
+  pwd += letters[crypto.randomInt(0, letters.length)];
+  pwd += numbers[crypto.randomInt(0, numbers.length)];
+  const all = letters + numbers;
+  for (let i = 0; i < 8; i++) {
+    pwd += all[crypto.randomInt(0, all.length)];
+  }
+  return pwd
+    .split("")
+    .sort(() => 0.5 - Math.random())
+    .join("");
+}
+
+async function forgotPassword(req, res) {
+  const { email } = req.body;
+  const user = await model.findByEmail(email);
+
+  if (!user) {
+    return res.success(200, "Nếu email hợp lệ, mật khẩu mới đã được gửi.");
+  }
+
+  const newPassword = generateRandomPassword();
+  const hashed = await bcrypt.hash(newPassword, 10);
+  await model.changePassword(user.id, hashed);
+
+  await AuthService.sendForgotPasswordEmail(user.email, newPassword);
+  return res.success(200, "Nếu email hợp lệ, mật khẩu mới đã được gửi.");
+}
+
 module.exports = {
   register,
   login,
@@ -291,4 +350,5 @@ module.exports = {
   changePassword,
   googleLogin,
   githubLogin,
+  forgotPassword,
 };

@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const controller = require("@/controllers/auth.controller");
 const { authRequired, validate } = require("@/middlewares");
-const { registerSchema, loginSchema, changePasswordSchema, googleLoginSchema, githubLoginSchema } = require("@/validation/auth.schema");
+const { registerSchema, loginSchema, changePasswordSchema, googleLoginSchema, githubLoginSchema, forgotPasswordSchema } = require("@/validation/auth.schema");
 
 // AUTH ROUTES
 router.post("/register", validate(registerSchema), controller.register);
@@ -11,6 +11,7 @@ router.post("/github", validate(githubLoginSchema), controller.githubLogin);
 router.post("/refresh-token", controller.refreshToken);
 router.post("/verify-email", controller.verifyEmail);
 router.post("/resend-verification", controller.resendVerification);
+router.post("/forgot-password", validate(forgotPasswordSchema), controller.forgotPassword);
 
 // PROTECTED ROUTES
 router.get("/me", authRequired, controller.getMe);

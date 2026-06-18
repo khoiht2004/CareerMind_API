@@ -25,9 +25,20 @@ class MailService {
     return this.send({
       template: "auth/verificationEmail",
       templateData: { code },
-      from: `Smart Recruit Assistant <${fromAddress}>`,
+      from: `CareerMind <${fromAddress}>`,
       to: email,
       subject: "Mã xác thực email của bạn",
+    });
+  }
+
+  async sendForgotPasswordEmail({ email, newPassword }) {
+    const { fromAddress } = mailConfig;
+    return this.send({
+      template: "auth/forgotPasswordEmail",
+      templateData: { newPassword },
+      from: `CareerMind <${fromAddress}>`,
+      to: email,
+      subject: "Mật khẩu mới của bạn",
     });
   }
 
@@ -39,7 +50,7 @@ class MailService {
     return this.send({
       template: "auth/changePasswordEmail",
       templateData: { changedAt },
-      from: `Smart Recruit Assistant <${fromAddress}>`,
+      from: `CareerMind <${fromAddress}>`,
       to: email,
       subject: "Mật khẩu của bạn đã được thay đổi",
     });
@@ -53,7 +64,7 @@ class MailService {
     return this.send({
       template: "toast/backupDatabaseEmail",
       templateData: { backupTime },
-      from: `Smart Recruit Assistant <${fromAddress}>`,
+      from: `CareerMind <${fromAddress}>`,
       to: email,
       subject: "Sao lưu cơ sở dữ liệu thành công",
     });
@@ -64,7 +75,7 @@ class MailService {
     return this.send({
       template: "job/applyEmail",
       templateData: { applicantName, jobTitle, company },
-      from: `Smart Recruit Assistant <${fromAddress}>`,
+      from: `CareerMind <${fromAddress}>`,
       to: email,
       subject: `Ứng tuyển vị trí ${jobTitle} thành công`,
     });
@@ -98,7 +109,7 @@ class MailService {
         interviewLocation,
         confirmDeadlineFormat,
       },
-      from: `Smart Recruit Assistant <${fromAddress}>`,
+      from: `CareerMind <${fromAddress}>`,
       to: email,
       subject: `Lịch phỏng vấn vị trí ${jobTitle}`,
     });
@@ -125,7 +136,7 @@ class MailService {
         startTime,
         officeAddress,
       },
-      from: `Smart Recruit Assistant <${fromAddress}>`,
+      from: `CareerMind <${fromAddress}>`,
       to: email,
       subject: `Kết quả ứng tuyển vị trí ${jobTitle} tại ${company}`,
     });
@@ -140,7 +151,7 @@ class MailService {
         jobTitle,
         company,
       },
-      from: `Smart Recruit Assistant <${fromAddress}>`,
+      from: `CareerMind <${fromAddress}>`,
       to: email,
       subject: `Kết quả ứng tuyển vị trí ${jobTitle} tại ${company}`,
     });
