@@ -4,6 +4,7 @@ const authModel = require("@/models/auth.model");
 const revokedTokenModel = require("@/models/revokedToken.model");
 
 let io = null;
+const onlineUsers = new Map(); // Key: userId, Value: Set of socket IDs
 
 const initSocket = (httpServer) => {
   io = new Server(httpServer, {
@@ -14,6 +15,9 @@ const initSocket = (httpServer) => {
         "http://localhost:3001",
         "http://localhost:5173",
         "http://localhost:5174",
+        "https://careedmind.io.vn",
+        "https://www.careedmind.io.vn",
+        "https://admin.careedmind.io.vn",
       ],
       methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
     },
@@ -22,7 +26,9 @@ const initSocket = (httpServer) => {
   // 1. Handshake Middleware Authentication (JWT)
   io.use(async (socket, next) => {
     try {
-      const token = socket.handshake.auth?.token || socket.handshake.headers?.authorization?.replace("Bearer ", "").trim();
+      const token =
+        socket.handshake.auth?.token ||
+        socket.handshake.headers?.authorization?.replace("Bearer ", "").trim();
       const internalKey = socket.handshake.auth?.internalKey;
 
       // Cho phép kết nối nội bộ bằng Secret Key (dành cho schedule)
@@ -38,7 +44,9 @@ const initSocket = (httpServer) => {
       const isRevoked = await revokedTokenModel.isRevoked(token);
 
       if (isRevoked || payload.exp < Date.now() / 1000) {
-        return next(new Error("Authentication error: Token invalid or expired"));
+        return next(
+          new Error("Authentication error: Token invalid or expired"),
+        );
       }
 
       const user = await authModel.getUserById(payload.sub);
@@ -55,7 +63,7 @@ const initSocket = (httpServer) => {
   io.on("connection", (socket) => {
     if (socket.isInternal) {
       console.log("⚡ [Socket] Tiến trình chạy ngầm đã kết nối.");
-      
+
       socket.on("internal:notify_admin", (notification) => {
         io.to("role:ADMIN").emit("notification:admin_new", notification);
         console.log("📢 [Socket] Đã bắn thông báo log tới tất cả Admin.");
@@ -65,9 +73,16 @@ const initSocket = (httpServer) => {
 
     const userId = socket.user.id;
     const userRole = socket.user.role; // CANDIDATE, RECRUITER, ADMIN
-    
+
     console.log(`🔌 [Socket] User ${userId} (${userRole}) đã kết nối.`);
     
+    // Quản lý trạng thái online
+    if (!onlineUsers.has(userId)) {
+      onlineUsers.set(userId, new Set());
+      io.emit("user_status_changed", { userId, status: "online" });
+    }
+    onlineUsers.get(userId).add(socket.id);
+
     // Join vào room cá nhân để nhận thông báo realtime
     socket.join(`user:${userId}`);
 
@@ -88,6 +103,24 @@ const initSocket = (httpServer) => {
 
     socket.on("disconnect", () => {
       console.log(`❌ [Socket] User ${userId} đã ngắt kết nối.`);
+      if (onlineUsers.has(userId)) {
+        const userSockets = onlineUsers.get(userId);
+        userSockets.delete(socket.id);
+        if (userSockets.size === 0) {
+          onlineUsers.delete(userId);
+          io.emit("user_status_changed", { userId, status: "offline" });
+        }
+      }
+    });
+
+    socket.on("check_users_status", (userIds, callback) => {
+      if (Array.isArray(userIds) && typeof callback === "function") {
+        const statuses = {};
+        userIds.forEach((id) => {
+          statuses[id] = onlineUsers.has(id) ? "online" : "offline";
+        });
+        callback(statuses);
+      }
     });
   });
 };
