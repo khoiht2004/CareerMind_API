@@ -4,7 +4,7 @@ const JOB_SELECT = {
   id: true,
   title: true,
   company: {
-    select: { id: true, name: true, logoUrl: true, isVerified: true },
+    select: { id: true, name: true, logoUrl: true, isVerified: true, isActive: true },
   },
   location: true,
   salary: true,
@@ -43,6 +43,7 @@ const getJobs = async ({
 }) => {
   const where = {
     status,
+    company: { isActive: true },
     ...(search && {
       OR: [
         { title: { contains: search } },
@@ -134,7 +135,7 @@ const deleteJob = async (id) => {
 const getJobsForUser = async (keywords = [], limit = 10) => {
   if (!keywords.length) {
     return prisma.job.findMany({
-      where: { status: "PUBLISHED" },
+      where: { status: "PUBLISHED", company: { isActive: true } },
       select: JOB_SELECT,
       orderBy: [{ isHot: "desc" }, { createdAt: "desc" }],
       take: limit,
@@ -147,7 +148,7 @@ const getJobsForUser = async (keywords = [], limit = 10) => {
   ]);
 
   return prisma.job.findMany({
-    where: { status: "PUBLISHED", OR: orConditions },
+    where: { status: "PUBLISHED", company: { isActive: true }, OR: orConditions },
     select: JOB_SELECT,
     orderBy: [{ isHot: "desc" }, { createdAt: "desc" }],
     take: limit,

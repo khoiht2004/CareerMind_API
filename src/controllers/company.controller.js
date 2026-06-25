@@ -15,7 +15,7 @@ async function getCompanies(req, res) {
 async function getCompanyById(req, res) {
   const { id } = req.params;
   const company = await companyModel.getCompanyById(id);
-  if (!company) return res.error(404, "Khong tim thay cong ty");
+  if (!company || !company.isActive) return res.error(404, "Khong tim thay cong ty");
   const reviewSummary = await companyModel.getCompanyReviewSummary(id);
   return res.success(200, { ...company, ...reviewSummary });
 }

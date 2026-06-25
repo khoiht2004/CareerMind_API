@@ -16,6 +16,7 @@ const COMPANY_PUBLIC_SELECT = {
       socialLinks: true,
       totalJobs: true,
       isVerified: true,
+      isActive: true,
 };
 
 // ==========================================
