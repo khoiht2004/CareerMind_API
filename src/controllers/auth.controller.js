@@ -8,6 +8,7 @@ const {
 const { google } = require("googleapis");
 const { authConfig } = require("@/config");
 const crypto = require("crypto");
+const systemConfig = require("../config/system.config");
 
 async function register(req, res) {
   const { name, email, password } = req.body;
@@ -93,12 +94,13 @@ async function getMe(req, res) {
     return res.success(200, {
       ...user,
       permissions: { system: ["*"] },
-      permissionList: ["*"],
+      // permissionList: ["*"],
     });
   }
   const permSet = await getUserPermissions(user.id, user.role);
   return res.success(200, {
     ...user,
+    avatarUrl: user.avatarUrl || systemConfig.avatarPlaceholder,
     permissions: groupPermissions(permSet),
     // permissionList: [...permSet],
   });

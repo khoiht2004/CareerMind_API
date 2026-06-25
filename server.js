@@ -6,6 +6,7 @@ require("./schedule");
 
 const cors = require("cors");
 const express = require("express");
+const helmet = require("helmet");
 const {
   notFoundHandler,
   exceptionHandler,
@@ -35,6 +36,7 @@ app.get("/pong-render", (req, res) => {
   return res.send("pong");
 });
 
+app.use(helmet());
 app.use(cors(corsOptions));
 app.use(express.json({ limit: "20mb" }));
 app.use(express.static("public"));

@@ -1,38 +1,57 @@
-<div style="font-family:'Inter', sans-serif;max-width:480px;margin:0 auto;padding:40px 32px;background:#fff;border-radius:24px;border:1px solid #e8e8e8;box-shadow:0 8px 30px rgba(0,0,0,0.04)">
+<div
+  style="font-family:'Inter', sans-serif;max-width:480px;margin:0 auto;padding:40px 32px;background:#fff;border-radius:24px;border:1px solid #e8e8e8;box-shadow:0 8px 30px rgba(0,0,0,0.04)">
   <div style="text-align:center;margin-bottom:32px">
-    <div style="display:inline-block;background:#00b14f;color:#fff;font-weight:800;padding:8px 16px;border-radius:12px;font-size:18px;letter-spacing:-0.5px">CareerMind</div>
+    <div
+      style="display:inline-block;background:#0066cc;color:#fff;font-weight:800;padding:8px 16px;border-radius:12px;font-size:18px;letter-spacing:-0.5px">
+      CareerMind</div>
   </div>
-  
+
   <div style="text-align:center;margin-bottom:24px">
-    <span style="display:inline-block;background:#def7e8;color:#0b7a36;font-weight:700;font-size:13px;padding:6px 16px;border-radius:9999px;border:1px solid #afe2c3;letter-spacing:0.3px">
-       CHÚC MỪNG BẠN
+    <span
+      style="display:inline-block;background:#def7e8;color:#0b7a36;font-weight:700;font-size:13px;padding:6px 16px;border-radius:9999px;border:1px solid #afe2c3;letter-spacing:0.3px">
+      CHÚC MỪNG BẠN
     </span>
   </div>
 
-  <h2 style="font-size:22px;font-weight:700;margin:0 0 16px;color:#181c20;text-align:center">Thư chào mừng nhân viên mới</h2>
-  <p style="color:#5f6368;font-size:15px;margin:0 0 16px;line-height:1.6">Chào <strong style="color:#181c20"><%= applicantName %></strong>,</p>
+  <h2 style="font-size:22px;font-weight:700;margin:0 0 16px;color:#181c20;text-align:center">Thư chào mừng nhân viên mới
+  </h2>
+  <p style="color:#5f6368;font-size:15px;margin:0 0 16px;line-height:1.6">Chào <strong style="color:#181c20">
+      <%= applicantName %>
+    </strong>,</p>
 
   <p style="color:#5f6368;font-size:15px;margin:0 0 24px;line-height:1.6">
-    Thay mặt <strong style="color:#181c20"><%= company %></strong>, chúng tôi vô cùng vui mừng thông báo bạn đã trúng tuyển vị trí <strong style="color:#181c20"><%= jobTitle %></strong>. Chúng tôi rất mong chờ những đóng góp tuyệt vời của bạn sắp tới!
+    Thay mặt <strong style="color:#181c20">
+      <%= company %>
+    </strong>, chúng tôi vô cùng vui mừng thông báo bạn đã trúng tuyển vị trí <strong style="color:#181c20">
+      <%= jobTitle %>
+    </strong>. Chúng tôi rất mong chờ những đóng góp tuyệt vời của bạn sắp tới!
   </p>
 
   <div style="background:#f1f4fa;border:1px solid #e8e8e8;border-radius:16px;padding:20px 24px;margin:0 0 32px">
     <table style="width:100%;border-collapse:collapse;font-size:14px">
       <tr>
         <td style="padding:8px 0;color:#5f6368;width:35%">Vị trí</td>
-        <td style="padding:8px 0;font-weight:600;color:#181c20"><%= jobTitle %></td>
+        <td style="padding:8px 0;font-weight:600;color:#181c20">
+          <%= jobTitle %>
+        </td>
       </tr>
       <tr>
         <td style="padding:8px 0;color:#5f6368">Ngày nhận việc</td>
-        <td style="padding:8px 0;font-weight:600;color:#181c20"><%= startDateFormat %></td>
+        <td style="padding:8px 0;font-weight:600;color:#181c20">
+          <%= startDateFormat %>
+        </td>
       </tr>
       <tr>
         <td style="padding:8px 0;color:#5f6368">Giờ làm việc</td>
-        <td style="padding:8px 0;font-weight:600;color:#181c20"><%= startTime %></td>
+        <td style="padding:8px 0;font-weight:600;color:#181c20">
+          <%= startTime %>
+        </td>
       </tr>
       <tr>
         <td style="padding:8px 0;color:#5f6368;vertical-align:top">Địa điểm</td>
-        <td style="padding:8px 0;font-weight:600;color:#181c20;line-height:1.5"><%= officeAddress %></td>
+        <td style="padding:8px 0;font-weight:600;color:#181c20;line-height:1.5">
+          <%= officeAddress %>
+        </td>
       </tr>
     </table>
   </div>
@@ -41,5 +60,6 @@
     Nếu bạn có bất kỳ câu hỏi nào trước ngày nhận việc, xin vui lòng liên hệ lại với chúng tôi qua email này.
   </p>
 
-  <p style="color:#5f6368;font-size:14px;margin:0;line-height:1.5">Trân trọng,<br /><strong style="color:#181c20">Đội ngũ Nhân sự — <%= company %></strong></p>
+  <p style="color:#5f6368;font-size:14px;margin:0;line-height:1.5">Trân trọng,<br /><strong style="color:#181c20">Đội
+      ngũ Nhân sự — <%= company %></strong></p>
 </div>

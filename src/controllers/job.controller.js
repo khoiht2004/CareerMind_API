@@ -31,7 +31,7 @@ async function getJobs(req, res) {
 
 async function getJobById(req, res) {
   const job = await model.getJobById(req.params.id);
-  if (!job || job.status === "CLOSED")
+  if (!job || job.status === "CLOSED" || !job.company.isActive)
     return res.error(404, "Không tìm thấy công việc");
   return res.success(200, job);
 }
